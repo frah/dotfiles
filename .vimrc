@@ -922,11 +922,11 @@ let g:pydiction_location = '~/.vim/bundle/pydiction/complete-dict'
 " TwitVim
 "------------------------------------
 let twitvim_count = 40
-nnoremap ,tp :<C-u>PosttoTwitter<CR>
-nnoremap ,tf :<C-u>FriendsTwitter<CR><C-w>j
-nnoremap ,tu :<C-u>UserTwitter<CR><C-w>j
-nnoremap ,tr :<C-u>RepliesTwitter<CR><C-w>j
-nnoremap ,tn :<C-u>NextTwitter<CR>
+nnoremap <Leader>tp :<C-u>PosttoTwitter<CR>
+nnoremap <Leader>tf :<C-u>FriendsTwitter<CR><C-w>j
+nnoremap <Leader>tu :<C-u>UserTwitter<CR><C-w>j
+nnoremap <Leader>tr :<C-u>RepliesTwitter<CR><C-w>j
+nnoremap <Leader>tn :<C-u>NextTwitter<CR>
 
 autocmd FileType twitvim call s:twitvim_my_settings()
 function! s:twitvim_my_settings()
