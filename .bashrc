@@ -4,29 +4,20 @@ export LANG=ja_JP.UTF-8
 export LC_ALL=ja_JP.UTF-8
 export LC_CTYPE=ja_JP.UTF-8
 export HISTCONTROL=ignoreboth
-if test -x /opt/local/bin/lv; then
-    export PAGER=/opt/local/bin/lv
-    export LV='-Ou8'
-else
-    export PAGER=/usr/bin/less
-fi
-export EDITOR=/Applications/MacVim.app/Contents/MacOS/Vim
-export PATH=/Applications/TeX/pTeX.app/teTeX/bin:$PATH
-
-alias vi='env LANG=ja_JP.UTF-8 /Applications/MacVim.app/Contents/MacOS/Vim "$@"'
-alias vim='env LANG=ja_JP.UTF-8 /Applications/MacVim.app/Contents/MacOS/Vim "$@"'
-alias gvim='open -a /Applications/MacVim.app "$@"'
 
 alias ..='cd ..'
-alias ls='/bin/ls -Gh'
 alias ll='ls -lh'
 alias mv='mv -i'
 alias cp='cp -i'
 alias rm='rm -i'
 alias grep='grep --color=auto'
-alias start_cups='sudo launchctl load /System/Library/LaunchDaemons/org.cups.cupsd.plist'
-alias stop_cups='sudo launchctl unload /System/Library/LaunchDaemons/org.cups.cupsd.plist'
 alias info="info --vi-keys"
+
+if [ -d ~/.bashenvs ]; then
+    if [ $(uname -s) = "Darwin" ]; then
+        source ~/.bashenvs/*.mac
+    fi
+fi
 
 #-----------
 # prompt

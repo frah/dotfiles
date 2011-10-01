@@ -1,0 +1,10 @@
+alias ls='/bin/ls -Gh'
+
+# cups
+alias start_cups='sudo launchctl load /System/Library/LaunchDaemons/org.cups.cupsd.plist'
+alias stop_cups='sudo launchctl unload /System/Library/LaunchDaemons/org.cups.cupsd.plist'
+
+# vim aliases
+alias vi='env LANG=ja_JP.UTF-8 /Applications/MacVim.app/Contents/MacOS/Vim "$@"'
+alias vim='env LANG=ja_JP.UTF-8 /Applications/MacVim.app/Contents/MacOS/Vim "$@"'
+alias gvim='open -a /Applications/MacVim.app "$@"'
