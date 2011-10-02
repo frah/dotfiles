@@ -1,6 +1,27 @@
+set nocompatible
 filetype off
-call pathogen#runtime_append_all_bundles()
-call pathogen#helptags()
+
+"-----------------------------
+" Vundle
+"-----------------------------
+set rtp+=~/.vim/bundle/vundle/
+call vundle#rc()
+
+Bundle 'gmarik/vundle'
+
+Bundle 'Align'
+Bundle 'SQLUtilities'
+Bundle 'TwitVim'
+Bundle 'othree/eregex.vim'
+Bundle 'tpope/vim-fugitive'
+Bundle 'grep.vim'
+Bundle 'Shougo/neocomplcache'
+Bundle 'scrooloose/nerdcommenter'
+Bundle 'Shougo/unite.vim'
+Bundle 'kana/vim-smartchr'
+Bundle 'Shougo/vimproc'
+Bundle 'Shougo/vimshell'
+Bundle 'Smooth-Scroll'
 
 filetype plugin indent on
 "-------------------------------------------------------------------------------
