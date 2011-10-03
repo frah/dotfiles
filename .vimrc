@@ -31,6 +31,7 @@ Bundle 'taglist.vim'
 Bundle 'autodate.vim'
 Bundle 'taku-o/vim-changed'
 Bundle 'jcommenter.vim'
+Bundle 'freiheittokkyu/monday'
 
 filetype plugin indent on
 "-------------------------------------------------------------------------------
