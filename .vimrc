@@ -22,6 +22,10 @@ Bundle 'kana/vim-smartchr'
 Bundle 'Shougo/vimproc'
 Bundle 'Shougo/vimshell'
 Bundle 'Smooth-Scroll'
+Bundle 'yuroyoro/vim-python'
+BUndle 'yuroyoro/vimdoc_ja'
+Bundle 'tsukkee/unite-help'
+Bundle 'quickrun.vim'
 
 filetype plugin indent on
 "-------------------------------------------------------------------------------
@@ -715,11 +719,6 @@ map <Leader>U <Plug>(operator-decamelize)
 "------------------------------------
 " RwなどでYankしてるもので置き換える
 map R <Plug>(operator-replace)
-
-"------------------------------------
-" hatena.vim
-"------------------------------------
-let g:hatena_user='yuroyoro'
 
 "------------------------------------
 " sumartword.vim
