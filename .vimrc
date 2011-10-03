@@ -22,6 +22,15 @@ Bundle 'kana/vim-smartchr'
 Bundle 'Shougo/vimproc'
 Bundle 'Shougo/vimshell'
 Bundle 'Smooth-Scroll'
+Bundle 'yuroyoro/vim-python'
+Bundle 'yuroyoro/vimdoc_ja'
+Bundle 'tsukkee/unite-help'
+Bundle 'thinca/vim-quickrun'
+Bundle 'tokorom/ios-vim-snippets'
+Bundle 'taglist.vim'
+Bundle 'autodate.vim'
+Bundle 'taku-o/vim-changed'
+Bundle 'jcommenter.vim'
 
 filetype plugin indent on
 "-------------------------------------------------------------------------------
@@ -717,11 +726,6 @@ map <Leader>U <Plug>(operator-decamelize)
 map R <Plug>(operator-replace)
 
 "------------------------------------
-" hatena.vim
-"------------------------------------
-let g:hatena_user='yuroyoro'
-
-"------------------------------------
 " sumartword.vim
 "------------------------------------
 noremap ,w  w
@@ -953,4 +957,13 @@ autocmd FileType twitvim call s:twitvim_my_settings()
 function! s:twitvim_my_settings()
   set nowrap
 endfunction
+
+"------------------------------------
+" jcommenter.vim
+"------------------------------------
+autocmd FileType java map <C-c> :call JCommentWriter()<CR>
+
+let b:jcommenter_class_author = "Atsushi OHNO"
+let b:jcommenter_file_author  = "Atsushi OHNO"
+let b:jcommenter_file_copyright = "Atsushi OHNO"
 
