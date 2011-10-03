@@ -17,7 +17,7 @@ export LC_ALL=ja_JP.UTF-8
 export LC_CTYPE=ja_JP.UTF-8
 export HISTSIZE=1000
 export HISTFILESIZE=1000
-export HISTTIMEFORMAT="%Y-%m-%dT%H:%M:%S "
+export HISTTIMEFORMAT="%Y-%m-%d %H:%M:%S "
 export HISTIGNORE="[ ]*:&:bg:fg:ls -l:ls -al:ls -la:ll:la:ls"
 export HISTCONTROL=ignoreboth
 
@@ -69,6 +69,8 @@ Darwin)     # Mac OS X
     alias vi='env LANG=ja_JP.UTF-8 /Applications/MacVim.app/Contents/MacOS/Vim "$@"'
     alias vim='env LANG=ja_JP.UTF-8 /Applications/MacVim.app/Contents/MacOS/Vim "$@"'
     alias gvim='open -a /Applications/MacVim.app "$@"'
+
+    alias qlf='qlmanage -p "$@" >& /dev/null'
     ;;
 FreeBSD)    # FreeBSD
     alias ls='/usr/local/bin/gnuls --color=auto -h'
@@ -101,15 +103,47 @@ function dispstatus {
   if [[ "$STY" ]]; then echo -en "\033k$1\033\134"; fi
 }
 
-# つねに直前のコマンドの終了状態をチェックさせる。
-# もし異常終了した場合は、その状態(数値)を表示する。
-function showexit {
-local s=$?
-dispstatus "${PWD/~}"
-if [[ $s -eq 0 ]]; then return; fi
-echo "exit $s"
+# 最後のコマンドの実行時間を計測
+function time_spent {
+  COMPTIME=$(expr $(date +%s) - ${COMPTIME:=0})
 }
-PROMPT_COMMAND=showexit
+trap 'time_spent' DEBUG
+
+# 3秒以上処理に時間がかかったときは通知
+# コマンドが正常終了しなかったときはエラーコードを出力
+IGNORE_COMMANDS=('vi' 'vim' 'gvim' 'man' 'less' 'lv' 'top')
+function notify-execomp {
+  local s=$?
+  local command="$(history 1 | awk '{s="";for(i=4;i<=NF;i++){s=s" "$i}print s}')"
+  local message=""
+  dispstatus "${PWD/~}"
+  if [[ $s -ne 0 ]]; then
+    message="\"$command\" is exit on error code $s."
+  elif [[ 3 -lt $COMPTIME ]]; then
+    local com="$(echo $command | awk '{print $1}')"
+    for icom in "${IGNORE_COMMANDS[@]}"; do
+      if [[ $icom == $com ]]; then
+        COMPTIME=0
+        return
+      fi
+    done
+    message="\"$command\" execution completed at $COMPTIME sec."
+  fi
+
+  if [[ $message != "" ]]; then
+    case "$_os" in
+    Darwin)
+      growlnotify -n notify-execomp -t bash -m "$message"
+      ;;
+    *)
+      echo "$message"
+      ;;
+    esac
+  fi
+
+  COMPTIME=0
+}
+PROMPT_COMMAND='notify-execomp'
 
 #
 # Performs an egrep on the process list. Use any arguments that egrep accetps.
