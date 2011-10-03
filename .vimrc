@@ -23,7 +23,7 @@ Bundle 'Shougo/vimproc'
 Bundle 'Shougo/vimshell'
 Bundle 'Smooth-Scroll'
 Bundle 'yuroyoro/vim-python'
-BUndle 'yuroyoro/vimdoc_ja'
+Bundle 'yuroyoro/vimdoc_ja'
 Bundle 'tsukkee/unite-help'
 Bundle 'quickrun.vim'
 
