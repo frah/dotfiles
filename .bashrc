@@ -1,4 +1,5 @@
 umask 022
+set -o vi
 ulimit -c 0
 
 _os="$(uname -s)"
@@ -35,6 +36,12 @@ Darwin)     # Mac OS X
     export PATH=/Applications/TeX/pTeX.app/teTeX/bin:$PATH
     ;;
 FreeBSD)    # FreeBSD
+    if [ -f /usr/local/etc/bash_completion ]; then
+      . /usr/local/etc/bash_completion
+    fi
+    export PAGER=/usr/local/bin/lv
+    export LV='-Ou8'
+    export EDITOR=/usr/local/bin/vim
     ;;
 esac
 
@@ -64,9 +71,13 @@ Darwin)     # Mac OS X
     alias gvim='open -a /Applications/MacVim.app "$@"'
     ;;
 FreeBSD)    # FreeBSD
+    alias vi='/usr/local/bin/vim'
+    alias man='env LC_ALL=ja_JP.eucJP jman'
+    alias portupgrade="sudo portmaster -CKdway -x apr"
     ;;
 esac
 
+# local settings
 if [ -f ~/.bashrc_local ]; then
     . ~/.bashrc_local
 fi
