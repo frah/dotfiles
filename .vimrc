@@ -26,6 +26,11 @@ Bundle 'yuroyoro/vim-python'
 Bundle 'yuroyoro/vimdoc_ja'
 Bundle 'tsukkee/unite-help'
 Bundle 'thinca/vim-quickrun'
+Bundle 'tokorom/ios-vim-snippets'
+Bundle 'taglist.vim'
+Bundle 'autodate.vim'
+Bundle 'taku-o/vim-changed'
+Bundle 'jcommenter.vim'
 
 filetype plugin indent on
 "-------------------------------------------------------------------------------
@@ -952,4 +957,13 @@ autocmd FileType twitvim call s:twitvim_my_settings()
 function! s:twitvim_my_settings()
   set nowrap
 endfunction
+
+"------------------------------------
+" jcommenter.vim
+"------------------------------------
+autocmd FileType java map <C-c> :call JCommentWriter()<CR>
+
+let b:jcommenter_class_author = "Atsushi OHNO"
+let b:jcommenter_file_author  = "Atsushi OHNO"
+let b:jcommenter_file_copyright = "Atsushi OHNO"
 
