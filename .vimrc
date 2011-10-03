@@ -25,7 +25,7 @@ Bundle 'Smooth-Scroll'
 Bundle 'yuroyoro/vim-python'
 Bundle 'yuroyoro/vimdoc_ja'
 Bundle 'tsukkee/unite-help'
-Bundle 'quickrun.vim'
+Bundle 'thinca/vim-quickrun'
 
 filetype plugin indent on
 "-------------------------------------------------------------------------------
