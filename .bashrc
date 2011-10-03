@@ -125,7 +125,7 @@ esac
 #
 public_ip() {
   curl 'http://vps.tokcs.com/cgi-bin/ip'
-  echo -e '\n'
+  echo -ne "\n"
 }
 
 #-----------
