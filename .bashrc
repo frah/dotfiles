@@ -71,6 +71,7 @@ Darwin)     # Mac OS X
     alias gvim='open -a /Applications/MacVim.app "$@"'
     ;;
 FreeBSD)    # FreeBSD
+    alias ls='/usr/local/bin/gnuls --color=auto -h'
     alias vi='/usr/local/bin/vim'
     alias man='env LC_ALL=ja_JP.eucJP jman'
     alias portupgrade="sudo portmaster -CKdway -x apr"
