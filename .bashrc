@@ -93,7 +93,7 @@ function dispstatus {
 # もし異常終了した場合は、その状態(数値)を表示する。
 function showexit {
 local s=$?
-dispstatus "${PWD/\/home\/yusuke/~}"
+dispstatus "${PWD/~}"
 if [[ $s -eq 0 ]]; then return; fi
 echo "exit $s"
 }
@@ -112,11 +112,9 @@ esac
 ##
 # Returns the public/internet visible IP address of the system.
 #
-# Thanks to @mojombo's baddass tweet:
-# https://twitter.com/#!/mojombo/status/48948402955882496
-#
-whatsmy_public_ip() {
-  curl --silent 'http://jsonip.com/' | json_val '["ip"]'
+public_ip() {
+  curl 'http://vps.tokcs.com/cgi-bin/ip'
+  echo -e '\n'
 }
 
 #-----------
