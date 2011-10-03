@@ -1,10 +1,46 @@
+umask 022
 ulimit -c 0
 
+_os="$(uname -s)"
+
+shopt -s checkwinsize
+shopt -s histappend
+shopt -s histreedit
+shopt -s checkhash
+
+##
+# set environment
+#
 export LANG=ja_JP.UTF-8
 export LC_ALL=ja_JP.UTF-8
 export LC_CTYPE=ja_JP.UTF-8
+export HISTSIZE=1000
+export HISTFILESIZE=1000
+export HISTTIMEFORMAT="%Y-%m-%dT%H:%M:%S "
+export HISTIGNORE="[ ]*:&:bg:fg:ls -l:ls -al:ls -la:ll:la:ls"
 export HISTCONTROL=ignoreboth
 
+# OS-specific environments
+case "$_os" in
+Darwin)     # Mac OS X
+    # set pager
+    if test -x /opt/local/bin/lv; then
+        export PAGER=/opt/local/bin/lv
+        export LV='-Ou8'
+    else
+        export PAGER=/usr/bin/less
+    fi
+
+    export EDITOR=/Applications/MacVim.app/Contents/MacOS/Vim
+    export PATH=/Applications/TeX/pTeX.app/teTeX/bin:$PATH
+    ;;
+FreeBSD)    # FreeBSD
+    ;;
+esac
+
+##
+# set aliase
+#
 alias ..='cd ..'
 alias ll='ls -lh'
 alias mv='mv -i'
@@ -13,11 +49,75 @@ alias rm='rm -i'
 alias grep='grep --color=auto'
 alias info="info --vi-keys"
 
-if [ -d ~/.bashenvs ]; then
-    if [ $(uname -s) = "Darwin" ]; then
-        source ~/.bashenvs/*.mac
-    fi
+# OS-specific aliases
+case "$_os" in
+Darwin)     # Mac OS X
+    alias ls='/bin/ls -Gh'
+
+    # cups
+    alias start_cups='sudo launchctl load /System/Library/LaunchDaemons/org.cups.cupsd.plist'
+    alias stop_cups='sudo launchctl unload /System/Library/LaunchDaemons/org.cups.cupsd.plist'
+
+    # vim aliases
+    alias vi='env LANG=ja_JP.UTF-8 /Applications/MacVim.app/Contents/MacOS/Vim "$@"'
+    alias vim='env LANG=ja_JP.UTF-8 /Applications/MacVim.app/Contents/MacOS/Vim "$@"'
+    alias gvim='open -a /Applications/MacVim.app "$@"'
+    ;;
+FreeBSD)    # FreeBSD
+    ;;
+esac
+
+if [ -f ~/.bashrc_local ]; then
+    . ~/.bashrc_local
 fi
+
+#-----------
+# Functions
+#-----------
+# i: 直前の履歴 30件を表示する。引数がある場合は過去 1000件を検索
+function i {
+  if [ "$1" ]; then history 1000 | grep "$@"; else history 30; fi
+}
+
+# I: 直前の履歴 30件を表示する。引数がある場合は過去のすべてを検索
+function I {
+  if [ "$1" ]; then history | grep "$@"; else history 30; fi
+}
+
+# GNU screen 用のコマンド。引数を screen のステータス行に表示。
+function dispstatus {
+  if [[ "$STY" ]]; then echo -en "\033k$1\033\134"; fi
+}
+
+# つねに直前のコマンドの終了状態をチェックさせる。
+# もし異常終了した場合は、その状態(数値)を表示する。
+function showexit {
+local s=$?
+dispstatus "${PWD/\/home\/yusuke/~}"
+if [[ $s -eq 0 ]]; then return; fi
+echo "exit $s"
+}
+PROMPT_COMMAND=showexit
+
+#
+# Performs an egrep on the process list. Use any arguments that egrep accetps.
+#
+# @param [Array] egrep arguments
+case "$_os" in
+  Darwin|OpenBSD) psg() { ps wwwaux | egrep "($@|\bPID\b)" | egrep -v "grep"; } ;;
+  SunOS|Linux)    psg() { ps -ef | egrep "($@|\bPID\b)" | egrep -v "grep"; } ;;
+  CYGWIN_*)       psg() { ps -efW | egrep "($@|\bPID\b)" | egrep -v "grep"; } ;;
+esac
+
+##
+# Returns the public/internet visible IP address of the system.
+#
+# Thanks to @mojombo's baddass tweet:
+# https://twitter.com/#!/mojombo/status/48948402955882496
+#
+whatsmy_public_ip() {
+  curl --silent 'http://jsonip.com/' | json_val '["ip"]'
+}
 
 #-----------
 # prompt
