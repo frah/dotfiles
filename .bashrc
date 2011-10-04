@@ -105,7 +105,7 @@ function dispstatus {
 
 # 最後のコマンドの実行時間を計測
 function time_spent {
-  COMPTIME=$(expr $(date +%s) - ${COMPTIME:=0})
+  COMTIME=$(expr $(date +%s) - ${COMTIME:=0})
 }
 trap 'time_spent' DEBUG
 
@@ -119,15 +119,16 @@ function notify-execomp {
   dispstatus "${PWD/~}"
   if [[ $s -ne 0 ]]; then
     message="\"$command\" is exit on error code $s."
-  elif [[ 3 -lt $COMPTIME ]]; then
+  elif [[ 3 -lt $COMTIME ]]; then
+    message="\"$command\" execution completed at $COMTIME sec."
+    unset COMTIME
+
     local com="$(echo $command | awk '{print $1}')"
     for icom in "${IGNORE_COMMANDS[@]}"; do
       if [[ $icom == $com ]]; then
-        COMPTIME=0
         return
       fi
     done
-    message="\"$command\" execution completed at $COMPTIME sec."
   fi
 
   if [[ $message != "" ]]; then
@@ -140,8 +141,6 @@ function notify-execomp {
       ;;
     esac
   fi
-
-  COMPTIME=0
 }
 PROMPT_COMMAND='notify-execomp'
 
