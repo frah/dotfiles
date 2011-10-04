@@ -115,7 +115,7 @@ trap 'time_spent' DEBUG
 
 # 3秒以上処理に時間がかかったときは通知
 # コマンドが正常終了しなかったときはエラーコードを出力
-IGNORE_COMMANDS=('vi' 'vim' 'gvim' 'man' 'less' 'lv' 'top' 'exit' 'logout')
+IGNORE_COMMANDS=('vi' 'vim' 'gvim' 'man' 'less' 'lv' 'top' 'exit' 'logout' 'ssh')
 function notify-execomp {
   local s=$?
   local command="$(history 1 | awk '{s=$4;for(i=5;i<=NF;i++){s=s" "$i}print s}')"
