@@ -31,6 +31,7 @@ Bundle 'taku-o/vim-changed'
 Bundle 'jcommenter.vim'
 Bundle 'freiheittokkyu/monday'
 Bundle 'thinca/vim-ref'
+Bundle 'git://vim-latex.git.sourceforge.net/gitroot/vim-latex/vim-latex'
 
 filetype plugin indent on
 "-------------------------------------------------------------------------------
@@ -991,3 +992,23 @@ autocmd FileType python vnoremap <silent> <Space>d :<C-U>call ref#jump('visual',
 autocmd FileType php nnoremap <silent> <Space>d :<C-U>call ref#jump('normal', 'phpmanual')<CR>
 autocmd FileType php vnoremap <silent> <Space>d :<C-U>call ref#jump('visual', 'phpmanual')<CR>
 
+"------------------------------------
+" vim-latex
+"------------------------------------
+set shellslash
+let g:tex_flavor = 'latex'
+let g:Tex_DefaultTargetFormat = 'pdf'
+
+if has('win32') || has('win64')
+    let g:Tex_BibtexFlavor = ''
+    let g:Tex_ViewRule_pdf = ''
+    let g:Tex_CompileRule_pdf = ''
+elseif has('mac')
+    let g:Tex_BibtexFlavor = 'jbibtex'
+    let g:Tex_ViewRule_pdf = 'open -a /Applications/Preview.app'
+    let g:Tex_CompileRule_pdf = 'pdflatex $*.tex'
+else
+    let g:Tex_BibtexFlavor = 'jbibtex'
+    let g:Tex_ViewRule_pdf = ''
+    let g:Tex_CompileRule_pdf = 'pdflatex $*.tex'
+endif
