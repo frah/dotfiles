@@ -1,6 +1,6 @@
-umask 022
-set -o vi
-ulimit -c 0
+umask 022   # 新規作成ファイルのパーミッションは644
+set -o vi   # viキーバインド
+ulimit -c 0 # coreファイルを作成しない
 
 _os="$(uname -s)"
 
@@ -11,6 +11,7 @@ shopt -s checkhash      # ハッシュの存在チェック
 shopt -s dotglob        # .で始まるファイルもパス名展開対象に
 shopt -s extglob        # 拡張正規表現を有効化
 shopt -s cdspell        # cdコマンドの誤り訂正有効化
+shopt -s no_empty_cmd_completion # 何も入力していないときはコマンド名補完をOFF
 
 ##
 # set environment
@@ -119,7 +120,7 @@ function notify-execomp {
   local s=$?
   local command="$(history 1 | awk '{s=$4;for(i=5;i<=NF;i++){s=s" "$i}print s}')"
   local message=""
-  dispstatus "${PWD/~}"
+  dispstatus "${PWD/${HOME}/~}"
   if [[ $s -ne 0 ]]; then
     message="\"$command\" is exit on error code $s."
   elif [[ 3 -lt $COMTIME ]]; then
