@@ -29,8 +29,8 @@ export HISTCONTROL=ignoreboth
 case "$_os" in
 Darwin)     # Mac OS X
     # set pager
-    if test -x /opt/local/bin/lv; then
-        export PAGER=/opt/local/bin/lv
+    if test -x /usr/local/bin/lv; then
+        export PAGER=/usr/local/bin/lv
         export LV='-Ou8'
     else
         export PAGER=/usr/bin/less

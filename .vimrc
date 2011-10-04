@@ -4,7 +4,7 @@ filetype off
 "-----------------------------
 " Vundle
 "-----------------------------
-set rtp+=~/.vim/bundle/vundle/
+set rtp+=~/.vim/vundle.git/
 call vundle#rc()
 
 Bundle 'gmarik/vundle'
@@ -978,9 +978,10 @@ let b:jcommenter_file_copyright = 'Atsushi OHNO'
 let g:ref_cache_dir = expand('~/.vim/.vim_ref_cache')
 let g:ref_use_vimproc = 1
 let g:ref_alc_use_cache = 1
+let g:ref_alc_encoding = 'sjis'
 
-nnoremap <silent> <Space>D :<C-u>call ref#jump('normal', 'alc')<CR>
-vnoremap <silent> <Space>D :<C-u>call ref#jump('visual', 'alc')<CR>
+nnoremap <silent> <Space>e :<C-u>call ref#jump('normal', 'alc')<CR>
+vnoremap <silent> <Space>e :<C-u>call ref#jump('visual', 'alc')<CR>
 autocmd FileType sh,c nnoremap <silent> <Space>d :<C-u>call ref#jump('normal', 'man')<CR>
 autocmd FileType sh,c vnoremap <silent> <Space>d :<C-u>call ref#jump('visual', 'man')<CR>
 autocmd FileType perl nnoremap <silent> <Space>d :<C-U>call ref#jump('normal', 'perldoc')<CR>
