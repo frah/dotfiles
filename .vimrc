@@ -7,8 +7,6 @@ filetype off
 set rtp+=~/.vim/vundle.git/
 call vundle#rc()
 
-Bundle 'gmarik/vundle'
-
 Bundle 'Align'
 Bundle 'SQLUtilities'
 Bundle 'TwitVim'
