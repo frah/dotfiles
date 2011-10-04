@@ -4,10 +4,13 @@ ulimit -c 0
 
 _os="$(uname -s)"
 
-shopt -s checkwinsize
-shopt -s histappend
-shopt -s histreedit
-shopt -s checkhash
+shopt -s checkwinsize   # 毎回ウインドウサイズをチェック
+shopt -s histappend     # historyは追記で
+shopt -s histreedit     # historyの再編集可能
+shopt -s checkhash      # ハッシュの存在チェック
+shopt -s dotglob        # .で始まるファイルもパス名展開対象に
+shopt -s extglob        # 拡張正規表現を有効化
+shopt -s cdspell        # cdコマンドの誤り訂正有効化
 
 ##
 # set environment
@@ -16,7 +19,7 @@ export LANG=ja_JP.UTF-8
 export LC_ALL=ja_JP.UTF-8
 export LC_CTYPE=ja_JP.UTF-8
 export HISTSIZE=1000
-export HISTFILESIZE=1000
+export HISTFILESIZE=99999
 export HISTTIMEFORMAT="%Y-%m-%d %H:%M:%S "
 export HISTIGNORE="[ ]*:&:bg:fg:ls -l:ls -al:ls -la:ll:la:ls"
 export HISTCONTROL=ignoreboth
@@ -114,7 +117,7 @@ trap 'time_spent' DEBUG
 IGNORE_COMMANDS=('vi' 'vim' 'gvim' 'man' 'less' 'lv' 'top')
 function notify-execomp {
   local s=$?
-  local command="$(history 1 | awk '{s="";for(i=4;i<=NF;i++){s=s" "$i}print s}')"
+  local command="$(history 1 | awk '{s=$4;for(i=5;i<=NF;i++){s=s" "$i}print s}')"
   local message=""
   dispstatus "${PWD/~}"
   if [[ $s -ne 0 ]]; then
