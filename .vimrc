@@ -763,6 +763,7 @@ xmap <silent> ie <Plug>CamelCaseMotion_ie
 let g:vimshell_user_prompt = 'fnamemodify(getcwd(), ":~")'
 let g:vimshell_right_prompt = 'vimshell#vcs#info("(%s)-[%b]", "(%s)-[%b|%a]")'
 let g:vimshell_enable_smart_case = 1
+let g:vimshell_temporary_directory = expand('~/.vim/.vimshell')
 
 if has('win32') || has('win64')
   " Display user name on Windows.
@@ -949,6 +950,7 @@ let g:pydiction_location = '~/.vim/bundle/pydiction/complete-dict'
 " TwitVim
 "------------------------------------
 let twitvim_count = 40
+let twitvim_token_file = expand('~/.vim/.twitvim.token')
 nnoremap ,tp :<C-u>PosttoTwitter<CR>
 nnoremap ,tf :<C-u>FriendsTwitter<CR><C-w>j
 nnoremap ,tu :<C-u>UserTwitter<CR><C-w>j
@@ -972,7 +974,7 @@ let b:jcommenter_file_copyright = 'Atsushi OHNO'
 "------------------------------------
 " vim-ref
 "------------------------------------
-let g:ref_cache_dir = "~/.vim/.vim_ref_cache"
+let g:ref_cache_dir = expand('~/.vim/.vim_ref_cache')
 let g:ref_use_vimproc = 1
 let g:ref_alc_use_cache = 1
 

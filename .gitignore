@@ -1,3 +1,6 @@
 /.vim/bundle/*
 !/.vim/bundle/vundle
+/.vim/.vim_ref_cache
+/.vim/.vimshell
+/.vim/.twitvim.token
 .DS_Store
