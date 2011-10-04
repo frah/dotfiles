@@ -32,6 +32,7 @@ Bundle 'autodate.vim'
 Bundle 'taku-o/vim-changed'
 Bundle 'jcommenter.vim'
 Bundle 'freiheittokkyu/monday'
+Bundle 'thinca/vim-ref'
 
 filetype plugin indent on
 "-------------------------------------------------------------------------------
@@ -948,11 +949,11 @@ let g:pydiction_location = '~/.vim/bundle/pydiction/complete-dict'
 " TwitVim
 "------------------------------------
 let twitvim_count = 40
-nnoremap <Leader>tp :<C-u>PosttoTwitter<CR>
-nnoremap <Leader>tf :<C-u>FriendsTwitter<CR><C-w>j
-nnoremap <Leader>tu :<C-u>UserTwitter<CR><C-w>j
-nnoremap <Leader>tr :<C-u>RepliesTwitter<CR><C-w>j
-nnoremap <Leader>tn :<C-u>NextTwitter<CR>
+nnoremap ,tp :<C-u>PosttoTwitter<CR>
+nnoremap ,tf :<C-u>FriendsTwitter<CR><C-w>j
+nnoremap ,tu :<C-u>UserTwitter<CR><C-w>j
+nnoremap ,tr :<C-u>RepliesTwitter<CR><C-w>j
+nnoremap ,tn :<C-u>NextTwitter<CR>
 
 autocmd FileType twitvim call s:twitvim_my_settings()
 function! s:twitvim_my_settings()
@@ -964,7 +965,27 @@ endfunction
 "------------------------------------
 autocmd FileType java map <C-c> :call JCommentWriter()<CR>
 
-let b:jcommenter_class_author = "Atsushi OHNO"
-let b:jcommenter_file_author  = "Atsushi OHNO"
-let b:jcommenter_file_copyright = "Atsushi OHNO"
+let b:jcommenter_class_author = 'Atsushi OHNO'
+let b:jcommenter_file_author  = 'Atsushi OHNO'
+let b:jcommenter_file_copyright = 'Atsushi OHNO'
+
+"------------------------------------
+" vim-ref
+"------------------------------------
+let g:ref_cache_dir = "~/.vim/.vim_ref_cache"
+let g:ref_use_vimproc = 1
+let g:ref_alc_use_cache = 1
+
+nnoremap <silent> <Space>D :<C-u>call ref#jump('normal', 'alc')<CR>
+vnoremap <silent> <Space>D :<C-u>call ref#jump('visual', 'alc')<CR>
+autocmd FileType sh,c nnoremap <silent> <Space>d :<C-u>call ref#jump('normal', 'man')<CR>
+autocmd FileType sh,c vnoremap <silent> <Space>d :<C-u>call ref#jump('visual', 'man')<CR>
+autocmd FileType perl nnoremap <silent> <Space>d :<C-U>call ref#jump('normal', 'perldoc')<CR>
+autocmd FileType perl vnoremap <silent> <Space>d :<C-U>call ref#jump('visual', 'perldoc')<CR>
+autocmd FileType ruby nnoremap <silent> <Space>d :<C-U>call ref#jump('normal', 'refe')<CR>
+autocmd FileType ruby vnoremap <silent> <Space>d :<C-U>call ref#jump('visual', 'refe')<CR>
+autocmd FileType python nnoremap <silent> <Space>d :<C-U>call ref#jump('normal', 'pydoc')<CR>
+autocmd FileType python vnoremap <silent> <Space>d :<C-U>call ref#jump('visual', 'pydoc')<CR>
+autocmd FileType php nnoremap <silent> <Space>d :<C-U>call ref#jump('normal', 'phpmanual')<CR>
+autocmd FileType php vnoremap <silent> <Space>d :<C-U>call ref#jump('visual', 'phpmanual')<CR>
 
