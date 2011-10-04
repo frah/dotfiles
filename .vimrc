@@ -933,6 +933,7 @@ endfunction"}}}
 
 autocmd FileType unite nnoremap <silent> <buffer> <ESC><ESC> :<C-q>q<CR>
 
+let g:unite_data_directory = expand('~/.vim/.unite')
 let g:unite_source_file_mru_limit = 200
 
 
