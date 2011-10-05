@@ -30,7 +30,7 @@ freiheit dotfiles
 
     Launch `vim`,  run `:BundleInstall`.
 
-    *Windows users* see [Vundle for Windows], commentout `set shellshash`.
+    *Windows users* see [Vundle for Windows], commentout `set shellslash`.
 
 5. Setup [vimproc]
 
