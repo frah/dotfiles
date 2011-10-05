@@ -1000,9 +1000,9 @@ let g:tex_flavor = 'latex'
 let g:Tex_DefaultTargetFormat = 'pdf'
 
 if has('win32') || has('win64')
-    let g:Tex_BibtexFlavor = ''
-    let g:Tex_ViewRule_pdf = ''
-    let g:Tex_CompileRule_pdf = ''
+    let g:Tex_BibtexFlavor = 'jbibtex'
+    let g:Tex_ViewRule_pdf = 'C:\Program Files (x86)\Adobe\Reader 10.0\Reader\AcroRd32.exe'
+    let g:Tex_CompileRule_pdf = 'pdflatex $*.tex'
 elseif has('mac')
     let g:Tex_BibtexFlavor = 'jbibtex'
     let g:Tex_ViewRule_pdf = 'open -a /Applications/Preview.app'
