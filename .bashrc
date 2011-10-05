@@ -127,7 +127,7 @@ function notify-execomp {
     message="\"$command\" execution completed at $COMTIME sec."
     unset COMTIME
 
-    local com="$(echo $command | awk '{print $1}')"
+    local com=${command%% *}
     for icom in "${IGNORE_COMMANDS[@]}"; do
       if [[ $icom == $com ]]; then
         return
