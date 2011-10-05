@@ -294,10 +294,10 @@ nmap 9 $
 imap  <C-e> <END>
 imap  <C-a> <HOME>
 " インサートモードでもhjklで移動（Ctrl押すけどね）
-imap <C-j> <Down>
-imap <C-k> <Up>
-imap <C-h> <Left>
-imap <C-l> <Right>
+"imap <C-j> <Down>
+"imap <C-k> <Up>
+"imap <C-h> <Left>
+"imap <C-l> <Right>
 
 "<space>j, <space>kで画面送り
 noremap <Space>j <C-f>
@@ -499,6 +499,9 @@ set iminsert=0 imsearch=0
 set noimcmdline
 inoremap <silent> <ESC> <ESC>:set iminsert=0<CR>
 
+" jjでインサートモードから抜ける
+inoremap jj <ESC>
+
 " yeでそのカーソル位置にある単語をレジスタに追加
 nmap ye ;let @"=expand("<cword>")<CR>
 " Visualモードでのpで選択範囲をレジスタの内容に置き換える
@@ -670,13 +673,6 @@ nnoremap <Space>gc :<C-u>Gcommit<Enter>
 nnoremap <Space>gC :<C-u>Git commit --amend<Enter>
 nnoremap <Space>gb :<C-u>Gblame<Enter>
 
-
-"------------------------------------
-" BufExplorer
-"------------------------------------
-"<Leader>l<Space>でBufferList
-nnoremap <Leader>l<Space> :BufExplorer<CR>
-
 "------------------------------------
 " VTreeExplorer
 "------------------------------------
@@ -796,11 +792,7 @@ function! g:my_preexec(cmdline, context)
 endfunction
 
 autocmd FileType vimshell
-\ call vimshell#altercmd#define('g', 'git')
-\| call vimshell#altercmd#define('i', 'iexe')
-\| call vimshell#altercmd#define('l', 'll')
-\| call vimshell#altercmd#define('ll', 'ls -l')
-\| call vimshell#hook#set('chpwd', ['g:my_chpwd'])
+\ call vimshell#hook#set('chpwd', ['g:my_chpwd'])
 \| call vimshell#hook#set('emptycmd', ['g:my_emptycmd'])
 \| call vimshell#hook#set('preprompt', ['g:my_preprompt'])
 \| call vimshell#hook#set('preexec', ['g:my_preexec'])
@@ -831,23 +823,23 @@ let g:neocomplcache_enable_auto_select = 1
 
 " Define dictionary.
 let g:neocomplcache_dictionary_filetype_lists = {
-    \ 'default' : '',
-    \ 'vimshell' : $HOME.'/.vimshell_hist',
-    \ 'scala' : $HOME.'/.vim/bundle/vim-scala/dict/scala.dict',
-    \ 'java' : $HOME.'/.vim/dict/java.dict',
-    \ 'c' : $HOME.'/.vim/dict/c.dict',
-    \ 'cpp' : $HOME.'/.vim/dict/cpp.dict',
-    \ 'javascript' : $HOME.'/.vim/dict/javascript.dict',
-    \ 'ocaml' : $HOME.'/.vim/dict/ocaml.dict',
-    \ 'perl' : $HOME.'/.vim/dict/perl.dict',
-    \ 'php' : $HOME.'/.vim/dict/php.dict',
-    \ 'scheme' : $HOME.'/.vim/dict/scheme.dict',
-    \ 'vm' : $HOME.'/.vim/dict/vim.dict'
-    \ }
+\ 'default' : '',
+\ 'vimshell' : $HOME.'/.vimshell_hist',
+\ 'scala' : $HOME.'/.vim/bundle/vim-scala/dict/scala.dict',
+\ 'java' : $HOME.'/.vim/dict/java.dict',
+\ 'c' : $HOME.'/.vim/dict/c.dict',
+\ 'cpp' : $HOME.'/.vim/dict/cpp.dict',
+\ 'javascript' : $HOME.'/.vim/dict/javascript.dict',
+\ 'ocaml' : $HOME.'/.vim/dict/ocaml.dict',
+\ 'perl' : $HOME.'/.vim/dict/perl.dict',
+\ 'php' : $HOME.'/.vim/dict/php.dict',
+\ 'scheme' : $HOME.'/.vim/dict/scheme.dict',
+\ 'vm' : $HOME.'/.vim/dict/vim.dict'
+\ }
 
 " Define keyword.
 " if !exists('g:neocomplcache_keyword_patterns')
-    " let g:neocomplcache_keyword_patterns = {}
+" let g:neocomplcache_keyword_patterns = {}
 " endif
 " let g:neocomplcache_keyword_patterns['default'] = '\h\w*'
 
@@ -1010,3 +1002,4 @@ else
     let g:Tex_ViewRule_pdf = ''
     let g:Tex_CompileRule_pdf = 'pdflatex $*.tex'
 endif
+
