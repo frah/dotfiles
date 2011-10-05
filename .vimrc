@@ -61,8 +61,6 @@ set mouse=a
 set guioptions+=a
 set ttymouse=xterm2
 
-"ヤンクした文字は、システムのクリップボードに入れる"
-set clipboard=unnamed
 " 挿入モードでCtrl+kを押すとクリップボードの内容を貼り付けられるようにする "
 imap <C-p>  <ESC>"*pa
 
