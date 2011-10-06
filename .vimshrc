@@ -1,0 +1,5 @@
+alias g='git'
+alias i='iexe'
+alias l='ll'
+alias ll='ls -l'
+
