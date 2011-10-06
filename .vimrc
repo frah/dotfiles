@@ -1010,3 +1010,13 @@ else
     let g:Tex_ViewRule_pdf = ''
     let g:Tex_CompileRule_pdf = 'pdflatex $*.tex'
 endif
+
+"------------------------------------
+" taglist.vim
+"------------------------------------
+let Tlist_Auto_Highlight_Tag = 1
+let Tlist_Auto_Update = 1
+if has('mac')
+    let Tlist_Ctags_Cmd = '/usr/local/bin/ctags'
+endif
+
