@@ -820,6 +820,8 @@ let g:neocomplcache_lock_buffer_name_pattern = '\*ku\*'
 "let g:neocomplcache_enable_quick_match = 1
 " 補完候補の一番先頭を選択状態にする(AutoComplPopと似た動作)
 let g:neocomplcache_enable_auto_select = 1
+" キャッシュディレクトリを指定
+let g:neocomplcache_temporary_dir = expand('~/.vim/.neocon')
 
 " Define dictionary.
 let g:neocomplcache_dictionary_filetype_lists = {
