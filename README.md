@@ -2,61 +2,47 @@
 freiheit dotfiles
 
 ## Install
-1. Download
-
-    ```
-    $ git clone http://github.com/freiheittokkyu/dotfiles.git
-    ```
-
-2. Setup [Vundle]
-
-    ```
-    $ git submodule init
-    $ git submodule update
-    ```
-
-3. Make link
-    - Unix/Mac OS
+- Unix/Mac OS
+    1. Download
 
         ```
-        $ bash setup_dotfiles.sh
+        $ git clone http://github.com/freiheittokkyu/dotfiles.git
         ```
 
-    - Windows
+    2. Setup
+
+        ```
+        $ bash setup.sh
+        ```
+
+- Windows
+    1. Download
+
+        ```
+        $ git clone http://github.com/freiheittokkyu/dotfiles.git
+        ```
+
+    2. Setup [Vundle]
+
+        ```
+        $ git submodule init
+        $ git submodule update
+        ```
+
+    3. Make link
 
         Run `setup_vimrc.bat`.
 
-4. Install bundle
+    4. Install bundle
 
-    Launch `vim`,  run `:BundleInstall`.
+        Launch `vim`,  run `:BundleInstall`.
 
-    *Windows users* see [Vundle for Windows], commentout `set shellslash`.
+        *Windows users* see [Vundle for Windows], commentout `set shellslash`.
 
-5. Setup [vimproc]
-
-    ```
-    $ cd .vim/bundle/vimproc
-    ```
-    - Unix
+    5. Setup [vimproc]
 
         ```
-        $ make -f make_gcc.mak
-        ```
-    - FreeBSD
-        1. Replace `PF_INET` with `AF_INET` in `autoload/proc.c`.
-        2. Compile
-
-            ```
-            $ make -f make_gcc.mak
-            ```
-    - Mac OS
-
-        ```
-        $ make -f make_mac.mak
-        ```
-    - Windows (VisualStudio)
-
-        ```
+        $ cd .vim/bundle/vimproc
         $ make -f make_msvc.mak
         ```
 
