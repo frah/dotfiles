@@ -822,17 +822,19 @@ let g:neocomplcache_lock_buffer_name_pattern = '\*ku\*'
 let g:neocomplcache_enable_auto_select = 1
 " キャッシュディレクトリを指定
 let g:neocomplcache_temporary_dir = expand('~/.vim/.neocon')
+" ctags
+if has('mac')
+    let g:neocomplcache_ctags_program = '/usr/local/bin/ctags'
+endif
 
 " Define dictionary.
 let g:neocomplcache_dictionary_filetype_lists = {
 \ 'default' : '',
 \ 'vimshell' : $HOME.'/.vimshell_hist',
-\ 'scala' : $HOME.'/.vim/bundle/vim-scala/dict/scala.dict',
 \ 'java' : $HOME.'/.vim/dict/java.dict',
 \ 'c' : $HOME.'/.vim/dict/c.dict',
 \ 'cpp' : $HOME.'/.vim/dict/cpp.dict',
 \ 'javascript' : $HOME.'/.vim/dict/javascript.dict',
-\ 'ocaml' : $HOME.'/.vim/dict/ocaml.dict',
 \ 'perl' : $HOME.'/.vim/dict/perl.dict',
 \ 'php' : $HOME.'/.vim/dict/php.dict',
 \ 'scheme' : $HOME.'/.vim/dict/scheme.dict',
