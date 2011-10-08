@@ -494,11 +494,11 @@ hi PmenuSbar ctermbg=0 ctermfg=9
 "-------------------------------------------------------------------------------
 
 " 新規作成時にtemplateを適用
-autocmd BufNewFile *.c    0r ~/.vim/templates/skel.c
-autocmd BufNewFile *.html 0r ~/.vim/templates/skel.html
+autocmd BufNewFile *.c    0r ~/.vim/templates/skel.c|1;/{
+autocmd BufNewFile *.html 0r ~/.vim/templates/skel.html|1;/<title>/;normal $hhhhhhh
 autocmd BufNewFile *.php  0r ~/.vim/templates/skel.php
-autocmd BufNewFile *.py   0r ~/.vim/templates/skel.py
-autocmd BufNewFile *.sh   0r ~/.vim/templates/skel.sh
+autocmd BufNewFile *.py   0r ~/.vim/templates/skel.py|1;?:
+autocmd BufNewFile *.sh   0r ~/.vim/templates/skel.sh|normal G
 
 " insertモードを抜けるとIMEオフ
 set noimdisable
