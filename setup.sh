@@ -14,7 +14,7 @@ done
 # Setup vim
 git submodule init
 git submodule update
-vim +BundleInstall
+echo -e "Installing bundles...\nAfter BundleInstall is complete, exit vim. (:qa!)" | vim +BundleInstall -
 
 HOOKSCRIPT_PATH='.vim/bundle/vimproc/.git/hooks/post-merge'
 cp .vim/vimproc_post-merge.sh $HOOKSCRIPT_PATH
