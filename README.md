@@ -19,14 +19,14 @@ freiheit dotfiles
     1. Download
 
         ```
-        $ git clone http://github.com/freiheittokkyu/dotfiles.git
+        > git clone http://github.com/freiheittokkyu/dotfiles.git
         ```
 
     2. Setup [Vundle]
 
         ```
-        $ git submodule init
-        $ git submodule update
+        > git submodule init
+        > git submodule update
         ```
 
     3. Make link
@@ -42,8 +42,8 @@ freiheit dotfiles
     5. Setup [vimproc]
 
         ```
-        $ cd .vim/bundle/vimproc
-        $ make -f make_msvc.mak
+        > cd .vim/bundle/vimproc
+        > make -f make_msvc.mak
         ```
 
 ## Update
