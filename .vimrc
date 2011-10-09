@@ -16,13 +16,15 @@ Bundle 'grep.vim'
 Bundle 'Shougo/neocomplcache'
 Bundle 'scrooloose/nerdcommenter'
 Bundle 'Shougo/unite.vim'
+Bundle 'tsukkee/unite-help'
+Bundle 'h1mesuke/unite-outline'
+Bundle 'ujihisa/unite-locate'
 Bundle 'kana/vim-smartchr'
 Bundle 'Shougo/vimproc'
 Bundle 'Shougo/vimshell'
 Bundle 'Smooth-Scroll'
 Bundle 'yuroyoro/vim-python'
 Bundle 'yuroyoro/vimdoc_ja'
-Bundle 'tsukkee/unite-help'
 Bundle 'thinca/vim-quickrun'
 Bundle 'tokorom/ios-vim-snippets'
 Bundle 'taglist.vim'
@@ -276,6 +278,11 @@ nnoremap <C-g><C-b> :<C-u>GrepBuffer<Space><C-r><C-w><Enter>
 "-------------------------------------------------------------------------------
 " 移動設定 Move
 "-------------------------------------------------------------------------------
+
+" カーソルキーを使用可能に
+set notimeout
+set ttimeout
+set timeoutlen=100
 
 " カーソルを表示行で移動する。論理行移動は<C-n>,<C-p>
 nnoremap h <Left>
