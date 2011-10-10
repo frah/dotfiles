@@ -33,6 +33,7 @@ Bundle 'taku-o/vim-changed'
 Bundle 'jcommenter.vim'
 Bundle 'freiheittokkyu/monday'
 Bundle 'thinca/vim-ref'
+Bundle 'tyru/open-browser.vim'
 Bundle 'git://vim-latex.git.sourceforge.net/gitroot/vim-latex/vim-latex'
 
 filetype plugin indent on
@@ -712,7 +713,7 @@ let dumbbuf_wrap_cursor = 0
 let dumbbuf_remove_marked_when_close = 1
 
 "------------------------------------
-" open-blowser.vim
+" open-browser.vim
 "------------------------------------
 
 " カーソル下のURLをブラウザで開く
