@@ -171,7 +171,7 @@ public_ip() {
 #-----------
 # def color
 LIGHT_YELLOW="\[\033[1;33m\]"
-LIGHT_RED="\[\033[1;31m\]"
+LIGHT_RED="\[\033[40;1;31m\]"
 LIGHT_GREEN="\[\033[40;1;32m\]"
 LIGHT_BLUE="\[\033[1;36m\]"
 DARK_RED="\[\033[2;31m\]"
