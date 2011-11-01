@@ -14,6 +14,51 @@ shopt -s cdspell        # cdコマンドの誤り訂正有効化
 shopt -s no_empty_cmd_completion # 何も入力していないときはコマンド名補完をOFF
 
 ##
+# 設定用の関数
+#
+# set_alias(alias_name, values): コマンドの存在をチェックした上でaliasを追加
+function set_alias {
+    local IFS="$IFS"
+    local name="$1"
+    local source="$2"
+    local command=""
+
+    IFS=" "
+    set -- ${source}
+    if test "$1" = "env"; then
+        command="$3"
+    else
+        command="$1"
+    fi
+
+    if test -x "${command}"; then
+        alias ${name}="${source}"
+        return 0
+    else
+        echo "\"${command}\" is not found or executable." >&2
+        return 1
+    fi
+}
+
+# set_env(env_name, values): ファイルの存在をチェックした上で環境変数を更新
+function set_env {
+    local IFS="$IFS"
+    local name="$1"
+    local source="$2"
+
+    IFS=":"
+    set -- ${source}
+
+    if test -e "$1"; then
+        export ${name}="${source}"
+        return 0
+    else
+        echo "\"$1\" is not found." >&2
+        return 1
+    fi
+}
+
+##
 # set environment
 #
 export LANG=ja_JP.UTF-8
@@ -29,23 +74,25 @@ export HISTCONTROL=ignoreboth
 case "$_os" in
 Darwin)     # Mac OS X
     # set pager
-    if test -x /usr/local/bin/lv; then
-        export PAGER=/usr/local/bin/lv
+    if set_env PAGER /usr/local/bin/lv; then
         export LV='-Ou8'
     else
         export PAGER=/usr/bin/less
     fi
 
-    export EDITOR=/Applications/MacVim.app/Contents/MacOS/Vim
-    export PATH=/Applications/TeX/pTeX.app/teTeX/bin:$PATH
+    set_env EDITOR /Applications/MacVim.app/Contents/MacOS/Vim
+    set_env PATH /Applications/TeX/pTeX.app/teTeX/bin:$PATH
     ;;
 FreeBSD)    # FreeBSD
     if [ -f /usr/local/etc/bash_completion ]; then
       . /usr/local/etc/bash_completion
     fi
-    export PAGER=/usr/local/bin/lv
-    export LV='-Ou8'
-    export EDITOR=/usr/local/bin/vim
+
+    if set_env PAGER /usr/local/bin/lv; then
+        export LV='-Ou8'
+    fi
+
+    set_env EDITOR /usr/local/bin/vim
     ;;
 esac
 
@@ -70,16 +117,21 @@ Darwin)     # Mac OS X
     alias stop_cups='sudo launchctl unload /System/Library/LaunchDaemons/org.cups.cupsd.plist'
 
     # vim aliases
-    alias vi='env LANG=ja_JP.UTF-8 /Applications/MacVim.app/Contents/MacOS/Vim "$@"'
-    alias vim='env LANG=ja_JP.UTF-8 /Applications/MacVim.app/Contents/MacOS/Vim "$@"'
-    alias gvim='open -a /Applications/MacVim.app "$@"'
+    if [ -e /Applications/MacVim.app ]; then
+        alias vi='env LANG=ja_JP.UTF-8 /Applications/MacVim.app/Contents/MacOS/Vim "$@"'
+        alias vim='env LANG=ja_JP.UTF-8 /Applications/MacVim.app/Contents/MacOS/Vim "$@"'
+        alias gvim='open -a /Applications/MacVim.app "$@"'
+    fi
 
     alias qlf='qlmanage -p "$@" >& /dev/null'
     ;;
 FreeBSD)    # FreeBSD
-    alias ls='/usr/local/bin/gnuls --color=auto -h'
-    alias vi='/usr/local/bin/vim'
-    alias man='env LC_ALL=ja_JP.eucJP jman'
+    if ! set_alias ls '/usr/local/bin/gnuls --color=auto -h'; then
+        alias ls='ls -Gh'
+    fi
+
+    set_alias vi '/usr/local/bin/vim'
+    set_alias man 'env LC_ALL=ja_JP.eucJP jman'
     alias portupgrade="sudo portmaster -CKdway -x apr"
     ;;
 esac
