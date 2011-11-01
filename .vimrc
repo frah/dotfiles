@@ -12,6 +12,7 @@ Bundle 'SQLUtilities'
 Bundle 'TwitVim'
 Bundle 'othree/eregex.vim'
 Bundle 'tpope/vim-fugitive'
+Bundle 'tpope/vim-surround'
 Bundle 'grep.vim'
 Bundle 'Shougo/neocomplcache'
 Bundle 'scrooloose/nerdcommenter'
@@ -34,6 +35,7 @@ Bundle 'jcommenter.vim'
 Bundle 'freiheittokkyu/monday'
 Bundle 'thinca/vim-ref'
 Bundle 'tyru/open-browser.vim'
+Bundle 'Arduino-syntax-file'
 Bundle 'git://vim-latex.git.sourceforge.net/gitroot/vim-latex/vim-latex'
 
 filetype plugin indent on
@@ -526,7 +528,7 @@ vnoremap p <Esc>;let current_reg = @"<CR>gvdi<C-R>=current_reg<CR><Esc>
 set expandtab
 
 " コンマの後に自動的にスペースを挿入
-inoremap , ,<Space>
+"inoremap , ,<Space>
 " XMLの閉タグを自動挿入
 augroup MyXML
   autocmd!
@@ -632,12 +634,6 @@ let NERDShutUp=1
 let Grep_Skip_Dirs = '.svn .git .hg'
 let Grep_Skip_Files = '*.bak *~'
 -
-"------------------------------------
-" surround.vim
-"------------------------------------
-" s, ssで選択範囲を指定文字でくくる
-" nmap s <Plug>Ysurround
-" nmap ss <Plug>Yssurround
 
 " "------------------------------------
 " " smartchr.vim
@@ -1031,3 +1027,7 @@ if has('mac')
     let Tlist_Ctags_Cmd = '/usr/local/bin/ctags'
 endif
 
+"------------------------------------
+" Arduino-syntax-file
+"------------------------------------
+autocmd! BufNewFile,BufRead *.pde setlocal ft=arduino
