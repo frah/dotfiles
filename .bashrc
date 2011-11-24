@@ -165,6 +165,12 @@ function time_spent {
 }
 trap 'time_spent' DEBUG
 
+# コマンドが終了したときに知らせる
+function notify {
+  NOTIFY_COMMAND=$1
+  $*
+}
+
 # 3秒以上処理に時間がかかったときは通知
 # コマンドが正常終了しなかったときはエラーコードを出力
 IGNORE_COMMANDS=('vi' 'vim' 'gvim' 'man' 'less' 'lv' 'top' 'exit' 'logout' 'ssh')
@@ -172,14 +178,24 @@ function notify-execomp {
   local s=$?
   local command="$(history 1 | awk '{s=$4;for(i=5;i<=NF;i++){s=s" "$i}print s}')"
   local message=""
-  dispstatus "${PWD/${HOME}/~}"
-  if [[ $s -ne 0 ]]; then
-    message="\"$command\" is exit on error code $s."
-  elif [[ 3 -lt $COMTIME ]]; then
-    message="\"$command\" execution completed at $COMTIME sec."
-    unset COMTIME
+  local ctime=$COMTIME
 
-    local com=${command%% *}
+  dispstatus "${PWD/${HOME}/~}"
+  unset COMTIME
+
+  if [[ $s -ne 0 && $s -ne 1 ]]; then
+    message="\"$command\" is exit on error code $s."
+  else
+    message="\"${command#* }\" execution completed at $ctime sec."
+
+    local com=${command#* }
+    com=${com%% *}
+
+    if [[ $com != $NOTIFY_COMMAND ]]; then
+      return
+    else
+      unset NOTIFY_COMMAND
+    fi
     for icom in "${IGNORE_COMMANDS[@]}"; do
       if [[ $icom == $com ]]; then
         return
@@ -188,14 +204,11 @@ function notify-execomp {
   fi
 
   if [[ $message != "" ]]; then
-    case "$_os" in
-    Darwin)
+    if [[ -x /usr/local/bin/growlnotify ]]; then
       growlnotify -n notify-execomp -t bash -m "$message"
-      ;;
-    *)
+    else
       echo "$message"
-      ;;
-    esac
+    fi
   fi
 }
 PROMPT_COMMAND='notify-execomp'
