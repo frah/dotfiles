@@ -35,6 +35,7 @@ Bundle 'jcommenter.vim'
 Bundle 'freiheittokkyu/monday'
 Bundle 'thinca/vim-ref'
 Bundle 'tyru/open-browser.vim'
+Bundle 'sudo.vim'
 Bundle 'Arduino-syntax-file'
 Bundle 'git://vim-latex.git.sourceforge.net/gitroot/vim-latex/vim-latex'
 
@@ -561,9 +562,9 @@ nmap y0 y^
 "vnoremap ' "zdi'<C-R>z'<ESC>
 
 " 保存時に行末の空白を除去する
-autocmd BufWritePre * :%s/\s\+$//ge
+"autocmd BufWritePre * :%s/\s\+$//ge
 " 保存時にtabをスペースに変換する
-autocmd BufWritePre * :%s/\t/  /ge
+"autocmd BufWritePre * :%s/\t/  /ge
 
 " 日時の自動入力
 inoremap <expr> ,df strftime('%Y/%m/%d %H:%M:%S')
