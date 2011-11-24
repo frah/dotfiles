@@ -69,6 +69,7 @@ export HISTFILESIZE=99999
 export HISTTIMEFORMAT="%Y-%m-%d %H:%M:%S "
 export HISTIGNORE="[ ]*:&:bg:fg:ls -l:ls -al:ls -la:ll:la:ls"
 export HISTCONTROL=ignoreboth
+export VIMHOME=$HOME/.vim
 
 # OS-specific environments
 case "$_os" in
@@ -131,7 +132,7 @@ FreeBSD)    # FreeBSD
     fi
 
     set_alias vi '/usr/local/bin/vim'
-    set_alias man 'env LC_ALL=ja_JP.eucJP jman'
+    set_alias man 'env LC_ALL=ja_JP.eucJP /usr/local/bin/jman'
     alias portupgrade="sudo portmaster -CKdway -x apr"
     ;;
 esac
