@@ -527,6 +527,7 @@ vnoremap p <Esc>;let current_reg = @"<CR>gvdi<C-R>=current_reg<CR><Esc>
 
 " Tabキーを空白に変換
 set expandtab
+autocmd FileType make set noexpandtab
 
 " コンマの後に自動的にスペースを挿入
 "inoremap , ,<Space>
@@ -561,10 +562,26 @@ nmap y0 y^
 "vnoremap " "zdi^V"<C-R>z^V"<ESC>
 "vnoremap ' "zdi'<C-R>z'<ESC>
 
+function! s:StripEndLineWhitespace()
+    " Don't strip on these filetypes
+    if &filetype =~ 'ruby\|javascript\|perl\|python'
+        return
+    endif
+    %s/\s\+$//ge
+endfunction
+
+function! s:ExpandTab()
+    " Don't expand ta on these filetypes
+    if &filetype =~ 'make'
+        return
+    endif
+    %s/\t/  /ge
+endfunction
+
 " 保存時に行末の空白を除去する
-"autocmd BufWritePre * :%s/\s\+$//ge
+autocmd BufWritePre * call s:StripEndLineWhitespace()
 " 保存時にtabをスペースに変換する
-"autocmd BufWritePre * :%s/\t/  /ge
+autocmd BufWritePre * call s:ExpandTab()
 
 " 日時の自動入力
 inoremap <expr> ,df strftime('%Y/%m/%d %H:%M:%S')
