@@ -70,6 +70,7 @@ export HISTTIMEFORMAT="%Y-%m-%d %H:%M:%S "
 export HISTIGNORE="[ ]*:&:bg:fg:ls -l:ls -al:ls -la:ll:la:ls"
 export HISTCONTROL=ignoreboth
 export VIMHOME=$HOME/.vim
+export TEXMFHOME=$HOME/texmf
 
 # OS-specific environments
 case "$_os" in
