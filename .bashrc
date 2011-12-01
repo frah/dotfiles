@@ -214,6 +214,10 @@ function notify-execomp {
 }
 PROMPT_COMMAND='notify-execomp'
 
+function md2html {
+    kramdown -i markdown ${1} > ${1%.*}.html
+}
+
 #
 # Performs an egrep on the process list. Use any arguments that egrep accetps.
 #
