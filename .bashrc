@@ -72,6 +72,15 @@ export HISTCONTROL=ignoreboth
 export VIMHOME=$HOME/.vim
 export TEXMFHOME=$HOME/texmf
 
+# git settings
+if [ -f ~/dotfiles/git-completion.bash ]; then
+    . ~/dotfiles/git-completion.bash
+fi
+export GIT_PS1_SHOWUNTRACKEDFILES="yes"
+export GIT_PS1_SHOWSTASHSTATE="yes"
+export GIT_PS1_SHOWDIRTYSTATE="yes"
+export GIT_PS1_SHOWUPSTREAM="auto"
+
 # OS-specific environments
 case "$_os" in
 Darwin)     # Mac OS X
@@ -258,5 +267,5 @@ else
     dcolor=$DARK_GREEN
 fi
 DATE='\[\e[$[COLUMNS-$(echo -n " (\d \t)" | wc -c)]C\e[40;2;37m[\d \t]\e[0m\e[$[COLUMNS]D\]'
-export PS1="$DATE$LIGHT_YELLOW[\!]"$pcolor"[\u"$dcolor"@"$RST_COLOR$pcolor"\h] $LIGHT_BLUE\w\n$RST_COLOR$pcolor\\\$$RST_COLOR "
+export PS1="$DATE$LIGHT_YELLOW[\!]"$pcolor"[\u"$dcolor"@"$RST_COLOR$pcolor"\h] $LIGHT_BLUE\w$LIGHT_YELLOW$(__git_ps1)\n$RST_COLOR$pcolor\\\$$RST_COLOR "
 
