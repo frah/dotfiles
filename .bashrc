@@ -86,7 +86,7 @@ case "$_os" in
 Darwin)     # Mac OS X
     # set pager
     if set_env PAGER /usr/local/bin/lv; then
-        export LV='-Ou8'
+        export LV='-Ou8 -c'
     else
         export PAGER=/usr/bin/less
     fi
@@ -100,7 +100,7 @@ FreeBSD)    # FreeBSD
     fi
 
     if set_env PAGER /usr/local/bin/lv; then
-        export LV='-Ou8'
+        export LV='-Ou8 -c'
     fi
 
     set_env EDITOR /usr/local/bin/vim
@@ -233,7 +233,7 @@ function md2html {
 #
 # @param [Array] egrep arguments
 case "$_os" in
-  Darwin|OpenBSD) psg() { ps wwwaux | egrep "($@|\bPID\b)" | egrep -v "grep"; } ;;
+  Darwin|*BSD) psg() { ps wwwaux | egrep "($@|\bPID\b)" | egrep -v "grep"; } ;;
   SunOS|Linux)    psg() { ps -ef | egrep "($@|\bPID\b)" | egrep -v "grep"; } ;;
   CYGWIN_*)       psg() { ps -efW | egrep "($@|\bPID\b)" | egrep -v "grep"; } ;;
 esac
