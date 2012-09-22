@@ -32,7 +32,7 @@ Bundle 'taglist.vim'
 Bundle 'autodate.vim'
 Bundle 'taku-o/vim-changed'
 Bundle 'jcommenter.vim'
-Bundle 'freiheittokkyu/monday'
+Bundle 'frah/monday'
 Bundle 'thinca/vim-ref'
 Bundle 'tyru/open-browser.vim'
 Bundle 'sudo.vim'
@@ -797,11 +797,11 @@ else
   " Display user name on Linux.
   let g:vimshell_prompt = $USER."% "
 
-  call vimshell#set_execute_file('bmp,jpg,png,gif', 'gexe eog')
-  call vimshell#set_execute_file('mp3,m4a,ogg', 'gexe amarok')
-  let g:vimshell_execute_file_list['zip'] = 'zipinfo'
-  call vimshell#set_execute_file('tgz,gz', 'gzcat')
-  call vimshell#set_execute_file('tbz,bz2', 'bzcat')
+"  call vimshell#set_execute_file('bmp,jpg,png,gif', 'gexe eog')
+"  call vimshell#set_execute_file('mp3,m4a,ogg', 'gexe amarok')
+"  let g:vimshell_execute_file_list['zip'] = 'zipinfo'
+"  call vimshell#set_execute_file('tgz,gz', 'gzcat')
+"  call vimshell#set_execute_file('tbz,bz2', 'bzcat')
 endif
 
 function! g:my_chpwd(args, context)

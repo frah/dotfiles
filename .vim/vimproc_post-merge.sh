@@ -13,20 +13,19 @@ cd $PROC_DIR
 case `uname -s` in
     Darwin)
         MAKE_FILE='make_mac.mak'
-        PROC_FILE='proc.so'
+        PROC_FILE='vimproc_mac.so'
         ;;
     Linux)
-        MAKE_FILE='make_gcc.mak'
-        PROC_FILE='proc.so'
+        MAKE_FILE='make_unix.mak'
+        PROC_FILE='vimproc_unix.so'
         ;;
     FreeBSD)
-        MAKE_FILE='make_gcc.mak'
-        PROC_FILE='proc.so'
-        sed -e 's/PF_INET/AF_INET/g' autoload/proc.c > autoload/proc.c
+        MAKE_FILE='make_unix.mak'
+        PROC_FILE='vimproc_unix.so'
         ;;
     CYGWIN*)
         MAKE_FILE='make_cygwin.mak'
-        PROC_FILE='proc_cygwin.dll'
+        PROC_FILE='vimproc_cygwin.dll'
         ;;
     *)
         echo "This type of OS is not supported"
