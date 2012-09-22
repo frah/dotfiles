@@ -238,11 +238,29 @@ case "$_os" in
   CYGWIN_*)       psg() { ps -efW | egrep "($@|\bPID\b)" | egrep -v "grep"; } ;;
 esac
 
+#
+# Performs an egrep on the process list, and kill them.
+#
+# @param [Array] egrep arguments
+function psk() {
+  local pss=$(psg $@)
+  if [ $(echo -e "${pss}"|wc -l) -le 1 ]; then
+    echo No such process
+    return
+  fi
+  echo -e "${pss}"
+  echo -ne "Kill these processes now. Okey? (y/N): "
+  read confirm
+  if [[ "$confirm" =~ ^[yY]([eE][sS])?$ ]]; then
+      echo -e "${pss}" | awk 'NR>=2{print $2}' | xargs kill -9
+  fi
+}
+
 ##
 # Returns the public/internet visible IP address of the system.
 #
 public_ip() {
-  curl 'http://vps.tokcs.com/cgi-bin/ip'
+  curl 'http://tokcs.com/cgi-bin/ip'
   echo -ne "\n"
 }
 
