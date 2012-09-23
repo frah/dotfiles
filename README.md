@@ -2,49 +2,51 @@
 freiheit dotfiles
 
 ## Install
-- Unix/Mac OS
-    1. Download
+### Unix/Mac OS
 
-        ```
-        $ git clone http://github.com/freiheittokkyu/dotfiles.git
-        ```
+1. Download
 
-    2. Setup
+    ```
+    $ git clone http://github.com/frah/dotfiles.git
+    ```
 
-        ```
-        $ bash setup.sh
-        ```
+2. Setup
 
-- Windows
-    1. Download
+    ```
+    $ bash setup.sh
+    ```
 
-        ```
-        > git clone http://github.com/freiheittokkyu/dotfiles.git
-        ```
+### Windows
 
-    2. Setup [Vundle]
+1. Download
 
-        ```
-        > git submodule init
-        > git submodule update
-        ```
+    ```
+    > git clone http://github.com/frah/dotfiles.git
+    ```
 
-    3. Make link
+2. Setup [Vundle]
 
-        Run `setup_vimrc.bat`.
+    ```
+    > git submodule init
+    > git submodule update
+    ```
 
-    4. Install bundle
+3. Make link
 
-        Launch `vim`,  run `:BundleInstall`.
+    Run `setup_vimrc.bat`.
 
-        *Windows users* see [Vundle for Windows], commentout `set shellslash`.
+4. Install bundle
 
-    5. Setup [vimproc]
+    Launch `vim`,  run `:BundleInstall`.
 
-        ```
-        > cd .vim/bundle/vimproc
-        > make -f make_msvc.mak
-        ```
+    *Windows users* see [Vundle for Windows], commentout `set shellslash`.
+
+5. Setup [vimproc]
+
+    ```
+    > cd .vim/bundle/vimproc
+    > make -f make_msvc.mak
+    ```
 
 ## Update
 1. Update git repository
