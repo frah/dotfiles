@@ -67,14 +67,24 @@ if is-at-least 4.3.10; then
   zstyle ':vcs_info:*' check-for-changes true
   zstyle ':vcs_info:*' stagedstr '+'
   zstyle ':vcs_info:*' unstagedstr '?'
-  zstyle ':vcs_info:*' formats '[%u%c%b] (%s)'
-  zstyle ':vcs_info:*' actionformts '[%u%c%b|%a] (%s)'
+  zstyle ':vcs_info:*' formats '[%u%c%b](%s)'
+  zstyle ':vcs_info:*' actionformts '[%u%c%b|%a](%s)'
 fi
 
 function _update_vcs_info() {
   psvar=()
   LANG=en_US.UTF-8 vcs_info
-  [[ -n "$vcs_info_msg_0_" ]] && psvar[1]="$vcs_info_msg_0_"
+  if [[ -n "$vcs_info_msg_0_" ]]; then
+    if [[ $vcs_info_msg_0_ =~ "^\[\?" ]]; then
+      psvar[2]=red
+    elif [[ $vcs_info_msg_0_ =~ "^\[\+" ]]; then
+      psvar[2]=yellow
+    else
+      psvar[2]=green
+    fi
+    psvar[1]="$vcs_info_msg_0_"
+    #echo "$color$msg$reset_color"
+  fi
 }
 add-zsh-hook precmd _update_vcs_info
 if [[ $(whoami) != "root" ]]; then
@@ -82,9 +92,12 @@ if [[ $(whoami) != "root" ]]; then
 else
   local pcolor=red
 fi
-PROMPT="%{%F{yellow}%}[%h]%{%F{$pcolor}%}[%n@%m] %{%F{cyan}%}%~%{%f%} %1(v|%F{magenta}%1v %f|)
-%{%F{$pcolor}%}%(!.#.$)%{%f%} "
-RPROMPT="%{%f%}[%D{%m/%d(%a) %H:%M}]"
+local terminfo_down_sc=$terminfo[cud1]$terminfo[cud1]$terminfo[cuu1]$terminfo[cuu1]$terminfo[sc]$terminfo[cud1]$terminfo[cud1]
+PROMPT_F="%{%B$bg[white]%F{black}%}[%D{%m/%d(%a) %H:%M}] %2(v|$fg_bold[%2v]%1v|)"
+PROMPT="%{%B$terminfo_down_sc$PROMPT_F$terminfo[rc]%}%{%F{yellow}%}[%h]%{%F{$pcolor}%}[%n@%m] %{%F{cyan}%}%~%{$terminfo[cud1]%}%{%F{$pcolor}%}%(!.#.$)%{%f%b%} "
+#RPROMPT="%{%f%}[%D{%m/%d(%a) %H:%M}]"
+function _footer_clear_preexec () { print -rn -- $terminfo[el]; }
+add-zsh-hook preexec _footer_clear_preexec
 
 ## directory
 setopt auto_cd      # ディレクトリ名を入力するだけで移動
