@@ -6,7 +6,6 @@
 export LANG=ja_JP.UTF-8
 export LC_ALL=ja_JP.UTF-8
 export LC_TIME=en_US.UTF-8
-export LC_CTYPE=ja_JP.UTF-8
 
 ## history
 export HISTFILE="$HOME/.zsh_history"
@@ -16,7 +15,7 @@ setopt hist_ignore_all_dups # 重複があれば古いものを削除
 setopt hist_ignore_space    # スペースで始まるコマンド行は削除
 setopt hist_no_functions    # 関数定義コマンドを削除
 setopt hist_no_store        # historyコマンドを削除
-setopt hist_expand          # 保管時にヒストリを自動展開
+setopt hist_expand          # 補完時にヒストリを自動展開
 setopt share_history        # 履歴を複数端末で共有
 setopt no_hist_beep         # 履歴表示時ビープ音を消音
 bindkey "^P" up-line-or-history
@@ -31,7 +30,7 @@ zstyle ':completion:*' list-colors 'di=34' 'ln=35' 'so=32' 'ex=31' 'bd=46;34' 'c
 # グループ化
 zstyle ':completion:*' format '%B%d%b'
 zstyle ':completion:*' group-name ''
-# メニューから洗濯
+# メニューから選択
 zstyle ':completion:*:default' menu select=2
 # スマートケースで補完
 zstyle ':completion:*' matcher-list '' 'm:{a-z}={A-Z}' '+m:{A-Z}={a-z}'
@@ -68,8 +67,8 @@ if is-at-least 4.3.10; then
   zstyle ':vcs_info:*' check-for-changes true
   zstyle ':vcs_info:*' stagedstr '+'
   zstyle ':vcs_info:*' unstagedstr '?'
-  zstyle ':vcs_info:*' formats '%u%c%b (%s)'
-  zstyle ':vcs_info:*' actionformts '%u%c%b (%s) !%a'
+  zstyle ':vcs_info:*' formats '[%u%c%b] (%s)'
+  zstyle ':vcs_info:*' actionformts '[%u%c%b|%a] (%s)'
 fi
 
 function _update_vcs_info() {
@@ -78,9 +77,14 @@ function _update_vcs_info() {
   [[ -n "$vcs_info_msg_0_" ]] && psvar[1]="$vcs_info_msg_0_"
 }
 add-zsh-hook precmd _update_vcs_info
-PROMPT="%{%F{yellow}%}[%h]%{%F{green}%}[%n@%m] %{%F{cyan}%}%~%{%f%}
-%{%f%}[%D{%m/%d(%a) %H:%M}] %{%F{green}%}%(!.#.$)%{%f%} "
-RPROMPT="%1(v|%F{green}%1v%f|)"
+if [[ $(whoami) != "root" ]]; then
+  local pcolor=green
+else
+  local pcolor=red
+fi
+PROMPT="%{%F{yellow}%}[%h]%{%F{$pcolor}%}[%n@%m] %{%F{cyan}%}%~%{%f%} %1(v|%F{magenta}%1v %f|)
+%{%F{$pcolor}%}%(!.#.$)%{%f%} "
+RPROMPT="%{%f%}[%D{%m/%d(%a) %H:%M}]"
 
 ## directory
 setopt auto_cd      # ディレクトリ名を入力するだけで移動
@@ -112,18 +116,120 @@ export TEXMFHOME=$HOME/texmf
 #######################
 # aliases
 #
-alias ll='ls -lh'
-alias mv='mv -i'
-alias cp='cp -i'
-alias rm='rm -i'
-alias grep='grep --color=auto'
-alias info='info --vi-keys'
-alias lv="$PAGER"
-alias vim='vi'
-alias -g L="|& $PAGER"
-alias -g G='| grep'
-alias -g H='| head'
-alias -g T='| tail'
+if [ -f ~/.sh_aliases ]; then
+  source ~/.sh_aliases
+fi
+
+#######################
+# functions
+#
+if [ -f ~/.sh_functions ]; then
+  source ~/.sh_functions
+fi
+
+#
+# Set vi mode status bar
+# http://www.zsh.org/mla/users/2002/msg00108.html
+#
+
+#
+# Reads until the given character has been entered.
+#
+readuntil () {
+  typeset a
+  while [ "$a" != "$1" ]
+  do
+    read -E -k 1 a
+  done
+}
+
+#
+# If the $SHOWMODE variable is set, displays the vi mode, specified by
+# the $VIMODE variable, under the current command line.
+# 
+# Arguments:
+#
+#   1 (optional): Beyond normal calculations, the number of additional
+#   lines to move down before printing the mode.  Defaults to zero.
+#
+showmode() {
+  typeset movedown
+  typeset row
+
+  # Get number of lines down to print mode
+  movedown=$(($(echo "$RBUFFER" | wc -l) + ${1:-0}))
+  # Get current row position
+  echo -n "\e[6n"
+  row="${${$(readuntil R)#*\[}%;*}"
+  # Are we at the bottom of the terminal?
+  if [ $((row+movedown)) -gt "$LINES" ]
+  then
+    # Scroll terminal up one line
+    echo -n "\e[1S"
+    # Move cursor up one line
+    echo -n "\e[1A"
+  fi
+  # Save cursor position
+  echo -n "\e[s"
+  # Move cursor to start of line $movedown lines down
+  echo -n "\e[$movedown;E"
+  # Change font attributes
+  echo -n "\e[1m"
+  # Has a mode been set?
+  if [ -n "$VIMODE" ]
+  then
+    # Print mode line
+    echo -n "-- $VIMODE -- "
+  else
+    # Clear mode line
+    echo -n "\e[0K"
+  fi
+  # Restore font
+  echo -n "\e[0m"
+  # Restore cursor position
+  echo -n "\e[u"
+}
+
+clearmode() {
+  VIMODE= showmode
+}
+
+#
+# Temporary function to extend built-in widgets to display mode.
+#
+#   1: The name of the widget.
+#
+#   2: The mode string.
+#
+#   3 (optional): Beyond normal calculations, the number of additional
+#   lines to move down before printing the mode.  Defaults to zero.
+#
+makemodal () {
+  # Create new function
+  eval "$1() { zle .'$1'; ${2:+VIMODE='$2'}; showmode $3 }"
+
+  # Create new widget
+  zle -N "$1"
+}
+
+# Extend widgets
+makemodal vi-add-eol           INSERT
+makemodal vi-add-next          INSERT
+makemodal vi-change            INSERT
+makemodal vi-change-eol        INSERT
+makemodal vi-change-whole-line INSERT
+makemodal vi-insert            INSERT
+makemodal vi-insert-bol        INSERT
+makemodal vi-open-line-above   INSERT
+makemodal vi-substitute        INSERT
+makemodal vi-open-line-below   INSERT 1
+makemodal vi-replace           REPLACE
+makemodal vi-cmd-mode          NORMAL
+
+unfunction makemodal
+#
+# Set vi mode status bar end
+#
 
 #######################
 # source platform-dependent settings

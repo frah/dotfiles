@@ -1,0 +1,2 @@
+alias ls='ls -GhF'
+alias portupgrade='sudo portmaster -CKdway -x apr'
