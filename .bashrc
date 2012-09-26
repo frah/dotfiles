@@ -108,7 +108,7 @@ FreeBSD)    # FreeBSD
 esac
 
 ##
-# set aliase
+# set aliases
 #
 if [ -f ~/.sh_aliases ]; then
   . ~/.sh_aliases
