@@ -1,3 +1,5 @@
+_os="$(uname -s)"
+
 # i: 直前の履歴 30件を表示する。引数がある場合は過去 1000件を検索
 function i {
   if [ "$1" ]; then history 1000 | grep "$@"; else history 30; fi

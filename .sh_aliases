@@ -11,8 +11,4 @@ if type vim > /dev/null 2>&1; then
 else
   alias vim='vi'
 fi
-alias -g L="|& $PAGER"
-alias -g G='| grep'
-alias -g H='| head'
-alias -g T='| tail'
 

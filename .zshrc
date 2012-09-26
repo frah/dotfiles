@@ -120,6 +120,11 @@ if [ -f ~/.sh_aliases ]; then
   source ~/.sh_aliases
 fi
 
+alias -g L="|& $PAGER"
+alias -g G='| grep'
+alias -g H='| head'
+alias -g T='| tail'
+
 #######################
 # functions
 #
