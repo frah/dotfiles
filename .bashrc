@@ -138,6 +138,13 @@ FreeBSD)    # FreeBSD
     ;;
 esac
 
+##
+# completion settings
+#
+complete -d cd
+complete -c man
+complete -v unset
+
 # local settings
 if [ -f ~/.bashrc_local ]; then
     . ~/.bashrc_local
