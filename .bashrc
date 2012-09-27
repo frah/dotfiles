@@ -72,12 +72,21 @@ export HISTCONTROL=ignoreboth
 export VIMHOME=$HOME/.vim
 export TEXMFHOME=$HOME/texmf
 
+# git settings
+if [ -f ~/dotfiles/git-completion.bash ]; then
+    . ~/dotfiles/git-completion.bash
+fi
+export GIT_PS1_SHOWUNTRACKEDFILES="yes"
+export GIT_PS1_SHOWSTASHSTATE="yes"
+export GIT_PS1_SHOWDIRTYSTATE="yes"
+export GIT_PS1_SHOWUPSTREAM="auto"
+
 # OS-specific environments
 case "$_os" in
 Darwin)     # Mac OS X
     # set pager
     if set_env PAGER /usr/local/bin/lv; then
-        export LV='-Ou8'
+        export LV='-Ou8 -c'
     else
         export PAGER=/usr/bin/less
     fi
@@ -91,7 +100,7 @@ FreeBSD)    # FreeBSD
     fi
 
     if set_env PAGER /usr/local/bin/lv; then
-        export LV='-Ou8'
+        export LV='-Ou8 -c'
     fi
 
     set_env EDITOR /usr/local/bin/vim
@@ -99,15 +108,11 @@ FreeBSD)    # FreeBSD
 esac
 
 ##
-# set aliase
+# set aliases
 #
-alias ..='cd ..'
-alias ll='ls -lh'
-alias mv='mv -i'
-alias cp='cp -i'
-alias rm='rm -i'
-alias grep='grep --color=auto'
-alias info="info --vi-keys"
+if [ -f ~/.sh_aliases ]; then
+  . ~/.sh_aliases
+fi
 
 # OS-specific aliases
 case "$_os" in
@@ -153,20 +158,9 @@ fi
 #-----------
 # Functions
 #-----------
-# i: 直前の履歴 30件を表示する。引数がある場合は過去 1000件を検索
-function i {
-  if [ "$1" ]; then history 1000 | grep "$@"; else history 30; fi
-}
-
-# I: 直前の履歴 30件を表示する。引数がある場合は過去のすべてを検索
-function I {
-  if [ "$1" ]; then history | grep "$@"; else history 30; fi
-}
-
-# GNU screen 用のコマンド。引数を screen のステータス行に表示。
-function dispstatus {
-  if [[ "$STY" ]]; then echo -en "\033k$1\033\134"; fi
-}
+if [ -f ~/.sh_functions ]; then
+  source ~/.sh_functions
+fi
 
 # 最後のコマンドの実行時間を計測
 function time_spent {
@@ -226,23 +220,6 @@ function md2html {
     kramdown -i markdown ${1} > ${1%.*}.html
 }
 
-#
-# Performs an egrep on the process list. Use any arguments that egrep accetps.
-#
-# @param [Array] egrep arguments
-case "$_os" in
-  Darwin|OpenBSD) psg() { ps wwwaux | egrep "($@|\bPID\b)" | egrep -v "grep"; } ;;
-  SunOS|Linux)    psg() { ps -ef | egrep "($@|\bPID\b)" | egrep -v "grep"; } ;;
-  CYGWIN_*)       psg() { ps -efW | egrep "($@|\bPID\b)" | egrep -v "grep"; } ;;
-esac
-
-##
-# Returns the public/internet visible IP address of the system.
-#
-public_ip() {
-  curl 'http://vps.tokcs.com/cgi-bin/ip'
-  echo -ne "\n"
-}
 
 #-----------
 # prompt
@@ -265,5 +242,5 @@ else
     dcolor=$DARK_GREEN
 fi
 DATE='\[\e[$[COLUMNS-$(echo -n " (\d \t)" | wc -c)]C\e[40;2;37m[\d \t]\e[0m\e[$[COLUMNS]D\]'
-export PS1="$DATE$LIGHT_YELLOW[\!]"$pcolor"[\u"$dcolor"@"$RST_COLOR$pcolor"\h] $LIGHT_BLUE\w\n$RST_COLOR$pcolor\\\$$RST_COLOR "
+export PS1="$DATE$LIGHT_YELLOW[\!]"$pcolor"[\u"$dcolor"@"$RST_COLOR$pcolor"\h] $LIGHT_BLUE\w$LIGHT_YELLOW$(__git_ps1)\n$RST_COLOR$pcolor\\\$$RST_COLOR "
 

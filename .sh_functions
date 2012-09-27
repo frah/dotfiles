@@ -1,0 +1,53 @@
+_os="$(uname -s)"
+
+# i: 直前の履歴 30件を表示する。引数がある場合は過去 1000件を検索
+function i {
+  if [ "$1" ]; then history 1000 | grep "$@"; else history 30; fi
+}
+
+# I: 直前の履歴 30件を表示する。引数がある場合は過去のすべてを検索
+function I {
+  if [ "$1" ]; then history | grep "$@"; else history 30; fi
+}
+
+# GNU screen 用のコマンド。引数を screen のステータス行に表示。
+function dispstatus {
+  if [ "$STY" ]; then echo -en "\033k$1\033\134"; fi
+}
+
+#
+# Performs an egrep on the process list. Use any arguments that egrep accetps.
+#
+# @param [Array] egrep arguments
+case "$_os" in
+  Darwin|*BSD) psg() { ps wwwaux | egrep "($@|\bPID\b)" | egrep -v "grep"; } ;;
+  SunOS|Linux)    psg() { ps -ef | egrep "($@|\bPID\b)" | egrep -v "grep"; } ;;
+  CYGWIN_*)       psg() { ps -efW | egrep "($@|\bPID\b)" | egrep -v "grep"; } ;;
+esac
+
+#
+# Performs an egrep on the process list, and kill them.
+#
+# @param [Array] egrep arguments
+function psk() {
+  local pss=$(psg $@)
+  if [ $(echo -e "${pss}"|wc -l) -le 1 ]; then
+    echo No such process
+    return
+  fi
+  echo -e "${pss}"
+  echo -ne "Kill these processes now. Okey? (y/N): "
+  read confirm
+  if [[ "$confirm" =~ ^[yY]([eE][sS])?$ ]]; then
+      echo -e "${pss}" | awk 'NR>=2{print $2}' | xargs kill -9
+  fi
+}
+
+##
+# Returns the public/internet visible IP address of the system.
+#
+public_ip() {
+  curl 'http://tokcs.com/cgi-bin/ip'
+  echo -ne "\n"
+}
+

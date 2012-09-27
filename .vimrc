@@ -32,12 +32,14 @@ Bundle 'taglist.vim'
 Bundle 'autodate.vim'
 Bundle 'taku-o/vim-changed'
 Bundle 'jcommenter.vim'
-Bundle 'freiheittokkyu/monday'
+Bundle 'frah/monday'
 Bundle 'thinca/vim-ref'
 Bundle 'tyru/open-browser.vim'
 Bundle 'sudo.vim'
 Bundle 'Arduino-syntax-file'
 Bundle 'git://vim-latex.git.sourceforge.net/gitroot/vim-latex/vim-latex'
+Bundle 'tomtom/tlib_vim'
+Bundle 'tomtom/tskeleton_vim'
 
 filetype plugin indent on
 "-------------------------------------------------------------------------------
@@ -63,9 +65,9 @@ set modelines=0                  " モードラインは無効
 " OSのクリップボードを使用する
 set clipboard+=unnamed
 " ターミナルでマウスを使用できるようにする
-set mouse=a
-set guioptions+=a
-set ttymouse=xterm2
+"set mouse=a
+"set guioptions+=a
+"set ttymouse=xterm2
 
 " 挿入モードでCtrl+kを押すとクリップボードの内容を貼り付けられるようにする "
 imap <C-p>  <ESC>"*pa
@@ -505,11 +507,11 @@ hi PmenuSbar ctermbg=0 ctermfg=9
 "-------------------------------------------------------------------------------
 
 " 新規作成時にtemplateを適用
-autocmd BufNewFile *.c    0r ~/.vim/templates/skel.c|1;/{
-autocmd BufNewFile *.html 0r ~/.vim/templates/skel.html|1;/<title>/;normal $hhhhhhh
-autocmd BufNewFile *.php  0r ~/.vim/templates/skel.php
-autocmd BufNewFile *.py   0r ~/.vim/templates/skel.py|1;?:
-autocmd BufNewFile *.sh   0r ~/.vim/templates/skel.sh|normal G
+"autocmd BufNewFile *.c    0r ~/.vim/templates/skel.c|1;/{
+"autocmd BufNewFile *.html 0r ~/.vim/templates/skel.html|1;/<title>/;normal $hhhhhhh
+"autocmd BufNewFile *.php  0r ~/.vim/templates/skel.php
+"autocmd BufNewFile *.py   0r ~/.vim/templates/skel.py|1;?:
+"autocmd BufNewFile *.sh   0r ~/.vim/templates/skel.sh|normal G
 
 " insertモードを抜けるとIMEオフ
 set noimdisable
@@ -528,6 +530,7 @@ vnoremap p <Esc>;let current_reg = @"<CR>gvdi<C-R>=current_reg<CR><Esc>
 " Tabキーを空白に変換
 set expandtab
 autocmd FileType make set noexpandtab
+autocmd FileType conf set noexpandtab
 
 " コンマの後に自動的にスペースを挿入
 "inoremap , ,<Space>
@@ -579,9 +582,9 @@ function! s:ExpandTab()
 endfunction
 
 " 保存時に行末の空白を除去する
-autocmd BufWritePre * call s:StripEndLineWhitespace()
+"autocmd BufWritePre * call s:StripEndLineWhitespace()
 " 保存時にtabをスペースに変換する
-autocmd BufWritePre * call s:ExpandTab()
+"autocmd BufWritePre * call s:ExpandTab()
 
 " 日時の自動入力
 inoremap <expr> ,df strftime('%Y/%m/%d %H:%M:%S')
@@ -794,11 +797,11 @@ else
   " Display user name on Linux.
   let g:vimshell_prompt = $USER."% "
 
-  call vimshell#set_execute_file('bmp,jpg,png,gif', 'gexe eog')
-  call vimshell#set_execute_file('mp3,m4a,ogg', 'gexe amarok')
-  let g:vimshell_execute_file_list['zip'] = 'zipinfo'
-  call vimshell#set_execute_file('tgz,gz', 'gzcat')
-  call vimshell#set_execute_file('tbz,bz2', 'bzcat')
+"  call vimshell#set_execute_file('bmp,jpg,png,gif', 'gexe eog')
+"  call vimshell#set_execute_file('mp3,m4a,ogg', 'gexe amarok')
+"  let g:vimshell_execute_file_list['zip'] = 'zipinfo'
+"  call vimshell#set_execute_file('tgz,gz', 'gzcat')
+"  call vimshell#set_execute_file('tbz,bz2', 'bzcat')
 endif
 
 function! g:my_chpwd(args, context)

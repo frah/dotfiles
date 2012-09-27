@@ -1,0 +1,18 @@
+[user]
+    name =
+    email =
+[color]
+    ui = true
+[alias]
+    a = add
+    b = branch
+    l = log
+    co = checkout
+    ci = commit
+    st = status -sb
+    br = branch
+    hist = log --pretty=format:\"%h %ad | %s%d [%an]\" --graph --date=short
+    wd = diff --word-diff
+[core]
+    pager = lv
+    excludesfile = ~/.gitignore
