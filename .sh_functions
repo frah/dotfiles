@@ -51,3 +51,15 @@ public_ip() {
   echo -ne "\n"
 }
 
+##
+# Source viewer with syntax highlight
+#
+function slv() {
+  if type source-highlight > /dev/null 2>&1; then
+    source-highlight -f esc -t 2 --failsafe -o STDOUT -i "$1" 2>/dev/null \
+    | ${PAGER}
+  else
+    ${PAGER} "$1"
+  fi
+}
+

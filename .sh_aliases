@@ -5,7 +5,7 @@ alias cp='cp -i'
 alias rm='rm -i'
 alias grep='grep --color=auto'
 alias info='info --vi-keys'
-alias lv="$PAGER"
+alias lv='slv'
 if type vim > /dev/null 2>&1; then
   alias vi='vim'
 else

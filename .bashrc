@@ -89,6 +89,7 @@ Darwin)     # Mac OS X
         export LV='-Ou8 -c'
     else
         export PAGER=/usr/bin/less
+        export LESS='-R'
     fi
 
     set_env EDITOR /Applications/MacVim.app/Contents/MacOS/Vim

@@ -122,6 +122,7 @@ if type lv > /dev/null 2>&1; then
   export LV='-Ou8 -c -l'
 else
   export PAGER=less
+  export LESS='-R'
 fi
 export VIMHOME=$HOME/.vim
 export TEXMFHOME=$HOME/texmf
