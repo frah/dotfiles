@@ -16,9 +16,16 @@ git submodule init
 git submodule update
 echo -e "Installing bundles...\nAfter BundleInstall is complete, exit vim. (:qa!)" | vim +BundleInstall -
 
-HOOKSCRIPT_PATH='.vim/bundle/vimproc/.git/hooks/post-merge'
-cp .vim/vimproc_post-merge.sh $HOOKSCRIPT_PATH
-chmod +x $HOOKSCRIPT_PATH
-cd .vim/bundle/vimproc
-git pull
+cd ~/.vim/bundle/vimproc
+case "$(uname -s)" in
+Darwin)
+    make -f make_mac.mak
+    ;;
+FreeBSD)
+    make -f make_unix.mak
+    ;;
+esac
+
+cd ~/.vim/bundle/jcommenter.vim
+nkf -w -Lu --overwrite plugin/jcommenter.vim
 
