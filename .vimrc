@@ -1,50 +1,83 @@
-set nocompatible
+" tinyとsmallではvimrcを読み込まない
+if !1 | finish | endif
+
+if &compatible
+    set nocompatible
+endif
 filetype off
 
-"-----------------------------
-" Vundle
-"-----------------------------
-set rtp+=~/.vim/vundle.git/
-call vundle#rc()
+"---------------------------------------------------------------------------
+" NeoBundle
+"---------------------------------------------------------------------------
+" neobundle.vim が無ければインストールする
+if ! isdirectory(expand('~/.vim/bundle'))
+    echon "Installing neobundle.vim..."
+    silent call mkdir(expand('~/.vim/bundle'), 'p')
+    silent !git clone https://github.com/Shougo/neobundle.vim $HOME/.vim/bundle/neobundle.vim
+    echo "done."
+    if v:shell_error
+        echoerr "neobundle.vim installation has failed!"
+        finish
+    endif
+endif
 
-Bundle 'Align'
-Bundle 'SQLUtilities'
-Bundle 'TwitVim'
-Bundle 'othree/eregex.vim'
-Bundle 'tpope/vim-fugitive'
-Bundle 'tpope/vim-surround'
-Bundle 'grep.vim'
-Bundle 'Shougo/neocomplcache'
-Bundle 'scrooloose/nerdcommenter'
-Bundle 'Shougo/unite.vim'
-Bundle 'tsukkee/unite-help'
-Bundle 'h1mesuke/unite-outline'
-Bundle 'ujihisa/unite-locate'
-Bundle 'kana/vim-smartchr'
-Bundle 'Shougo/vimproc'
-Bundle 'Shougo/vimshell'
-Bundle 'Smooth-Scroll'
-Bundle 'yuroyoro/vim-python'
-Bundle 'yuroyoro/vimdoc_ja'
-Bundle 'thinca/vim-quickrun'
-Bundle 'tokorom/ios-vim-snippets'
-Bundle 'taglist.vim'
-Bundle 'autodate.vim'
-Bundle 'taku-o/vim-changed'
-Bundle 'jcommenter.vim'
-Bundle 'frah/monday'
-Bundle 'thinca/vim-ref'
-Bundle 'tyru/open-browser.vim'
-Bundle 'sudo.vim'
-Bundle 'Arduino-syntax-file'
-Bundle 'git://vim-latex.git.sourceforge.net/gitroot/vim-latex/vim-latex'
-Bundle 'tomtom/tlib_vim'
-Bundle 'tomtom/tskeleton_vim'
+if has('vim_starting')
+    set rtp+=~/.vim/bundle/neobundle.vim/
+endif
+call neobundle#begin(expand('~/.vim/bundle'))
 
+if neobundle#load_cache()
+    NeoBundleFetch 'Shougo/neobundle.vim'
+    NeoBundle 'vim-jp/vimdoc-ja'
+    NeoBundle 'vim-airline/vim-airline'
+    NeoBundle 'vim-airline/vim-airline-themes'
+    NeoBundle 'rhysd/accelerated-jk'
+    NeoBundle 'tpope/vim-fugitive'
+    NeoBundle 'taku-o/vim-changed'
+    NeoBundle 'thinca/vim-ref'
+    NeoBundle 'pgilad/vim-skeletons'
+    NeoBundle 'sudo.vim'
+
+    " Syntax
+    NeoBundle 'leafgarland/typescript-vim'
+    NeoBundleLazy 'yuroyoro/vim-python', {
+                \ 'autoload': {
+                \   'filetypes' : ['python']}
+                \ }
+    NeoBundle 'Arduino-syntax-file'
+
+    " Color schemes
+    NeoBundle 'tomasr/molokai'
+
+    " unite.vim
+    NeoBundle 'Shougo/unite-outline'
+    NeoBundle 'osyo-manga/unite-quickfix'
+    NeoBundle 'Shougo/unite-help'
+    NeoBundle 'ujihisa/unite-colorscheme'
+    NeoBundle 'ujihisa/unite-locate'
+    NeoBundleLazy 'Shougo/unite.vim', {
+                \ 'autoload' : {
+                \     'commands' : [{'name': 'Unite', 'complete' : 'customlist,unite#complete_source'},
+                \                   {'name': 'UniteWithBufferDir', 'complete' : 'customlist,unite#complete_source'},
+                \                   {'name': 'UniteWithCursorWord', 'complete' : 'customlist,unite#complete_source'},
+                \                   {'name': 'UniteWithWithInput', 'complete' : 'customlist,unite#complete_source'}]
+                \    }
+                \ }
+
+    " completion
+    NeoBundle 'Shougo/neocomplcache'
+
+    NeoBundleCheck
+    NeoBundleSaveCache
+endif
+
+call neobundle#end()
 filetype plugin indent on
-"-------------------------------------------------------------------------------
+
+
+"---------------------------------------------------------------------------
 " 基本設定 Basics
-"-------------------------------------------------------------------------------
+"---------------------------------------------------------------------------
 let mapleader = ","              " キーマップリーダー
 set scrolloff=5                  " スクロール時の余白確保
 set textwidth=0                  " 一行に長い文章を書いていても自動折り返しをしない
@@ -64,10 +97,6 @@ set modelines=0                  " モードラインは無効
 
 " OSのクリップボードを使用する
 set clipboard+=unnamed
-" ターミナルでマウスを使用できるようにする
-"set mouse=a
-"set guioptions+=a
-"set ttymouse=xterm2
 
 " 挿入モードでCtrl+kを押すとクリップボードの内容を貼り付けられるようにする "
 imap <C-p>  <ESC>"*pa
@@ -81,9 +110,9 @@ set helpfile=$VIMRUNTIME/doc/help.txt
 " ファイルタイプ判定をon
 filetype plugin on
 
-"-------------------------------------------------------------------------------
+"---------------------------------------------------------------------------
 " ステータスライン StatusLine
-"-------------------------------------------------------------------------------
+"---------------------------------------------------------------------------
 set laststatus=2 " 常にステータスラインを表示
 
 "カーソルが何行目の何列目に置かれているかを表示する
@@ -91,9 +120,9 @@ set ruler
 
 "ステータスラインに文字コードと改行文字を表示する
 if winwidth(0) >= 120
-  set statusline=%<[%n]%m%r%h%w%{'['.(&fenc!=''?&fenc:&enc).':'.&ff.']'}%y\ %F%=[%{GetB()}]\ %{fugitive#statusline()}\ %l,%c%V%8P
+  set statusline=%<[%n]%m%r%h%w%{'['.(&fenc!=''?&fenc:&enc).':'.&ff.']'}%y\ %F%=[%{GetB()}]\ %{exists('g:loaded_fugitive')?fugitive#statusline():''}\ %l,%c%V%8P
 else
-  set statusline=%<[%n]%m%r%h%w%{'['.(&fenc!=''?&fenc:&enc).':'.&ff.']'}%y\ %f%=[%{GetB()}]\ %{fugitive#statusline()}\ %l,%c%V%8P
+  set statusline=%<[%n]%m%r%h%w%{'['.(&fenc!=''?&fenc:&enc).':'.&ff.']'}%y\ %f%=[%{GetB()}]\ %{exists('g:loaded_fugitive')?fugitive#statusline():''}\ %l,%c%V%8P
 endif
 
 "入力モード時、ステータスラインのカラーを変更
@@ -135,9 +164,9 @@ func! String2Hex(str)
   return out
 endfunc
 
-"-------------------------------------------------------------------------------
+"---------------------------------------------------------------------------
 " 表示 Apperance
-"-------------------------------------------------------------------------------
+"---------------------------------------------------------------------------
 set showmatch         " 括弧の対応をハイライト
 set number            " 行番号表示
 set list              " 不可視文字表示
@@ -166,9 +195,9 @@ highlight CursorLine ctermbg=black guibg=black
 " 高速ターミナル接続を行う
 :set ttyfast
 
-"-------------------------------------------------------------------------------
+"---------------------------------------------------------------------------
 " インデント Indent
-"-------------------------------------------------------------------------------
+"---------------------------------------------------------------------------
 set autoindent   " 自動でインデント
 "set paste        " ペースト時にautoindentを無効に(onにするとautocomplpop.vimが動かない)
 set smartindent  " 新しい行を開始したときに、新しい行のインデントを現在行と同じ量にする。
@@ -190,9 +219,9 @@ if has("autocmd")
 endif
 
 
-"-------------------------------------------------------------------------------
+"---------------------------------------------------------------------------
 " 補完・履歴 Complete
-"-------------------------------------------------------------------------------
+"---------------------------------------------------------------------------
 set wildmenu               " コマンド補完を強化
 set wildchar=<tab>         " コマンド補完を開始するキー
 set wildmode=list:full     " リスト表示，最長マッチ
@@ -220,9 +249,9 @@ set complete+=k            " 補完に辞書ファイル追加
 " inoremap <tab> <c-r>=InsertTabWrapper()<cr>
 
 
-"-------------------------------------------------------------------------------
+"---------------------------------------------------------------------------
 " タグ関連 Tags
-"-------------------------------------------------------------------------------
+"---------------------------------------------------------------------------
 " set tags
 if has("autochdir")
   " 編集しているファイルのディレクトリに自動で移動
@@ -252,9 +281,9 @@ nnoremap tk  ;<C-u>pop<CR>
 "履歴一覧
 nnoremap tl  ;<C-u>tags<CR>
 
-"-------------------------------------------------------------------------------
+"---------------------------------------------------------------------------
 " 検索設定 Search
-"-------------------------------------------------------------------------------
+"---------------------------------------------------------------------------
 set wrapscan   " 最後まで検索したら先頭へ戻る
 set ignorecase " 大文字小文字無視
 set smartcase  " 検索文字列に大文字が含まれている場合は区別して検索する
@@ -281,9 +310,9 @@ command! -nargs=1 Gb :GrepBuffer <args>
 " カーソル下の単語をGrepBufferする
 nnoremap <C-g><C-b> :<C-u>GrepBuffer<Space><C-r><C-w><Enter>
 
-"-------------------------------------------------------------------------------
+"---------------------------------------------------------------------------
 " 移動設定 Move
-"-------------------------------------------------------------------------------
+"---------------------------------------------------------------------------
 
 " カーソルキーを使用可能に
 set notimeout
@@ -387,9 +416,13 @@ function! s:do_git_diff_aware_gf(command)
   endif
 endfunction
 
-"-------------------------------------------------------------------------------
+" JK高速移動
+nmap j <Plug>(accelerated_jk_gj)
+nmap k <Plug>(accelerated_jk_gk)
+
+"---------------------------------------------------------------------------
 " エンコーディング関連 Encoding
-"-------------------------------------------------------------------------------
+"---------------------------------------------------------------------------
 set ffs=unix,dos,mac  " 改行文字
 set encoding=utf-8    " デフォルトエンコーディング
 
@@ -474,9 +507,9 @@ command! Utf8 edit ++enc=utf-8
 command! Jis Iso2022jp
 command! Sjis Cp932
 
-"-------------------------------------------------------------------------------
+"---------------------------------------------------------------------------
 " カラー関連 Colors
-"-------------------------------------------------------------------------------
+"---------------------------------------------------------------------------
 
 " ターミナルタイプによるカラー設定
 if &term =~ "xterm-debian" || &term =~ "xterm-xfree86" || &term =~ "xterm-256color"
@@ -502,9 +535,15 @@ hi Pmenu ctermbg=white ctermfg=darkgray
 hi PmenuSel ctermbg=blue ctermfg=white
 hi PmenuSbar ctermbg=0 ctermfg=9
 
-"-------------------------------------------------------------------------------
+colorscheme molokai
+" vim-airlineのカラースキーム
+let g:airline_theme = 'molokai'
+let g:airline#extensions#whitespace#enabled = 0
+
+
+"---------------------------------------------------------------------------
 " 編集関連 Edit
-"-------------------------------------------------------------------------------
+"---------------------------------------------------------------------------
 
 " 新規作成時にtemplateを適用
 "autocmd BufNewFile *.c    0r ~/.vim/templates/skel.c|1;/{
@@ -591,9 +630,9 @@ inoremap <expr> ,df strftime('%Y/%m/%d %H:%M:%S')
 inoremap <expr> ,dd strftime('%Y/%m/%d')
 inoremap <expr> ,dt strftime('%H:%M:%S')
 
-"-------------------------------------------------------------------------------
+"---------------------------------------------------------------------------
 " その他 Misc
-"-------------------------------------------------------------------------------
+"---------------------------------------------------------------------------
 
 " ;でコマンド入力( ;と:を入れ替)
 noremap ; :
@@ -601,9 +640,9 @@ noremap ; :
 " :でもexコマンドに入れるようにしておく
 " noremap : ;
 
-"-------------------------------------------------------------------------------
+"---------------------------------------------------------------------------
 " プラグインごとの設定 Plugins
-"-------------------------------------------------------------------------------
+"---------------------------------------------------------------------------
 
 "------------------------------------
 " YankRing.vim
@@ -632,22 +671,6 @@ command! Mt :TMiniBufExplorer
 " Alignを日本語環境で使用するための設定
 let g:Align_xstrlen = 3
 
-"------------------------------------
-" VTreeExplorer
-"------------------------------------
-" 縦に表示する
-let g:treeExplVertical=1
-
-"------------------------------------
-" NERD_commenter.vim
-"------------------------------------
-" コメントの間にスペースを空ける
-let NERDSpaceDelims = 1
-"<Leader>xでコメントをトグル(NERD_commenter.vim)
-map <Leader>x, c<space>
-""未対応ファイルタイプのエラーメッセージを表示しない
-let NERDShutUp=1
-
 " ------------------------------------
 " grep.vim
 "------------------------------------
@@ -655,44 +678,6 @@ let NERDShutUp=1
 let Grep_Skip_Dirs = '.svn .git .hg'
 let Grep_Skip_Files = '*.bak *~'
 -
-
-" "------------------------------------
-" " smartchr.vim
-" "------------------------------------
-"
-" " 演算子の間に空白を入れる
-" inoremap <buffer><expr> + smartchr#one_of(' + ', ' ++ ', '+')
-" inoremap <buffer><expr> +=  smartchr#one_of(' += ')
-" " inoremap <buffer><expr> - smartchr#one_of(' - ', ' -- ', '-')
-" inoremap <buffer><expr> -=  smartchr#one_of(' -= ')
-" " inoremap <buffer><expr> / smartchr#one_of(' / ', ' // ', '/')
-" inoremap <buffer><expr> /=  smartchr#one_of(' /= ')
-" inoremap <buffer><expr> * smartchr#one_of(' * ', ' ** ', '*')
-" inoremap <buffer><expr> *=  smartchr#one_of(' *= ')
-" inoremap <buffer><expr> & smartchr#one_of(' & ', ' && ', '&')
-" inoremap <buffer><expr> % smartchr#one_of(' % ', '%')
-" inoremap <buffer><expr> =>  smartchr#one_of(' => ')
-" inoremap <buffer><expr> <-   smartchr#one_of(' <-  ')
-" inoremap <buffer><expr> <Bar> smartchr#one_of(' <Bar> ', ' <Bar><Bar> ', '<Bar>')
-" inoremap <buffer><expr> , smartchr#one_of(', ', ',')
-" " 3項演算子の場合は、後ろのみ空白を入れる
-" inoremap <buffer><expr> ? smartchr#one_of('? ', '?')
-" " inoremap <buffer><expr> : smartchr#one_of(': ', '::', ':')
-
-" " =の場合、単純な代入や比較演算子として入力する場合は前後にスペースをいれる。
-" " 複合演算代入としての入力の場合は、直前のスペースを削除して=を入力
-" inoremap <buffer><expr> = search('¥(&¥<bar><bar>¥<bar>+¥<bar>-¥<bar>/¥<bar>>¥<bar><¥) ¥%#', 'bcn')? '<bs>= '  : search('¥(*¥<bar>!¥)¥%#', 'bcn') ? '= '  : smartchr#one_of(' = ', ' == ', '=')
-
-" " 下記の文字は連続して現れることがまれなので、二回続けて入力したら改行する
-" inoremap <buffer><expr> } smartchr#one_of('}', '}<cr>')
-" inoremap <buffer><expr> ; smartchr#one_of(';', ';<cr>')
-" "()は空白入れる
-" inoremap <buffer><expr> ( smartchr#one_of('( ')
-" inoremap <buffer><expr> ) smartchr#one_of(' )')
-
-" " if文直後の(は自動で間に空白を入れる
-" inoremap <buffer><expr> ( search('¥<¥if¥%#', 'bcn')? ' (': '('
-
 
 "------------------------------------
 " Fugitive.vim
@@ -708,26 +693,12 @@ nnoremap <Space>gb :<C-u>Gblame<Enter>
 "------------------------------------
 " VTreeExplorer
 "------------------------------------
+" 縦に表示する
 let g:treeExplVertical=1
 "<Leader>t<Space>でディレクトリツリー表示
 noremap <Leader>t<Space> :VSTreeExplore<CR>
 "分割したウィンドウのサイズ
 let g:treeExplWinSize=30
-
-"------------------------------------
-" DumbBuf.vim
-"------------------------------------
-"<Leader>b<Space>でBufferList
-let dumbbuf_hotkey = '<Leader>b<Space>'
-let dumbbuf_mappings = {
-    \ 'n': {
-        \'<Esc>': { 'opt': '<silent>', 'mapto': ':<C-u>close<CR>' }
-    \}
-\}
-let dumbbuf_single_key  = 1
-let dumbbuf_updatetime  = 1    " &updatetimeの最小値
-let dumbbuf_wrap_cursor = 0
-let dumbbuf_remove_marked_when_close = 1
 
 "------------------------------------
 " open-browser.vim
@@ -767,169 +738,157 @@ map ge  <Plug>(smartword-ge)
 
 
 "------------------------------------
-" camelcasemotion.vim
-"------------------------------------
-
-" <Shift-wbe>でCameCaseやsnake_case単位での単語移動
-map <silent> w <Plug>CamelCaseMotion_w
-map <silent> b <Plug>CamelCaseMotion_b
-map <silent> e <Plug>CamelCaseMotion_e
-" text-objectで使用できるように
-omap <silent> iw <Plug>CamelCaseMotion_iw
-xmap <silent> iw <Plug>CamelCaseMotion_iw
-omap <silent> ib <Plug>CamelCaseMotion_ib
-xmap <silent> ib <Plug>CamelCaseMotion_ib
-omap <silent> ie <Plug>CamelCaseMotion_ie
-xmap <silent> ie <Plug>CamelCaseMotion_ie
-
-"------------------------------------
 " vimshell
 "------------------------------------
-let g:vimshell_user_prompt = 'fnamemodify(getcwd(), ":~")'
-let g:vimshell_right_prompt = 'vimshell#vcs#info("(%s)-[%b]", "(%s)-[%b|%a]")'
-let g:vimshell_enable_smart_case = 1
-let g:vimshell_temporary_directory = expand('~/.vim/.vimshell')
-
-if has('win32') || has('win64')
-  " Display user name on Windows.
-  let g:vimshell_prompt = $USERNAME."% "
-else
-  " Display user name on Linux.
-  let g:vimshell_prompt = $USER."% "
-
-"  call vimshell#set_execute_file('bmp,jpg,png,gif', 'gexe eog')
-"  call vimshell#set_execute_file('mp3,m4a,ogg', 'gexe amarok')
-"  let g:vimshell_execute_file_list['zip'] = 'zipinfo'
-"  call vimshell#set_execute_file('tgz,gz', 'gzcat')
-"  call vimshell#set_execute_file('tbz,bz2', 'bzcat')
+if neobundle#tap('vimshell')
+    let g:vimshell_user_prompt = 'fnamemodify(getcwd(), ":~")'
+    let g:vimshell_right_prompt = 'vimshell#vcs#info("(%s)-[%b]", "(%s)-[%b|%a]")'
+    let g:vimshell_enable_smart_case = 1
+    let g:vimshell_temporary_directory = expand('~/.vim/.vimshell')
+    
+    if has('win32') || has('win64')
+      " Display user name on Windows.
+      let g:vimshell_prompt = $USERNAME."% "
+    else
+      " Display user name on Linux.
+      let g:vimshell_prompt = $USER."% "
+    
+    "  call vimshell#set_execute_file('bmp,jpg,png,gif', 'gexe eog')
+    "  call vimshell#set_execute_file('mp3,m4a,ogg', 'gexe amarok')
+    "  let g:vimshell_execute_file_list['zip'] = 'zipinfo'
+    "  call vimshell#set_execute_file('tgz,gz', 'gzcat')
+    "  call vimshell#set_execute_file('tbz,bz2', 'bzcat')
+    endif
+    
+    function! g:my_chpwd(args, context)
+      call vimshell#execute('echo "chpwd"')
+    endfunction
+    function! g:my_emptycmd(cmdline, context)
+      call vimshell#execute('echo "emptycmd"')
+      return a:cmdline
+    endfunction
+    function! g:my_preprompt(args, context)
+      call vimshell#execute('echo "preprompt"')
+    endfunction
+    function! g:my_preexec(cmdline, context)
+      call vimshell#execute('echo "preexec"')
+    
+      if a:cmdline =~# '^\s*diff\>'
+        call vimshell#set_syntax('diff')
+      endif
+      return a:cmdline
+    endfunction
+    
+    autocmd FileType vimshell
+    \ call vimshell#hook#set('chpwd', ['g:my_chpwd'])
+    \| call vimshell#hook#set('emptycmd', ['g:my_emptycmd'])
+    \| call vimshell#hook#set('preprompt', ['g:my_preprompt'])
+    \| call vimshell#hook#set('preexec', ['g:my_preexec'])
+    
+    command! Vs :VimShell
 endif
-
-function! g:my_chpwd(args, context)
-  call vimshell#execute('echo "chpwd"')
-endfunction
-function! g:my_emptycmd(cmdline, context)
-  call vimshell#execute('echo "emptycmd"')
-  return a:cmdline
-endfunction
-function! g:my_preprompt(args, context)
-  call vimshell#execute('echo "preprompt"')
-endfunction
-function! g:my_preexec(cmdline, context)
-  call vimshell#execute('echo "preexec"')
-
-  if a:cmdline =~# '^\s*diff\>'
-    call vimshell#set_syntax('diff')
-  endif
-  return a:cmdline
-endfunction
-
-autocmd FileType vimshell
-\ call vimshell#hook#set('chpwd', ['g:my_chpwd'])
-\| call vimshell#hook#set('emptycmd', ['g:my_emptycmd'])
-\| call vimshell#hook#set('preprompt', ['g:my_preprompt'])
-\| call vimshell#hook#set('preexec', ['g:my_preexec'])
-
-command! Vs :VimShell
 
 "------------------------------------
-" neocomplecache.vim
+" neocomplcache.vim
 "------------------------------------
-" AutoComplPopを無効にする
-let g:acp_enableAtStartup = 0
-" NeoComplCacheを有効にする
-let g:neocomplcache_enable_at_startup = 1
-" smarrt case有効化。 大文字が入力されるまで大文字小文字の区別を無視する
-let g:neocomplcache_enable_smart_case = 1
-" camle caseを有効化。大文字を区切りとしたワイルドカードのように振る舞う
-let g:neocomplcache_enable_camel_case_completion = 1
-" _(アンダーバー)区切りの補完を有効化
-let g:neocomplcache_enable_underbar_completion = 1
-" シンタックスをキャッシュするときの最小文字長を3に
-let g:neocomplcache_min_syntax_length = 3
-" neocomplcacheを自動的にロックするバッファ名のパターン
-let g:neocomplcache_lock_buffer_name_pattern = '\*ku\*'
-" -入力による候補番号の表示
-"let g:neocomplcache_enable_quick_match = 1
-" 補完候補の一番先頭を選択状態にする(AutoComplPopと似た動作)
-let g:neocomplcache_enable_auto_select = 1
-" キャッシュディレクトリを指定
-let g:neocomplcache_temporary_dir = expand('~/.vim/.neocon')
-" ctags
-if has('mac')
-    let g:neocomplcache_ctags_program = '/usr/local/bin/ctags'
+if neobundle#tap('neocomplcache')
+    " AutoComplPopを無効にする
+    let g:acp_enableAtStartup = 0
+    " NeoComplCacheを有効にする
+    let g:neocomplcache_enable_at_startup = 1
+    " smarrt case有効化。 大文字が入力されるまで大文字小文字の区別を無視する
+    let g:neocomplcache_enable_smart_case = 1
+    " camle caseを有効化。大文字を区切りとしたワイルドカードのように振る舞う
+    let g:neocomplcache_enable_camel_case_completion = 1
+    " _(アンダーバー)区切りの補完を有効化
+    let g:neocomplcache_enable_underbar_completion = 1
+    " シンタックスをキャッシュするときの最小文字長を3に
+    let g:neocomplcache_min_syntax_length = 3
+    " neocomplcacheを自動的にロックするバッファ名のパターン
+    let g:neocomplcache_lock_buffer_name_pattern = '\*ku\*'
+    " -入力による候補番号の表示
+    "let g:neocomplcache_enable_quick_match = 1
+    " 補完候補の一番先頭を選択状態にする(AutoComplPopと似た動作)
+    let g:neocomplcache_enable_auto_select = 1
+    " キャッシュディレクトリを指定
+    let g:neocomplcache_temporary_dir = expand('~/.vim/.neocon')
+    " ctags
+    if has('mac')
+        let g:neocomplcache_ctags_program = '/usr/local/bin/ctags'
+    endif
+    
+    " Define dictionary.
+    let g:neocomplcache_dictionary_filetype_lists = {
+    \ 'default' : '',
+    \ 'vimshell' : $HOME.'/.vimshell_hist',
+    \ 'java' : $HOME.'/.vim/dict/java.dict',
+    \ 'c' : $HOME.'/.vim/dict/c.dict',
+    \ 'cpp' : $HOME.'/.vim/dict/cpp.dict',
+    \ 'javascript' : $HOME.'/.vim/dict/javascript.dict',
+    \ 'perl' : $HOME.'/.vim/dict/perl.dict',
+    \ 'php' : $HOME.'/.vim/dict/php.dict',
+    \ 'scheme' : $HOME.'/.vim/dict/scheme.dict',
+    \ 'vm' : $HOME.'/.vim/dict/vim.dict'
+    \ }
+    
+    " Define keyword.
+    " if !exists('g:neocomplcache_keyword_patterns')
+    " let g:neocomplcache_keyword_patterns = {}
+    " endif
+    " let g:neocomplcache_keyword_patterns['default'] = '\h\w*'
+    
+    " ユーザー定義スニペット保存ディレクトリ
+    let g:neocomplcache_snippets_dir = $HOME.'/.vim/snippets'
+    
+    " スニペット
+    imap <C-k> <Plug>(neocomplcache_snippets_expand)
+    smap <C-k> <Plug>(neocomplcache_snippets_expand)
+    
+    " 補完を選択しpopupを閉じる
+    inoremap <expr><C-y> neocomplcache#close_popup()
+    " 補完をキャンセルしpopupを閉じる
+    inoremap <expr><C-e> neocomplcache#cancel_popup()
+    " TABで補完できるようにする
+    inoremap <expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
+    " undo
+    inoremap <expr><C-g>     neocomplcache#undo_completion()
+    " 補完候補の共通部分までを補完する
+    inoremap <expr><C-l> neocomplcache#complete_common_string()
+    " SuperTab like snippets behavior.
+    imap <expr><TAB> neocomplcache#sources#snippets_complete#expandable() ? "\<Plug>(neocomplcache_snippets_expand)" : pumvisible() ? "\<C-n>" : "\<TAB>"
+    " C-kを押すと行末まで削除
+    inoremap <C-k> <C-o>D
+    " C-nでneocomplcache補完
+    inoremap <expr><C-n>  pumvisible() ? "\<C-n>" : "\<C-x>\<C-u>\<C-p>"
+    " C-pでkeyword補完
+    inoremap <expr><C-p> pumvisible() ? "\<C-p>" : "\<C-p>\<C-n>"
+    " 補完候補が出ていたら確定、なければ改行
+    inoremap <expr><CR>  pumvisible() ? neocomplcache#close_popup() : "<CR>"
+    
+    " <TAB>: completion.
+    inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
+    " <C-h>, <BS>: close popup and delete backword char.
+    inoremap <expr><C-h> neocomplcache#smart_close_popup()."\<C-h>"
+    inoremap <expr><BS> neocomplcache#smart_close_popup()."\<C-h>"
+    inoremap <expr><C-x><C-o> &filetype == 'vim' ? "\<C-x><C-v><C-p>" : neocomplcache#manual_omni_complete()
+    
+    " FileType毎のOmni補完を設定
+    autocmd FileType python set omnifunc=pythoncomplete#Complete
+    autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
+    autocmd FileType html set omnifunc=htmlcomplete#CompleteTags
+    autocmd FileType css set omnifunc=csscomplete#CompleteCSS
+    autocmd FileType xml set omnifunc=xmlcomplete#CompleteTags
+    autocmd FileType php set omnifunc=phpcomplete#CompletePHP
+    autocmd FileType c set omnifunc=ccomplete#Complete
+    autocmd FileType ruby set omnifunc=rubycomplete#Complete
+    
+    " Enable heavy omni completion.
+    if !exists('g:neocomplcache_omni_patterns')
+      let g:neocomplcache_omni_patterns = {}
+    endif
+    let g:neocomplcache_omni_patterns.ruby = '[^. *\t]\.\w*\|\h\w*::'
+    let g:neocomplcache_omni_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
 endif
-
-" Define dictionary.
-let g:neocomplcache_dictionary_filetype_lists = {
-\ 'default' : '',
-\ 'vimshell' : $HOME.'/.vimshell_hist',
-\ 'java' : $HOME.'/.vim/dict/java.dict',
-\ 'c' : $HOME.'/.vim/dict/c.dict',
-\ 'cpp' : $HOME.'/.vim/dict/cpp.dict',
-\ 'javascript' : $HOME.'/.vim/dict/javascript.dict',
-\ 'perl' : $HOME.'/.vim/dict/perl.dict',
-\ 'php' : $HOME.'/.vim/dict/php.dict',
-\ 'scheme' : $HOME.'/.vim/dict/scheme.dict',
-\ 'vm' : $HOME.'/.vim/dict/vim.dict'
-\ }
-
-" Define keyword.
-" if !exists('g:neocomplcache_keyword_patterns')
-" let g:neocomplcache_keyword_patterns = {}
-" endif
-" let g:neocomplcache_keyword_patterns['default'] = '\h\w*'
-
-" ユーザー定義スニペット保存ディレクトリ
-let g:neocomplcache_snippets_dir = $HOME.'/.vim/snippets'
-
-" スニペット
-imap <C-k> <Plug>(neocomplcache_snippets_expand)
-smap <C-k> <Plug>(neocomplcache_snippets_expand)
-
-" 補完を選択しpopupを閉じる
-inoremap <expr><C-y> neocomplcache#close_popup()
-" 補完をキャンセルしpopupを閉じる
-inoremap <expr><C-e> neocomplcache#cancel_popup()
-" TABで補完できるようにする
-inoremap <expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
-" undo
-inoremap <expr><C-g>     neocomplcache#undo_completion()
-" 補完候補の共通部分までを補完する
-inoremap <expr><C-l> neocomplcache#complete_common_string()
-" SuperTab like snippets behavior.
-imap <expr><TAB> neocomplcache#sources#snippets_complete#expandable() ? "\<Plug>(neocomplcache_snippets_expand)" : pumvisible() ? "\<C-n>" : "\<TAB>"
-" C-kを押すと行末まで削除
-inoremap <C-k> <C-o>D
-" C-nでneocomplcache補完
-inoremap <expr><C-n>  pumvisible() ? "\<C-n>" : "\<C-x>\<C-u>\<C-p>"
-" C-pでkeyword補完
-inoremap <expr><C-p> pumvisible() ? "\<C-p>" : "\<C-p>\<C-n>"
-" 補完候補が出ていたら確定、なければ改行
-inoremap <expr><CR>  pumvisible() ? neocomplcache#close_popup() : "<CR>"
-
-" <TAB>: completion.
-inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
-" <C-h>, <BS>: close popup and delete backword char.
-inoremap <expr><C-h> neocomplcache#smart_close_popup()."\<C-h>"
-inoremap <expr><BS> neocomplcache#smart_close_popup()."\<C-h>"
-inoremap <expr><C-x><C-o> &filetype == 'vim' ? "\<C-x><C-v><C-p>" : neocomplcache#manual_omni_complete()
-
-" FileType毎のOmni補完を設定
-autocmd FileType python set omnifunc=pythoncomplete#Complete
-autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
-autocmd FileType html set omnifunc=htmlcomplete#CompleteTags
-autocmd FileType css set omnifunc=csscomplete#CompleteCSS
-autocmd FileType xml set omnifunc=xmlcomplete#CompleteTags
-autocmd FileType php set omnifunc=phpcomplete#CompletePHP
-autocmd FileType c set omnifunc=ccomplete#Complete
-autocmd FileType ruby set omnifunc=rubycomplete#Complete
-
-" Enable heavy omni completion.
-if !exists('g:neocomplcache_omni_patterns')
-  let g:neocomplcache_omni_patterns = {}
-endif
-let g:neocomplcache_omni_patterns.ruby = '[^. *\t]\.\w*\|\h\w*::'
-let g:neocomplcache_omni_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
 
 "------------------------------------
 " unite.vim
@@ -973,31 +932,6 @@ let g:quickrun_config = {}
 let g:pydiction_location = '~/.vim/bundle/pydiction/complete-dict'
 
 "------------------------------------
-" TwitVim
-"------------------------------------
-let twitvim_count = 40
-let twitvim_token_file = expand('~/.vim/.twitvim.token')
-nnoremap ,tp :<C-u>PosttoTwitter<CR>
-nnoremap ,tf :<C-u>FriendsTwitter<CR><C-w>j
-nnoremap ,tu :<C-u>UserTwitter<CR><C-w>j
-nnoremap ,tr :<C-u>RepliesTwitter<CR><C-w>j
-nnoremap ,tn :<C-u>NextTwitter<CR>
-
-autocmd FileType twitvim call s:twitvim_my_settings()
-function! s:twitvim_my_settings()
-  set nowrap
-endfunction
-
-"------------------------------------
-" jcommenter.vim
-"------------------------------------
-autocmd FileType java map <C-c> :call JCommentWriter()<CR>
-
-let b:jcommenter_class_author = 'Atsushi OHNO'
-let b:jcommenter_file_author  = 'Atsushi OHNO'
-let b:jcommenter_file_copyright = 'Atsushi OHNO'
-
-"------------------------------------
 " vim-ref
 "------------------------------------
 let g:ref_cache_dir = expand('~/.vim/.vim_ref_cache')
@@ -1018,35 +952,6 @@ autocmd FileType python vnoremap <silent> <Space>d :<C-U>call ref#jump('visual',
 autocmd FileType php nnoremap <silent> <Space>d :<C-U>call ref#jump('normal', 'phpmanual')<CR>
 autocmd FileType php vnoremap <silent> <Space>d :<C-U>call ref#jump('visual', 'phpmanual')<CR>
 
-"------------------------------------
-" vim-latex
-"------------------------------------
-set shellslash
-let g:tex_flavor = 'latex'
-let g:Tex_DefaultTargetFormat = 'pdf'
-
-if has('win32') || has('win64')
-    let g:Tex_BibtexFlavor = 'jbibtex'
-    let g:Tex_ViewRule_pdf = 'C:\Program Files (x86)\Adobe\Reader 10.0\Reader\AcroRd32.exe'
-    let g:Tex_CompileRule_pdf = 'pdflatex $*.tex'
-elseif has('mac')
-    let g:Tex_BibtexFlavor = 'jbibtex'
-    let g:Tex_ViewRule_pdf = 'open -a /Applications/Preview.app'
-    let g:Tex_CompileRule_pdf = 'pdflatex $*.tex'
-else
-    let g:Tex_BibtexFlavor = 'jbibtex'
-    let g:Tex_ViewRule_pdf = ''
-    let g:Tex_CompileRule_pdf = 'pdflatex $*.tex'
-endif
-
-"------------------------------------
-" taglist.vim
-"------------------------------------
-let Tlist_Auto_Highlight_Tag = 1
-let Tlist_Auto_Update = 1
-if has('mac')
-    let Tlist_Ctags_Cmd = '/usr/local/bin/ctags'
-endif
 
 "------------------------------------
 " Arduino-syntax-file
@@ -1069,3 +974,5 @@ function! s:force_blockwise_visual(next_key)
     return a:next_key
   endif
 endfunction
+
+
