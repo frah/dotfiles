@@ -535,6 +535,9 @@ hi Pmenu ctermbg=white ctermfg=darkgray
 hi PmenuSel ctermbg=blue ctermfg=white
 hi PmenuSbar ctermbg=0 ctermfg=9
 
+"set term=builtin_linux
+"set ttytype=builtin_linux
+set t_Co=256
 colorscheme molokai
 " vim-airlineのカラースキーム
 let g:airline_theme = 'molokai'
