@@ -118,6 +118,28 @@ set laststatus=2 " 常にステータスラインを表示
 "カーソルが何行目の何列目に置かれているかを表示する
 set ruler
 
+" vim-airline
+if neobundle#tap('vim-airline')
+    let g:airline_theme = 'molokai'
+    let g:airline#extensions#whitespace#enabled = 0
+    "let g:airline#extensions#branch#enabled = 0
+    "let g:airline#extensions#readonly#enabled = 0
+    "let g:airline_section_b =
+    "        \ '%{airline#extensions#branch#get_head()}' .
+    "        \ '%{""!=airline#extensions#branch#get_head()?("  " . g:airline_left_alt_sep . " "):""}' .
+    "        \ '%{airline#extensions#readonly#get_mark()}' .
+    "        \ '%t%( %M%)'
+    let g:airline_section_c = ''
+    let s:sep = " %{get(g:, 'airline_right_alt_sep', '')} "
+    let g:airline_section_x =
+            \ '%{strlen(&fileformat)?&fileformat:""}'.s:sep.
+            \ '%{strlen(&fenc)?&fenc:&enc}'.s:sep.
+            \ '%{strlen(&filetype)?&filetype:"no ft"}'
+    let g:airline_section_y = '%3p%%'
+    let g:airline_section_z = get(g:, 'airline_linecolumn_prefix', '').'%3l:%-2v'
+    let g:airline_inactive_collapse = 0
+endif
+
 "ステータスラインに文字コードと改行文字を表示する
 if winwidth(0) >= 120
   set statusline=%<[%n]%m%r%h%w%{'['.(&fenc!=''?&fenc:&enc).':'.&ff.']'}%y\ %F%=[%{GetB()}]\ %{exists('g:loaded_fugitive')?fugitive#statusline():''}\ %l,%c%V%8P
@@ -313,7 +335,6 @@ nnoremap <C-g><C-b> :<C-u>GrepBuffer<Space><C-r><C-w><Enter>
 "---------------------------------------------------------------------------
 " 移動設定 Move
 "---------------------------------------------------------------------------
-
 " カーソルキーを使用可能に
 set notimeout
 set ttimeout
@@ -510,23 +531,6 @@ command! Sjis Cp932
 "---------------------------------------------------------------------------
 " カラー関連 Colors
 "---------------------------------------------------------------------------
-
-" ターミナルタイプによるカラー設定
-if &term =~ "xterm-debian" || &term =~ "xterm-xfree86" || &term =~ "xterm-256color"
- set t_Co=16
- set t_Sf=[3%dm
- set t_Sb=[4%dm
-elseif &term =~ "xterm-color"
- set t_Co=8
- set t_Sf=[3%dm
- set t_Sb=[4%dm
-endif
-
-"ポップアップメニューのカラーを設定
-"hi Pmenu guibg=#666666
-"hi PmenuSel guibg=#8cd0d3 guifg=#666666
-"hi PmenuSbar guibg=#333333
-
 " ハイライト on
 syntax enable
 
@@ -535,14 +539,11 @@ hi Pmenu ctermbg=white ctermfg=darkgray
 hi PmenuSel ctermbg=blue ctermfg=white
 hi PmenuSbar ctermbg=0 ctermfg=9
 
+" カラースキーム設定
 "set term=builtin_linux
 "set ttytype=builtin_linux
 set t_Co=256
 colorscheme molokai
-" vim-airlineのカラースキーム
-let g:airline_theme = 'molokai'
-let g:airline#extensions#whitespace#enabled = 0
-
 
 "---------------------------------------------------------------------------
 " 編集関連 Edit
