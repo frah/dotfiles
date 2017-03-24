@@ -76,6 +76,14 @@ if neobundle#load_cache()
                 \                   {'name': 'UniteWithWithInput', 'complete' : 'customlist,unite#complete_source'}]
                 \    }
                 \ }
+    NeoBundleLazy 'Shougo/vimfiler.vim', {
+                \   'depends'  : 'Shougo/unite.vim',
+                \   'autoload' : {
+                \       'commands' : ['VimFiler', 'VimFilerCurrentDir',
+                \                     'VimFilerBufferDir', 'VimFilerSplit',
+                \                     'VimFilerExplorer', 'VimFilerDouble']
+                \   }
+                \ }
 
     " completion
     if v:version >= 703 && has('lua')
@@ -152,6 +160,15 @@ if neobundle#tap('vim-airline')
     let g:airline_section_y = '%3p%%'
     let g:airline_section_z = get(g:, 'airline_linecolumn_prefix', '').'%3l:%-2v'
     let g:airline_inactive_collapse = 0
+
+    " Use airline at tabline
+    let g:airline#extensions#tabline#enabled = 1
+    " （タブが一個の場合）バッファのリストをタブラインに表示する機能をオフ
+    let g:airline#extensions#tabline#show_buffers = 0
+    " 0でそのタブで開いてるウィンドウ数、1で左のタブから連番
+    let g:airline#extensions#tabline#tab_nr_type = 1
+    " タブに表示する名前（fnamemodifyの第二引数）
+    let g:airline#extensions#tabline#fnamemod = ':t'
 endif
 
 "ステータスラインに文字コードと改行文字を表示する
@@ -277,25 +294,6 @@ else
   set tags=./tags,./../tags,./*/tags,./../../tags,./../../../tags,./../../../../tags,./../../../../../tags
 endif
 
-"<C-t>はscreentとかぶるので削除
-"tab pagesを使い易くする
-" nnoremap <C-t>  <Nop>
-" nnoremap <C-t>n  ;<C-u>tabnew<CR>
-" nnoremap <C-t>c  ;<C-u>tabclose<CR>
-" nnoremap <C-t>o  ;<C-u>tabonly<CR>
-" nnoremap <C-t>j  ;<C-u>execute 'tabnext' 1 + (tabpagenr() + v:count1 - 1) % tabpagenr('$')<CR>
-" nnoremap <C-t>k  gT
-
-"tags-and-searchesを使い易くする
-nnoremap t  <Nop>
-"「飛ぶ」
-nnoremap tt  <C-]>
-"「進む」
-nnoremap tj  ;<C-u>tag<CR>
-"「戻る」
-nnoremap tk  ;<C-u>pop<CR>
-"履歴一覧
-nnoremap tl  ;<C-u>tags<CR>
 
 "---------------------------------------------------------------------------
 " 検索設定 Search
@@ -435,6 +433,14 @@ endfunction
 " JK高速移動
 nmap j <Plug>(accelerated_jk_gj)
 nmap k <Plug>(accelerated_jk_gk)
+
+" tabline移動
+nnoremap [Tab]   <Nop>
+nmap     t       [Tab]
+nmap <silent> [Tab]c    :tablast <bar> tabnew<CR>
+nmap <silent> [Tab]x    :tabclose<CR>
+nmap <silent> [Tab]n    :tabnext<CR>
+nmap <silent> [Tab]p    :tabprevious<CR>
 
 "---------------------------------------------------------------------------
 " エンコーディング関連 Encoding
@@ -952,6 +958,21 @@ let g:unite_enable_start_insert = 1
 let g:unite_enable_ignore_case = 1
 let g:unite_enable_smart_case = 1
 
+"------------------------------------
+" vimfiler
+"------------------------------------
+if neobundle#tap('vimfiler.vim')
+    let g:loaded_netrwPlugin = 1
+    let g:vimfiler_as_default_explorer = 1
+    let g:vimfiler_split_command = 'vertical rightbelow vsplit'
+    let g:vimfiler_edit_action = 'tabopen'
+
+    nnoremap <Leader>f      <Nop>
+    nnoremap <Leader>ff     :<C-u>VimFiler<CR>
+    nnoremap <Leader>fs     :<C-u>VimFilerSplit<CR>
+    nnoremap <Leader>fc     :<C-u>VimFilerCurrentDir<CR>
+    nnoremap <Leader>fb     :<C-u>VimFilerBufferDir<CR>
+endif
 
 "------------------------------------
 " quickrun.vim
