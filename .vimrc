@@ -28,15 +28,27 @@ call neobundle#begin(expand('~/.vim/bundle'))
 
 if neobundle#load_cache()
     NeoBundleFetch 'Shougo/neobundle.vim'
+    NeoBundle 'Shougo/vimproc.vim', {
+        \ 'build' : {
+        \       'windows' : 'tools\\update-dll-mingw',
+        \       'cygwin'  : 'make -f make_cygwin.mak',
+        \       'mac'     : 'make',
+        \       'linux'   : 'make',
+        \       'unix'    : 'gmake',
+        \   }
+        \ }
     NeoBundle 'vim-jp/vimdoc-ja'
     NeoBundle 'vim-airline/vim-airline'
     NeoBundle 'vim-airline/vim-airline-themes'
     NeoBundle 'rhysd/accelerated-jk'
     NeoBundle 'tpope/vim-fugitive'
     NeoBundle 'taku-o/vim-changed'
-    NeoBundle 'thinca/vim-ref'
     NeoBundle 'pgilad/vim-skeletons'
-    NeoBundle 'sudo.vim'
+    NeoBundle 'thinca/vim-ref'
+
+    if has('unix') || has('mac')
+        NeoBundle 'sudo.vim'
+    endif
 
     " Syntax
     NeoBundle 'leafgarland/typescript-vim'
@@ -55,6 +67,7 @@ if neobundle#load_cache()
     NeoBundle 'Shougo/unite-help'
     NeoBundle 'ujihisa/unite-colorscheme'
     NeoBundle 'ujihisa/unite-locate'
+    NeoBundle 'Shougo/neoyank.vim'
     NeoBundleLazy 'Shougo/unite.vim', {
                 \ 'autoload' : {
                 \     'commands' : [{'name': 'Unite', 'complete' : 'customlist,unite#complete_source'},
@@ -65,7 +78,11 @@ if neobundle#load_cache()
                 \ }
 
     " completion
-    NeoBundle 'Shougo/neocomplcache'
+    if v:version >= 703 && has('lua')
+        NeoBundle 'Shougo/neocomplete.vim'
+    else
+        NeoBundle 'Shougo/neocomplcache'
+    endif
 
     NeoBundleCheck
     NeoBundleSaveCache
@@ -97,9 +114,6 @@ set modelines=0                  " モードラインは無効
 
 " OSのクリップボードを使用する
 set clipboard+=unnamed
-
-" 挿入モードでCtrl+kを押すとクリップボードの内容を貼り付けられるようにする "
-imap <C-p>  <ESC>"*pa
 
 " Ev/Rvでvimrcの編集と反映
 command! Ev edit $MYVIMRC
@@ -251,26 +265,6 @@ set history=1000           " コマンド・検索パターンの履歴数
 set complete+=k            " 補完に辞書ファイル追加
 
 
-"<c-space>でomni補完
-" imap <c-space> <c-x><c-o>
-
-" " -- tabでオムニ補完
-" function! InsertTabWrapper()
-  " if pumvisible()
-    " return "\<c-n>"
-  " endif
-  " let col = col('.') - 1
-  " if !col || getline('.')[col -1] !~ '\k\|<\|/'
-    " return "\<tab>"
-  " elseif exists('&omnifunc') && &omnifunc == ''
-    " return "\<c-n>"
-  " else
-    " return "\<c-x>\<c-o>"
-  " endif
-" endfunction
-" inoremap <tab> <c-r>=InsertTabWrapper()<cr>
-
-
 "---------------------------------------------------------------------------
 " タグ関連 Tags
 "---------------------------------------------------------------------------
@@ -331,6 +325,7 @@ nnoremap <C-i><C-i> :<C-u>help<Space><C-r><C-w><Enter>
 command! -nargs=1 Gb :GrepBuffer <args>
 " カーソル下の単語をGrepBufferする
 nnoremap <C-g><C-b> :<C-u>GrepBuffer<Space><C-r><C-w><Enter>
+
 
 "---------------------------------------------------------------------------
 " 移動設定 Move
@@ -548,14 +543,6 @@ colorscheme molokai
 "---------------------------------------------------------------------------
 " 編集関連 Edit
 "---------------------------------------------------------------------------
-
-" 新規作成時にtemplateを適用
-"autocmd BufNewFile *.c    0r ~/.vim/templates/skel.c|1;/{
-"autocmd BufNewFile *.html 0r ~/.vim/templates/skel.html|1;/<title>/;normal $hhhhhhh
-"autocmd BufNewFile *.php  0r ~/.vim/templates/skel.php
-"autocmd BufNewFile *.py   0r ~/.vim/templates/skel.py|1;?:
-"autocmd BufNewFile *.sh   0r ~/.vim/templates/skel.sh|normal G
-
 " insertモードを抜けるとIMEオフ
 set noimdisable
 set iminsert=0 imsearch=0
@@ -637,17 +624,20 @@ inoremap <expr> ,dt strftime('%H:%M:%S')
 "---------------------------------------------------------------------------
 " その他 Misc
 "---------------------------------------------------------------------------
-
 " ;でコマンド入力( ;と:を入れ替)
-noremap ; :
-" pluginとかでnmap :call hoge..とかやってるやつがあるので、
-" :でもexコマンドに入れるようにしておく
-" noremap : ;
+nnoremap ; :
+"nnoremap : ;
+
+" 誤操作防止でZZ, ZQは潰す
+nnoremap ZZ <Nop>
+nnoremap ZQ <Nop>
+
+" exモードのマップ変更
+nnoremap Q gq
 
 "---------------------------------------------------------------------------
 " プラグインごとの設定 Plugins
 "---------------------------------------------------------------------------
-
 "------------------------------------
 " YankRing.vim
 "------------------------------------
@@ -686,13 +676,17 @@ let Grep_Skip_Files = '*.bak *~'
 "------------------------------------
 " Fugitive.vim
 "------------------------------------
-nnoremap <Space>gd :<C-u>Gdiff<Enter>
-nnoremap <Space>gs :<C-u>Gstatus<Enter>
-nnoremap <Space>gl :<C-u>Glog<Enter>
-nnoremap <Space>ga :<C-u>Gwrite<Enter>
-nnoremap <Space>gc :<C-u>Gcommit<Enter>
-nnoremap <Space>gC :<C-u>Git commit --amend<Enter>
-nnoremap <Space>gb :<C-u>Gblame<Enter>
+" The prefix key.
+nnoremap [Fugitive] <Nop>
+nmap     <Space>g   [Fugitive]
+
+nnoremap [Fugitive]d :<C-u>Gdiff<Enter>
+nnoremap [Fugitive]s :<C-u>Gstatus<Enter>
+nnoremap [Fugitive]l :<C-u>Glog<Enter>
+nnoremap [Fugitive]a :<C-u>Gwrite<Enter>
+nnoremap [Fugitive]c :<C-u>Gcommit<Enter>
+nnoremap [Fugitive]C :<C-u>Git commit --amend<Enter>
+nnoremap [Fugitive]b :<C-u>Gblame<Enter>
 
 "------------------------------------
 " VTreeExplorer
@@ -895,17 +889,48 @@ if neobundle#tap('neocomplcache')
 endif
 
 "------------------------------------
+" neocomplete.vim
+"------------------------------------
+if neobundle#tap('neocomplete.vim')
+    " Disable AutoComplPop.
+    let g:acp_enableAtStartup = 0
+    " Use neocomplete.
+    let g:neocomplete#enable_at_startup = 1
+    " Use smartcase.
+    let g:neocomplete#enable_smart_case = 1
+    " Set minimum syntax keyword length.
+    let g:neocomplete#sources#syntax#min_keyword_length = 3
+
+    " Plugin key-mappings.
+    inoremap <expr><C-g>     neocomplete#undo_completion()
+    inoremap <expr><C-l>     neocomplete#complete_common_string()
+
+    " Enable omni completion.
+    autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
+    autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
+    autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
+    autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
+    autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
+endif
+
+"------------------------------------
 " unite.vim
 "------------------------------------
 " The prefix key.
-nnoremap    [unite]   <Nop>
-nmap    f [unite]
+nnoremap [unite]   <Nop>
+nmap     <Space>u  [unite]
 
 nnoremap [unite]u  :<C-u>Unite<Space>
 nnoremap <silent> [unite]a  :<C-u>UniteWithCurrentDir -buffer-name=files buffer file_mru bookmark file<CR>
 nnoremap <silent> [unite]f  :<C-u>Unite -buffer-name=files file<CR>
 nnoremap <silent> [unite]b  :<C-u>Unite buffer<CR>
 nnoremap <silent> [unite]m  :<C-u>Unite file_mru<CR>
+" grep (current buffer)
+nnoremap <silent> [unite]gc :<C-u>Unite grep:% -buffer-name=search-buffer<CR>
+" grep (current directory)
+nnoremap <silent> [unite]gd :<C-u>Unite grep:. -buffer-name=search-buffer<CR>
+" ヤンク履歴
+nnoremap <silent> [unite]y  :<C-u>Unite -buffer-name=lines history/yank<CR>
 
 " nnoremap <silent> [unite]b  :<C-u>UniteWithBufferDir -buffer-name=files buffer file_mru bookmark file<CR>
 
@@ -923,6 +948,9 @@ autocmd FileType unite nnoremap <silent> <buffer> <ESC><ESC> :<C-q>q<CR>
 
 let g:unite_data_directory = expand('~/.vim/.unite')
 let g:unite_source_file_mru_limit = 200
+let g:unite_enable_start_insert = 1
+let g:unite_enable_ignore_case = 1
+let g:unite_enable_smart_case = 1
 
 
 "------------------------------------
