@@ -978,12 +978,19 @@ let g:unite_enable_smart_case = 1
 if neobundle#tap('vimfiler.vim')
     let g:loaded_netrwPlugin = 1
     let g:vimfiler_as_default_explorer = 1
-    let g:vimfiler_split_command = 'vertical rightbelow vsplit'
-    let g:vimfiler_edit_action = 'tabopen'
+
+    let s:bundle = neobundle#get('vimfiler.vim')
+    function! s:bundle.hooks.on_source(bundle)
+        call vimfiler#custom#profile('default', 'context', {
+            \   'edit_action' : 'tabopen',
+            \   'direction'   : 'topleft'
+            \ })
+    endfunction
+    unlet s:bundle
 
     nnoremap <Leader>f      <Nop>
     nnoremap <Leader>ff     :<C-u>VimFiler<CR>
-    nnoremap <Leader>fs     :<C-u>VimFilerSplit<CR>
+    nnoremap <Leader>fs     :<C-u>VimFilerSplit -horizontal -force-hide<CR>
     nnoremap <Leader>fc     :<C-u>VimFilerCurrentDir<CR>
     nnoremap <Leader>fb     :<C-u>VimFilerBufferDir<CR>
 endif
