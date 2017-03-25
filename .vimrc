@@ -132,6 +132,15 @@ set helpfile=$VIMRUNTIME/doc/help.txt
 " ファイルタイプ判定をon
 filetype plugin on
 
+augroup filetypes
+    autocmd!
+    autocmd BufNewFile,BufRead *.md  set filetype=markdown
+    autocmd BufNewFile,BufRead *.pde set filetype=arduino
+    autocmd BufNewFile,BufRead *.ts  set filetype=typescript
+augroup END
+
+
+
 "---------------------------------------------------------------------------
 " ステータスライン StatusLine
 "---------------------------------------------------------------------------
@@ -1028,12 +1037,6 @@ augroup vimref
     autocmd FileType php nnoremap <silent> <Space>d :<C-U>call ref#jump('normal', 'phpmanual')<CR>
     autocmd FileType php vnoremap <silent> <Space>d :<C-U>call ref#jump('visual', 'phpmanual')<CR>
 augroup END
-
-
-"------------------------------------
-" Arduino-syntax-file
-"------------------------------------
-autocmd BufNewFile,BufRead *.pde setlocal ft=arduino
 
 "------------------------------------
 " Smart blockwise insertion
