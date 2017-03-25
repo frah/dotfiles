@@ -173,49 +173,52 @@ endif
 
 "ステータスラインに文字コードと改行文字を表示する
 if winwidth(0) >= 120
-  set statusline=%<[%n]%m%r%h%w%{'['.(&fenc!=''?&fenc:&enc).':'.&ff.']'}%y\ %F%=[%{GetB()}]\ %{exists('g:loaded_fugitive')?fugitive#statusline():''}\ %l,%c%V%8P
+    set statusline=%<[%n]%m%r%h%w%{'['.(&fenc!=''?&fenc:&enc).':'.&ff.']'}%y\ %F%=[%{GetB()}]\ %{exists('g:loaded_fugitive')?fugitive#statusline():''}\ %l,%c%V%8P
 else
-  set statusline=%<[%n]%m%r%h%w%{'['.(&fenc!=''?&fenc:&enc).':'.&ff.']'}%y\ %f%=[%{GetB()}]\ %{exists('g:loaded_fugitive')?fugitive#statusline():''}\ %l,%c%V%8P
+    set statusline=%<[%n]%m%r%h%w%{'['.(&fenc!=''?&fenc:&enc).':'.&ff.']'}%y\ %f%=[%{GetB()}]\ %{exists('g:loaded_fugitive')?fugitive#statusline():''}\ %l,%c%V%8P
 endif
 
 "入力モード時、ステータスラインのカラーを変更
 augroup InsertHook
-autocmd!
-autocmd InsertEnter * highlight StatusLine guifg=#ccdc90 guibg=#2E4340 ctermfg=cyan
-autocmd InsertLeave * highlight StatusLine guifg=#2E4340 guibg=#ccdc90 ctermfg=white
+    autocmd!
+    autocmd InsertEnter * highlight StatusLine guifg=#ccdc90 guibg=#2E4340 ctermfg=cyan
+    autocmd InsertLeave * highlight StatusLine guifg=#2E4340 guibg=#ccdc90 ctermfg=white
 augroup END
 
 "自動的に QuickFix リストを表示する
-autocmd QuickfixCmdPost make,grep,grepadd,vimgrep,vimgrepadd cwin
-autocmd QuickfixCmdPost lmake,lgrep,lgrepadd,lvimgrep,lvimgrepadd lwin
+augroup QucikFixAuto
+    autocmd QuickfixCmdPost make,grep,grepadd,vimgrep,vimgrepadd cwin
+    autocmd QuickfixCmdPost lmake,lgrep,lgrepadd,lvimgrep,lvimgrepadd lwin
+augroup END
 
 function! GetB()
-  let c = matchstr(getline('.'), '.', col('.') - 1)
-  let c = iconv(c, &enc, &fenc)
-  return String2Hex(c)
+    let c = matchstr(getline('.'), '.', col('.') - 1)
+    let c = iconv(c, &enc, &fenc)
+    return String2Hex(c)
 endfunction
 " help eval-examples
 " The function Nr2Hex() returns the Hex string of a number.
 func! Nr2Hex(nr)
-  let n = a:nr
-  let r = ""
-  while n
-    let r = '0123456789ABCDEF'[n % 16] . r
-    let n = n / 16
-  endwhile
-  return r
+    let n = a:nr
+    let r = ""
+    while n
+        let r = '0123456789ABCDEF'[n % 16] . r
+        let n = n / 16
+    endwhile
+    return r
 endfunc
 " The function String2Hex() converts each character in a string to a two
 " character Hex string.
 func! String2Hex(str)
-  let out = ''
-  let ix = 0
-  while ix < strlen(a:str)
-    let out = out . Nr2Hex(char2nr(a:str[ix]))
-    let ix = ix + 1
-  endwhile
-  return out
+    let out = ''
+    let ix = 0
+    while ix < strlen(a:str)
+        let out = out . Nr2Hex(char2nr(a:str[ix]))
+        let ix = ix + 1
+    endwhile
+    return out
 endfunc
+
 
 "---------------------------------------------------------------------------
 " 表示 Apperance
@@ -234,9 +237,9 @@ match ZenkakuSpace /　/
 set cursorline
 " カレントウィンドウにのみ罫線を引く
 augroup cch
-  autocmd! cch
-  autocmd WinLeave * set nocursorline
-  autocmd WinEnter,BufRead * set cursorline
+    autocmd! cch
+    autocmd WinLeave * set nocursorline
+    autocmd WinEnter,BufRead * set cursorline
 augroup END
 
 :hi clear CursorLine
@@ -247,6 +250,7 @@ highlight CursorLine ctermbg=black guibg=black
 :set lazyredraw
 " 高速ターミナル接続を行う
 :set ttyfast
+
 
 "---------------------------------------------------------------------------
 " インデント Indent
@@ -260,15 +264,15 @@ set cindent      " Cプログラムファイルの自動インデントを始め
 set tabstop=4 shiftwidth=4 softtabstop=0
 
 if has("autocmd")
-  "ファイルタイプの検索を有効にする
-  filetype plugin on
-  "そのファイルタイプにあわせたインデントを利用する
-  filetype indent on
-  " これらのftではインデントを無効に
-  "autocmd FileType php filetype indent off
+    "ファイルタイプの検索を有効にする
+    filetype plugin on
+    "そのファイルタイプにあわせたインデントを利用する
+    filetype indent on
+    " これらのftではインデントを無効に
+    "autocmd FileType php filetype indent off
 
-  autocmd FileType html :set indentexpr=
-  autocmd FileType xhtml :set indentexpr=
+    autocmd FileType html :set indentexpr=
+    autocmd FileType xhtml :set indentexpr=
 endif
 
 
@@ -287,11 +291,11 @@ set complete+=k            " 補完に辞書ファイル追加
 "---------------------------------------------------------------------------
 " set tags
 if has("autochdir")
-  " 編集しているファイルのディレクトリに自動で移動
-  set autochdir
-  set tags=tags;
+    " 編集しているファイルのディレクトリに自動で移動
+    set autochdir
+    set tags=tags;
 else
-  set tags=./tags,./../tags,./*/tags,./../../tags,./../../../tags,./../../../../tags,./../../../../../tags
+    set tags=./tags,./../tags,./*/tags,./../../tags,./../../../tags,./../../../../tags,./../../../../../tags
 endif
 
 
@@ -416,18 +420,18 @@ nnoremap <expr> <C-w>gf  <SID>do_git_diff_aware_gf('<C-w>gf')
 nnoremap <expr> <C-w>gF  <SID>do_git_diff_aware_gf('<C-w>gF')
 
 function! s:do_git_diff_aware_gf(command)
-  let target_path = expand('<cfile>')
-  if target_path =~# '^[ab]/'  " with a peculiar prefix of git-diff(1)?
-    if filereadable(target_path) || isdirectory(target_path)
-      return a:command
+    let target_path = expand('<cfile>')
+    if target_path =~# '^[ab]/'  " with a peculiar prefix of git-diff(1)?
+        if filereadable(target_path) || isdirectory(target_path)
+            return a:command
+        else
+            " BUGS: Side effect - Cursor position is changed.
+            let [_, c] = searchpos('\f\+', 'cenW')
+            return c . '|' . 'v' . (len(target_path) - 2 - 1) . 'h' . a:command
+        endif
     else
-      " BUGS: Side effect - Cursor position is changed.
-      let [_, c] = searchpos('\f\+', 'cenW')
-      return c . '|' . 'v' . (len(target_path) - 2 - 1) . 'h' . a:command
+        return a:command
     endif
-  else
-    return a:command
-  endif
 endfunction
 
 " JK高速移動
@@ -442,6 +446,7 @@ nmap <silent> [Tab]x    :tabclose<CR>
 nmap <silent> [Tab]n    :tabnext<CR>
 nmap <silent> [Tab]p    :tabprevious<CR>
 
+
 "---------------------------------------------------------------------------
 " エンコーディング関連 Encoding
 "---------------------------------------------------------------------------
@@ -452,71 +457,74 @@ set encoding=utf-8    " デフォルトエンコーディング
 " from ずんWiki http://www.kawaz.jp/pukiwiki/?vim#content_1_7
 " 文字コードの自動認識
 if &encoding !=# 'utf-8'
-  set encoding=japan
-  set fileencoding=japan
+    set encoding=japan
+    set fileencoding=japan
 endif
 if has('iconv')
-  let s:enc_euc = 'euc-jp'
-  let s:enc_jis = 'iso-2022-jp'
-  " iconvがeucJP-msに対応しているかをチェック
-  if iconv("\x87\x64\x87\x6a", 'cp932', 'eucjp-ms') ==# "\xad\xc5\xad\xcb"
-    let s:enc_euc = 'eucjp-ms'
-    let s:enc_jis = 'iso-2022-jp-3'
-  " iconvがJISX0213に対応しているかをチェック
-  elseif iconv("\x87\x64\x87\x6a", 'cp932', 'euc-jisx0213') ==# "\xad\xc5\xad\xcb"
-    let s:enc_euc = 'euc-jisx0213'
-    let s:enc_jis = 'iso-2022-jp-3'
-  endif
-  " fileencodingsを構築
-  if &encoding ==# 'utf-8'
-    let s:fileencodings_default = &fileencodings
-    let &fileencodings = s:enc_jis .','. s:enc_euc .',cp932'
-    let &fileencodings = &fileencodings .','. s:fileencodings_default
-    unlet s:fileencodings_default
-  else
-    let &fileencodings = &fileencodings .','. s:enc_jis
-    set fileencodings+=utf-8,ucs-2le,ucs-2
-    if &encoding =~# '^\(euc-jp\|euc-jisx0213\|eucjp-ms\)$'
-      set fileencodings+=cp932
-      set fileencodings-=euc-jp
-      set fileencodings-=euc-jisx0213
-      set fileencodings-=eucjp-ms
-      let &encoding = s:enc_euc
-      let &fileencoding = s:enc_euc
-    else
-      let &fileencodings = &fileencodings .','. s:enc_euc
+    let s:enc_euc = 'euc-jp'
+    let s:enc_jis = 'iso-2022-jp'
+    " iconvがeucJP-msに対応しているかをチェック
+    if iconv("\x87\x64\x87\x6a", 'cp932', 'eucjp-ms') ==# "\xad\xc5\xad\xcb"
+        let s:enc_euc = 'eucjp-ms'
+        let s:enc_jis = 'iso-2022-jp-3'
+    " iconvがJISX0213に対応しているかをチェック
+    elseif iconv("\x87\x64\x87\x6a", 'cp932', 'euc-jisx0213') ==# "\xad\xc5\xad\xcb"
+        let s:enc_euc = 'euc-jisx0213'
+        let s:enc_jis = 'iso-2022-jp-3'
     endif
-  endif
-  " 定数を処分
-  unlet s:enc_euc
-  unlet s:enc_jis
+    " fileencodingsを構築
+    if &encoding ==# 'utf-8'
+        let s:fileencodings_default = &fileencodings
+        let &fileencodings = s:enc_jis .','. s:enc_euc .',cp932'
+        let &fileencodings = &fileencodings .','. s:fileencodings_default
+        unlet s:fileencodings_default
+    else
+        let &fileencodings = &fileencodings .','. s:enc_jis
+        set fileencodings+=utf-8,ucs-2le,ucs-2
+        if &encoding =~# '^\(euc-jp\|euc-jisx0213\|eucjp-ms\)$'
+            set fileencodings+=cp932
+            set fileencodings-=euc-jp
+            set fileencodings-=euc-jisx0213
+            set fileencodings-=eucjp-ms
+            let &encoding = s:enc_euc
+            let &fileencoding = s:enc_euc
+        else
+            let &fileencodings = &fileencodings .','. s:enc_euc
+        endif
+    endif
+    " 定数を処分
+    unlet s:enc_euc
+    unlet s:enc_jis
 endif
 " 日本語を含まない場合は fileencoding に encoding を使うようにする
 if has('autocmd')
-  function! AU_ReCheck_FENC()
-    if &fileencoding =~# 'iso-2022-jp' && search("[^\x01-\x7e]", 'n') == 0
-      let &fileencoding=&encoding
-    endif
-  endfunction
-  autocmd BufReadPost * call AU_ReCheck_FENC()
+    function! AU_ReCheck_FENC()
+        if &fileencoding =~# 'iso-2022-jp' && search("[^\x01-\x7e]", 'n') == 0
+            let &fileencoding=&encoding
+        endif
+    endfunction
+    autocmd BufReadPost * call AU_ReCheck_FENC()
 endif
 " 改行コードの自動認識
 set fileformats=unix,dos,mac
 " □とか○の文字があってもカーソル位置がずれないようにする
 if exists('&ambiwidth')
-  set ambiwidth=double
+    set ambiwidth=double
 endif
 
-" cvsの時は文字コードをeuc-jpに設定
-autocmd FileType cvs :set fileencoding=euc-jp
-" 以下のファイルの時は文字コードをutf-8に設定
-autocmd FileType svn :set fileencoding=utf-8
-autocmd FileType js :set fileencoding=utf-8
-autocmd FileType css :set fileencoding=utf-8
-autocmd FileType html :set fileencoding=utf-8
-autocmd FileType xml :set fileencoding=utf-8
-autocmd FileType java :set fileencoding=utf-8
-autocmd FileType scala :set fileencoding=utf-8
+augroup encodings
+    autocmd!
+    " cvsの時は文字コードをeuc-jpに設定
+    autocmd FileType cvs :set fileencoding=euc-jp
+    " 以下のファイルの時は文字コードをutf-8に設定
+    autocmd FileType svn :set fileencoding=utf-8
+    autocmd FileType js :set fileencoding=utf-8
+    autocmd FileType css :set fileencoding=utf-8
+    autocmd FileType html :set fileencoding=utf-8
+    autocmd FileType xml :set fileencoding=utf-8
+    autocmd FileType java :set fileencoding=utf-8
+    autocmd FileType scala :set fileencoding=utf-8
+augroup END
 
 " ワイルドカードで表示するときに優先度を低くする拡張子
 set suffixes=.bak,~,.swp,.o,.info,.aux,.log,.dvi,.bbl,.blg,.brf,.cb,.ind,.idx,.ilg,.inx,.out,.toc
@@ -528,6 +536,7 @@ command! Iso2022jp edit ++enc=iso-2022-jp
 command! Utf8 edit ++enc=utf-8
 command! Jis Iso2022jp
 command! Sjis Cp932
+
 
 "---------------------------------------------------------------------------
 " カラー関連 Colors
@@ -545,6 +554,7 @@ hi PmenuSbar ctermbg=0 ctermfg=9
 "set ttytype=builtin_linux
 set t_Co=256
 colorscheme molokai
+
 
 "---------------------------------------------------------------------------
 " 編集関連 Edit
@@ -572,8 +582,8 @@ autocmd FileType conf set noexpandtab
 "inoremap , ,<Space>
 " XMLの閉タグを自動挿入
 augroup MyXML
-  autocmd!
-  autocmd Filetype xml inoremap <buffer> </ </<C-x><C-o>
+    autocmd!
+    autocmd Filetype xml inoremap <buffer> </ </<C-x><C-o>
 augroup END
 
 "  Insert mode中で単語単位/行単位の削除をアンドゥ可能にする
@@ -749,46 +759,46 @@ if neobundle#tap('vimshell')
     let g:vimshell_right_prompt = 'vimshell#vcs#info("(%s)-[%b]", "(%s)-[%b|%a]")'
     let g:vimshell_enable_smart_case = 1
     let g:vimshell_temporary_directory = expand('~/.vim/.vimshell')
-    
+
     if has('win32') || has('win64')
-      " Display user name on Windows.
-      let g:vimshell_prompt = $USERNAME."% "
+        " Display user name on Windows.
+        let g:vimshell_prompt = $USERNAME."% "
     else
-      " Display user name on Linux.
-      let g:vimshell_prompt = $USER."% "
-    
+        " Display user name on Linux.
+        let g:vimshell_prompt = $USER."% "
+
     "  call vimshell#set_execute_file('bmp,jpg,png,gif', 'gexe eog')
     "  call vimshell#set_execute_file('mp3,m4a,ogg', 'gexe amarok')
     "  let g:vimshell_execute_file_list['zip'] = 'zipinfo'
     "  call vimshell#set_execute_file('tgz,gz', 'gzcat')
     "  call vimshell#set_execute_file('tbz,bz2', 'bzcat')
     endif
-    
+
     function! g:my_chpwd(args, context)
-      call vimshell#execute('echo "chpwd"')
+        call vimshell#execute('echo "chpwd"')
     endfunction
     function! g:my_emptycmd(cmdline, context)
-      call vimshell#execute('echo "emptycmd"')
-      return a:cmdline
+        call vimshell#execute('echo "emptycmd"')
+        return a:cmdline
     endfunction
     function! g:my_preprompt(args, context)
-      call vimshell#execute('echo "preprompt"')
+        call vimshell#execute('echo "preprompt"')
     endfunction
     function! g:my_preexec(cmdline, context)
-      call vimshell#execute('echo "preexec"')
-    
-      if a:cmdline =~# '^\s*diff\>'
-        call vimshell#set_syntax('diff')
-      endif
-      return a:cmdline
+        call vimshell#execute('echo "preexec"')
+
+        if a:cmdline =~# '^\s*diff\>'
+            call vimshell#set_syntax('diff')
+        endif
+        return a:cmdline
     endfunction
-    
+
     autocmd FileType vimshell
     \ call vimshell#hook#set('chpwd', ['g:my_chpwd'])
     \| call vimshell#hook#set('emptycmd', ['g:my_emptycmd'])
     \| call vimshell#hook#set('preprompt', ['g:my_preprompt'])
     \| call vimshell#hook#set('preexec', ['g:my_preexec'])
-    
+
     command! Vs :VimShell
 endif
 
@@ -820,7 +830,7 @@ if neobundle#tap('neocomplcache')
     if has('mac')
         let g:neocomplcache_ctags_program = '/usr/local/bin/ctags'
     endif
-    
+
     " Define dictionary.
     let g:neocomplcache_dictionary_filetype_lists = {
     \ 'default' : '',
@@ -834,20 +844,20 @@ if neobundle#tap('neocomplcache')
     \ 'scheme' : $HOME.'/.vim/dict/scheme.dict',
     \ 'vm' : $HOME.'/.vim/dict/vim.dict'
     \ }
-    
+
     " Define keyword.
     " if !exists('g:neocomplcache_keyword_patterns')
     " let g:neocomplcache_keyword_patterns = {}
     " endif
     " let g:neocomplcache_keyword_patterns['default'] = '\h\w*'
-    
+
     " ユーザー定義スニペット保存ディレクトリ
     let g:neocomplcache_snippets_dir = $HOME.'/.vim/snippets'
-    
+
     " スニペット
     imap <C-k> <Plug>(neocomplcache_snippets_expand)
     smap <C-k> <Plug>(neocomplcache_snippets_expand)
-    
+
     " 補完を選択しpopupを閉じる
     inoremap <expr><C-y> neocomplcache#close_popup()
     " 補完をキャンセルしpopupを閉じる
@@ -868,27 +878,29 @@ if neobundle#tap('neocomplcache')
     inoremap <expr><C-p> pumvisible() ? "\<C-p>" : "\<C-p>\<C-n>"
     " 補完候補が出ていたら確定、なければ改行
     inoremap <expr><CR>  pumvisible() ? neocomplcache#close_popup() : "<CR>"
-    
+
     " <TAB>: completion.
     inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
     " <C-h>, <BS>: close popup and delete backword char.
     inoremap <expr><C-h> neocomplcache#smart_close_popup()."\<C-h>"
     inoremap <expr><BS> neocomplcache#smart_close_popup()."\<C-h>"
     inoremap <expr><C-x><C-o> &filetype == 'vim' ? "\<C-x><C-v><C-p>" : neocomplcache#manual_omni_complete()
-    
+
     " FileType毎のOmni補完を設定
-    autocmd FileType python set omnifunc=pythoncomplete#Complete
-    autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
-    autocmd FileType html set omnifunc=htmlcomplete#CompleteTags
-    autocmd FileType css set omnifunc=csscomplete#CompleteCSS
-    autocmd FileType xml set omnifunc=xmlcomplete#CompleteTags
-    autocmd FileType php set omnifunc=phpcomplete#CompletePHP
-    autocmd FileType c set omnifunc=ccomplete#Complete
-    autocmd FileType ruby set omnifunc=rubycomplete#Complete
-    
+    augroup neocomplcache
+        autocmd FileType python set omnifunc=pythoncomplete#Complete
+        autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
+        autocmd FileType html set omnifunc=htmlcomplete#CompleteTags
+        autocmd FileType css set omnifunc=csscomplete#CompleteCSS
+        autocmd FileType xml set omnifunc=xmlcomplete#CompleteTags
+        autocmd FileType php set omnifunc=phpcomplete#CompletePHP
+        autocmd FileType c set omnifunc=ccomplete#Complete
+        autocmd FileType ruby set omnifunc=rubycomplete#Complete
+    augroup END
+
     " Enable heavy omni completion.
     if !exists('g:neocomplcache_omni_patterns')
-      let g:neocomplcache_omni_patterns = {}
+        let g:neocomplcache_omni_patterns = {}
     endif
     let g:neocomplcache_omni_patterns.ruby = '[^. *\t]\.\w*\|\h\w*::'
     let g:neocomplcache_omni_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
@@ -912,11 +924,13 @@ if neobundle#tap('neocomplete.vim')
     inoremap <expr><C-l>     neocomplete#complete_common_string()
 
     " Enable omni completion.
-    autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
-    autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
-    autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
-    autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
-    autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
+    augroup neocomplete
+        autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
+        autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
+        autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
+        autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
+        autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
+    augroup END
 endif
 
 "------------------------------------
@@ -994,22 +1008,25 @@ let g:ref_alc_encoding = 'sjis'
 
 nnoremap <silent> <Space>e :<C-u>call ref#jump('normal', 'alc')<CR>
 vnoremap <silent> <Space>e :<C-u>call ref#jump('visual', 'alc')<CR>
-autocmd FileType sh,c nnoremap <silent> <Space>d :<C-u>call ref#jump('normal', 'man')<CR>
-autocmd FileType sh,c vnoremap <silent> <Space>d :<C-u>call ref#jump('visual', 'man')<CR>
-autocmd FileType perl nnoremap <silent> <Space>d :<C-U>call ref#jump('normal', 'perldoc')<CR>
-autocmd FileType perl vnoremap <silent> <Space>d :<C-U>call ref#jump('visual', 'perldoc')<CR>
-autocmd FileType ruby nnoremap <silent> <Space>d :<C-U>call ref#jump('normal', 'refe')<CR>
-autocmd FileType ruby vnoremap <silent> <Space>d :<C-U>call ref#jump('visual', 'refe')<CR>
-autocmd FileType python nnoremap <silent> <Space>d :<C-U>call ref#jump('normal', 'pydoc')<CR>
-autocmd FileType python vnoremap <silent> <Space>d :<C-U>call ref#jump('visual', 'pydoc')<CR>
-autocmd FileType php nnoremap <silent> <Space>d :<C-U>call ref#jump('normal', 'phpmanual')<CR>
-autocmd FileType php vnoremap <silent> <Space>d :<C-U>call ref#jump('visual', 'phpmanual')<CR>
+augroup vimref
+    autocmd!
+    autocmd FileType sh,c nnoremap <silent> <Space>d :<C-u>call ref#jump('normal', 'man')<CR>
+    autocmd FileType sh,c vnoremap <silent> <Space>d :<C-u>call ref#jump('visual', 'man')<CR>
+    autocmd FileType perl nnoremap <silent> <Space>d :<C-U>call ref#jump('normal', 'perldoc')<CR>
+    autocmd FileType perl vnoremap <silent> <Space>d :<C-U>call ref#jump('visual', 'perldoc')<CR>
+    autocmd FileType ruby nnoremap <silent> <Space>d :<C-U>call ref#jump('normal', 'refe')<CR>
+    autocmd FileType ruby vnoremap <silent> <Space>d :<C-U>call ref#jump('visual', 'refe')<CR>
+    autocmd FileType python nnoremap <silent> <Space>d :<C-U>call ref#jump('normal', 'pydoc')<CR>
+    autocmd FileType python vnoremap <silent> <Space>d :<C-U>call ref#jump('visual', 'pydoc')<CR>
+    autocmd FileType php nnoremap <silent> <Space>d :<C-U>call ref#jump('normal', 'phpmanual')<CR>
+    autocmd FileType php vnoremap <silent> <Space>d :<C-U>call ref#jump('visual', 'phpmanual')<CR>
+augroup END
 
 
 "------------------------------------
 " Arduino-syntax-file
 "------------------------------------
-autocmd! BufNewFile,BufRead *.pde setlocal ft=arduino
+autocmd BufNewFile,BufRead *.pde setlocal ft=arduino
 
 "------------------------------------
 " Smart blockwise insertion
@@ -1019,13 +1036,13 @@ vnoremap <expr> I  <SID>force_blockwise_visual('I')
 vnoremap <expr> A  <SID>force_blockwise_visual('A')
 
 function! s:force_blockwise_visual(next_key)
-  if mode() ==# 'v'
-    return "\<C-v>" . a:next_key
-  elseif mode() ==# 'V'
-    return "\<C-v>0o$" . a:next_key
-  else  " mode() ==# "\<C-v>"
-    return a:next_key
-  endif
+    if mode() ==# 'v'
+        return "\<C-v>" . a:next_key
+    elseif mode() ==# 'V'
+        return "\<C-v>0o$" . a:next_key
+    else  " mode() ==# "\<C-v>"
+        return a:next_key
+    endif
 endfunction
 
 
