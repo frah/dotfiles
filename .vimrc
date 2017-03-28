@@ -44,6 +44,7 @@ if neobundle#load_cache()
     NeoBundle 'tpope/vim-fugitive'
     NeoBundle 'taku-o/vim-changed'
     NeoBundle 'pgilad/vim-skeletons'
+    NeoBundle 'kana/vim-smartword'
     NeoBundle 'thinca/vim-ref'
     NeoBundle 'tpope/vim-surround'
     NeoBundle 'vim-scripts/Align'
@@ -778,18 +779,19 @@ map <Leader>U <Plug>(operator-decamelize)
 map R <Plug>(operator-replace)
 
 "------------------------------------
-" sumartword.vim
+" vim-smartword
 "------------------------------------
-noremap ,w  w
-noremap ,b  b
-noremap ,e  e
-noremap ,ge  ge
+if neobundle#tap('vim-smartword')
+    noremap ,w  w
+    noremap ,b  b
+    noremap ,e  e
+    noremap ,ge  ge
 
-map W  <Plug>(smartword-w)
-map B  <Plug>(smartword-b)
-map E  <Plug>(smartword-e)
-map ge  <Plug>(smartword-ge)
-
+    map w  <Plug>(smartword-w)
+    map b  <Plug>(smartword-b)
+    map e  <Plug>(smartword-e)
+    map ge <Plug>(smartword-ge)
+endif
 
 "------------------------------------
 " vimshell
