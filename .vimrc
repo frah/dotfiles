@@ -42,13 +42,14 @@ if neobundle#load_cache()
     NeoBundle 'vim-airline/vim-airline-themes'
     NeoBundle 'rhysd/accelerated-jk'
     NeoBundle 'tpope/vim-fugitive'
-    NeoBundle 'taku-o/vim-changed'
+    NeoBundle 'kyouryuukunn/vim-changed'
     NeoBundle 'pgilad/vim-skeletons'
     NeoBundle 'kana/vim-smartword'
     NeoBundle 'thinca/vim-ref'
     NeoBundle 'tpope/vim-surround'
     NeoBundle 'vim-scripts/Align'
-    NeoBundle "nathanaelkane/vim-indent-guides"
+    NeoBundle 'nathanaelkane/vim-indent-guides'
+    NeoBundle 'LeafCage/yankround.vim'
     NeoBundleLazy "sjl/gundo.vim", {
                 \   'autoload': {
                 \       'commands': ['GundoToggle']
@@ -692,14 +693,36 @@ nnoremap ZQ <Nop>
 " exモードのマップ変更
 nnoremap Q gq
 
+
 "---------------------------------------------------------------------------
 " プラグインごとの設定 Plugins
 "---------------------------------------------------------------------------
 "------------------------------------
-" YankRing.vim
+" yankround.vim
 "------------------------------------
-" Yankの履歴参照
-nmap ,y ;YRShow<CR>
+if neobundle#tap('yankround.vim')
+    nmap p      <Plug>(yankround-p)
+    nmap P      <Plug>(yankround-P)
+    nmap gp     <Plug>(yankround-gp)
+    nmap gs     <Plug>(yankround-gP)
+    " Yankの履歴参照
+    nmap <C-p>  <Plug>(yankround-next)
+    nmap <C-n>  <Plug>(yankround-prev)
+
+    " 履歴取得数
+    let g:yankround_max_history = 30
+    " 履歴キャッシュ保存ディレクトリ
+    let g:yankround_dir = '~/.cache/yankround'
+endif
+
+"------------------------------------
+" vim-changed
+"------------------------------------
+if neobundle#tap('vim-changed')
+    noremap <Leader>c   :<C-u>Changed<CR>
+    " 編集後即時ハイライト
+    "Autocmd InsertLeave,TextChanged * :Changed
+endif
 
 "------------------------------------
 " MiniBufExplorer
@@ -746,19 +769,8 @@ nnoremap [Fugitive]C :<C-u>Git commit --amend<Enter>
 nnoremap [Fugitive]b :<C-u>Gblame<Enter>
 
 "------------------------------------
-" VTreeExplorer
-"------------------------------------
-" 縦に表示する
-let g:treeExplVertical=1
-"<Leader>t<Space>でディレクトリツリー表示
-noremap <Leader>t<Space> :VSTreeExplore<CR>
-"分割したウィンドウのサイズ
-let g:treeExplWinSize=30
-
-"------------------------------------
 " open-browser.vim
 "------------------------------------
-
 " カーソル下のURLをブラウザで開く
 nmap fu <Plug>(openbrowser-open)
 vmap fu <Plug>(openbrowser-open)
@@ -1108,6 +1120,9 @@ endfunction
 "------------------------------------
 if neobundle#tap('vim-indent-guides')
     let g:indent_guides_enable_on_vim_startup = 1
+    let g:indent_guides_start_level = 2
+    let g:indent_guides_guide_size = 1
+    let g:indent_guides_exclude_filetypes = ['help', 'unite']
 endif
 
 "------------------------------------
