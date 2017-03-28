@@ -46,6 +46,7 @@ if neobundle#load_cache()
     NeoBundle 'pgilad/vim-skeletons'
     NeoBundle 'kana/vim-smartword'
     NeoBundle 'thinca/vim-ref'
+    NeoBundle 'thinca/vim-quickrun'
     NeoBundle 'tpope/vim-surround'
     NeoBundle 'vim-scripts/Align'
     NeoBundle 'nathanaelkane/vim-indent-guides'
@@ -1067,7 +1068,17 @@ endif
 "------------------------------------
 " quickrun.vim
 "------------------------------------
-let g:quickrun_config = {}
+if neobundle#tap('vim-quickrun')
+    nnoremap <Leader>r  :<C-u>QuickRun -outputter quickfix<CR>
+    let g:quickrun_config = {
+                \   '_': {
+                \       'runner': 'vimproc',
+                \       'runner/vimproc/updatetime': 60,
+                \       'outputter/buffer/split': ':botright',
+                \       'outputter/buffer/close_on_empty': 1
+                \   }
+                \}
+endif
 
 "------------------------------------
 " Pydiction
