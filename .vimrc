@@ -132,13 +132,17 @@ set helpfile=$VIMRUNTIME/doc/help.txt
 " ファイルタイプ判定をon
 filetype plugin on
 
-augroup filetypes
+" augroupをまとめる
+augroup VimrcLocal
     autocmd!
-    autocmd BufNewFile,BufRead *.md  set filetype=markdown
-    autocmd BufNewFile,BufRead *.pde set filetype=arduino
-    autocmd BufNewFile,BufRead *.ts  set filetype=typescript
 augroup END
+command! -nargs=* Autocmd   autocmd VimrcLocal <args>
+command! -nargs=* AutocmdFT autocmd VimrcLocal FileType <args>
 
+" ファイルタイプ個別設定
+Autocmd BufNewFile,BufRead *.md  set filetype=markdown
+Autocmd BufNewFile,BufRead *.pde set filetype=arduino
+Autocmd BufNewFile,BufRead *.ts  set filetype=typescript
 
 
 "---------------------------------------------------------------------------
@@ -188,17 +192,8 @@ else
 endif
 
 "入力モード時、ステータスラインのカラーを変更
-augroup InsertHook
-    autocmd!
-    autocmd InsertEnter * highlight StatusLine guifg=#ccdc90 guibg=#2E4340 ctermfg=cyan
-    autocmd InsertLeave * highlight StatusLine guifg=#2E4340 guibg=#ccdc90 ctermfg=white
-augroup END
-
-"自動的に QuickFix リストを表示する
-augroup QucikFixAuto
-    autocmd QuickfixCmdPost make,grep,grepadd,vimgrep,vimgrepadd cwin
-    autocmd QuickfixCmdPost lmake,lgrep,lgrepadd,lvimgrep,lvimgrepadd lwin
-augroup END
+Autocmd InsertEnter * highlight StatusLine guifg=#ccdc90 guibg=#2E4340 ctermfg=cyan
+Autocmd InsertLeave * highlight StatusLine guifg=#2E4340 guibg=#ccdc90 ctermfg=white
 
 function! GetB()
     let c = matchstr(getline('.'), '.', col('.') - 1)
@@ -245,11 +240,8 @@ match ZenkakuSpace /　/
 " カーソル行をハイライト
 set cursorline
 " カレントウィンドウにのみ罫線を引く
-augroup cch
-    autocmd! cch
-    autocmd WinLeave * set nocursorline
-    autocmd WinEnter,BufRead * set cursorline
-augroup END
+Autocmd WinLeave * set nocursorline
+Autocmd WinEnter,BufRead * set cursorline
 
 :hi clear CursorLine
 :hi CursorLine gui=underline
@@ -280,8 +272,8 @@ if has("autocmd")
     " これらのftではインデントを無効に
     "autocmd FileType php filetype indent off
 
-    autocmd FileType html :set indentexpr=
-    autocmd FileType xhtml :set indentexpr=
+    AutocmdFT html :set indentexpr=
+    AutocmdFT xhtml :set indentexpr=
 endif
 
 
@@ -388,7 +380,7 @@ map <kPlus> <C-W>+
 map <kMinus> <C-W>-
 
 " 前回終了したカーソル行に移動
-autocmd BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$") | exe "normal g`\"" | endif
+Autocmd BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$") | exe "normal g`\"" | endif
 
 " 最後に編集された位置に移動
 nnoremap gb '[
@@ -512,7 +504,7 @@ if has('autocmd')
             let &fileencoding=&encoding
         endif
     endfunction
-    autocmd BufReadPost * call AU_ReCheck_FENC()
+    Autocmd BufReadPost * call AU_ReCheck_FENC()
 endif
 " 改行コードの自動認識
 set fileformats=unix,dos,mac
@@ -521,19 +513,16 @@ if exists('&ambiwidth')
     set ambiwidth=double
 endif
 
-augroup encodings
-    autocmd!
-    " cvsの時は文字コードをeuc-jpに設定
-    autocmd FileType cvs :set fileencoding=euc-jp
-    " 以下のファイルの時は文字コードをutf-8に設定
-    autocmd FileType svn :set fileencoding=utf-8
-    autocmd FileType js :set fileencoding=utf-8
-    autocmd FileType css :set fileencoding=utf-8
-    autocmd FileType html :set fileencoding=utf-8
-    autocmd FileType xml :set fileencoding=utf-8
-    autocmd FileType java :set fileencoding=utf-8
-    autocmd FileType scala :set fileencoding=utf-8
-augroup END
+" cvsの時は文字コードをeuc-jpに設定
+AutocmdFT cvs :set fileencoding=euc-jp
+" 以下のファイルの時は文字コードをutf-8に設定
+AutocmdFT svn :set fileencoding=utf-8
+AutocmdFT js :set fileencoding=utf-8
+AutocmdFT css :set fileencoding=utf-8
+AutocmdFT html :set fileencoding=utf-8
+AutocmdFT xml :set fileencoding=utf-8
+AutocmdFT java :set fileencoding=utf-8
+AutocmdFT scala :set fileencoding=utf-8
 
 " ワイルドカードで表示するときに優先度を低くする拡張子
 set suffixes=.bak,~,.swp,.o,.info,.aux,.log,.dvi,.bbl,.blg,.brf,.cb,.ind,.idx,.ilg,.inx,.out,.toc
@@ -584,16 +573,13 @@ vnoremap p <Esc>;let current_reg = @"<CR>gvdi<C-R>=current_reg<CR><Esc>
 
 " Tabキーを空白に変換
 set expandtab
-autocmd FileType make set noexpandtab
-autocmd FileType conf set noexpandtab
+AutocmdFT make set noexpandtab
+AutocmdFT conf set noexpandtab
 
 " コンマの後に自動的にスペースを挿入
 "inoremap , ,<Space>
 " XMLの閉タグを自動挿入
-augroup MyXML
-    autocmd!
-    autocmd Filetype xml inoremap <buffer> </ </<C-x><C-o>
-augroup END
+AutocmdFT xml inoremap <buffer> </ </<C-x><C-o>
 
 "  Insert mode中で単語単位/行単位の削除をアンドゥ可能にする
 inoremap <C-u>  <C-g>u<C-u>
@@ -802,7 +788,7 @@ if neobundle#tap('vimshell')
         return a:cmdline
     endfunction
 
-    autocmd FileType vimshell
+    AutocmdFT vimshell
     \ call vimshell#hook#set('chpwd', ['g:my_chpwd'])
     \| call vimshell#hook#set('emptycmd', ['g:my_emptycmd'])
     \| call vimshell#hook#set('preprompt', ['g:my_preprompt'])
