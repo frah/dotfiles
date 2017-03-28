@@ -252,6 +252,20 @@ highlight CursorLine ctermbg=black guibg=black
 " 高速ターミナル接続を行う
 :set ttyfast
 
+" 自動的に QuickFix リストを表示する
+Autocmd QuickfixCmdPost make,grep,grepadd,vimgrep,vimgrepadd cwin
+Autocmd QuickfixCmdPost lmake,lgrep,lgrepadd,lvimgrep,lvimgrepadd lwin
+
+" 最後のウィンドウがQuickFixなら自動的に閉じる
+Autocmd WinEnter * call s:QuickFix_Exit_OnlyWindow()
+function! s:QuickFix_Exit_OnlyWindow()
+    if winnr('$') == 1 &&
+                \ ((getbufvar(winbufnr(0), '&buftype')) == 'quickfix'
+                \ || @% =~ 'unite-.*')
+        quit
+    endif
+endfunction
+
 
 "---------------------------------------------------------------------------
 " インデント Indent
@@ -941,31 +955,37 @@ nnoremap <silent> [unite]f  :<C-u>Unite -buffer-name=files file<CR>
 nnoremap <silent> [unite]b  :<C-u>Unite buffer<CR>
 nnoremap <silent> [unite]m  :<C-u>Unite file_mru<CR>
 " grep (current buffer)
-nnoremap <silent> [unite]gc :<C-u>Unite grep:% -buffer-name=search-buffer<CR>
+nnoremap <silent> [unite]gc :<C-u>Unite grep:% -buffer-name=unite-search -no-quit -direction=botright<CR>
 " grep (current directory)
-nnoremap <silent> [unite]gd :<C-u>Unite grep:. -buffer-name=search-buffer<CR>
+nnoremap <silent> [unite]gd :<C-u>Unite grep:. -buffer-name=unite-search<CR>
 " ヤンク履歴
-nnoremap <silent> [unite]y  :<C-u>Unite -buffer-name=lines history/yank<CR>
+nnoremap <silent> [unite]y  :<C-u>Unite -buffer-name=unite-yank history/yank<CR>
+" outline
+nnoremap <silent> [unite]o  :<C-u>Unite -buffer-name=unite-outline outline<CR>
 
 " nnoremap <silent> [unite]b  :<C-u>UniteWithBufferDir -buffer-name=files buffer file_mru bookmark file<CR>
 
-autocmd FileType unite call s:unite_my_settings()
-function! s:unite_my_settings()"{{{
-  " Overwrite settings.
-  imap <buffer> jj      <Plug>(unite_insert_leave)
-  nnoremap <silent><buffer> <C-k> :<C-u>call unite#mappings#do_action('preview')<CR>
-  imap <buffer> <C-w>     <Plug>(unite_delete_backward_path)
-  " Start insert.
-  let g:unite_enable_start_insert = 1
-endfunction"}}}
+let s:bundle = neobundle#get('unite.vim')
+function! s:bundle.hooks.on_source(bundle)
+    let g:unite_data_directory = expand('~/.vim/.unite')
+    let g:unite_source_file_mru_limit = 200
+    let g:unite_enable_start_insert = 1
+    let g:unite_enable_ignore_case = 1
+    let g:unite_enable_smart_case = 1
 
-autocmd FileType unite nnoremap <silent> <buffer> <ESC><ESC> :<C-q>q<CR>
+    AutocmdFT unite call s:unite_my_settings()
 
-let g:unite_data_directory = expand('~/.vim/.unite')
-let g:unite_source_file_mru_limit = 200
-let g:unite_enable_start_insert = 1
-let g:unite_enable_ignore_case = 1
-let g:unite_enable_smart_case = 1
+    function! s:unite_my_settings()
+      " Overwrite settings.
+      imap      <buffer> jj         <Plug>(unite_insert_leave)
+      nnoremap  <silent><buffer> <Esc><Esc> :<C-q>q<CR>
+      nnoremap  <silent><buffer> <C-k> :<C-u>call unite#mappings#do_action('preview')<CR>
+      imap      <buffer> <C-w>      <Plug>(unite_delete_backward_path)
+      nmap      <buffer> <C-n>      <Plug>(unite_select_next_line)
+      nmap      <buffer> <C-p>      <Plug>(unite_select_previous_line)
+    endfunction
+endfunction
+unlet s:bundle
 
 "------------------------------------
 " vimfiler
