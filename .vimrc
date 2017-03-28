@@ -45,6 +45,13 @@ if neobundle#load_cache()
     NeoBundle 'taku-o/vim-changed'
     NeoBundle 'pgilad/vim-skeletons'
     NeoBundle 'thinca/vim-ref'
+    NeoBundle 'tpope/vim-surround'
+    NeoBundle 'vim-scripts/Align'
+    NeoBundle "nathanaelkane/vim-indent-guides"
+    NeoBundleLazy "sjl/gundo.vim", {
+                \   'autoload': {
+                \       'commands': ['GundoToggle']
+                \ }}
 
     if has('unix') || has('mac')
         NeoBundle 'sudo.vim'
@@ -68,6 +75,7 @@ if neobundle#load_cache()
     NeoBundle 'ujihisa/unite-colorscheme'
     NeoBundle 'ujihisa/unite-locate'
     NeoBundle 'Shougo/neoyank.vim'
+    NeoBundle 'Shougo/neomru.vim'
     NeoBundleLazy 'Shougo/unite.vim', {
                 \ 'autoload' : {
                 \     'commands' : [{'name': 'Unite', 'complete' : 'customlist,unite#complete_source'},
@@ -86,11 +94,31 @@ if neobundle#load_cache()
                 \ }
 
     " completion
-    if v:version >= 703 && has('lua')
+    if v:version >= 703 && has('lua') && has('patch885')
         NeoBundle 'Shougo/neocomplete.vim'
     else
         NeoBundle 'Shougo/neocomplcache'
     endif
+    NeoBundle 'Shougo/neosnippet.vim'
+    NeoBundle 'Shougo/neosnippet-snippets'
+
+    " python
+    NeoBundleLazy 'jmcantrell/vim-virtualenv', {
+                \   'autoload': {
+                \       'filetypes': ['python', 'python3', 'djangohtml']
+                \   }}
+    NeoBundleLazy 'lambdalisue/vim-django-support', {
+                \   'autoload': {
+                \       'filetypes': ['python', 'python3', 'djangohtml']
+                \   }}
+    NeoBundleLazy 'davidhalter/jedi-vim', {
+                \   'autoload': {
+                \       'filetypes': ['python', 'python3', 'djangohtml']
+                \   },
+                \   'build': {
+                \       'mac' : 'pip install jedi',
+                \       'unix': 'pip install jedi'
+                \   }}
 
     NeoBundleCheck
     NeoBundleSaveCache
@@ -236,6 +264,9 @@ set display=uhex      " 印字不可能文字を16進数で表示
 " 全角スペースの表示
 highlight ZenkakuSpace cterm=underline ctermfg=lightblue guibg=darkgray
 match ZenkakuSpace /　/
+
+" 対応括弧に'<'と'>'を追加
+set matchpairs& matchpairs+=<:>
 
 " カーソル行をハイライト
 set cursorline
@@ -943,6 +974,14 @@ if neobundle#tap('neocomplete.vim')
 endif
 
 "------------------------------------
+" neosnippet.vim
+"------------------------------------
+if neobundle#tap('neosnippet.vim')
+    " Plugin key-mappings
+    imap <C-k>  <Plug>(neosnippet_expand_or_jump)
+endif
+
+"------------------------------------
 " unite.vim
 "------------------------------------
 " The prefix key.
@@ -993,6 +1032,7 @@ unlet s:bundle
 if neobundle#tap('vimfiler.vim')
     let g:loaded_netrwPlugin = 1
     let g:vimfiler_as_default_explorer = 1
+    let g:vimfiler_ignore_pattern = ['^\.git$', '^\.DS_Store$']
 
     let s:bundle = neobundle#get('vimfiler.vim')
     function! s:bundle.hooks.on_source(bundle)
@@ -1060,5 +1100,38 @@ function! s:force_blockwise_visual(next_key)
         return a:next_key
     endif
 endfunction
+
+"------------------------------------
+" vim-indent-guides
+"------------------------------------
+if neobundle#tap('vim-indent-guides')
+    let g:indent_guides_enable_on_vim_startup = 1
+endif
+
+"------------------------------------
+" Gundo.vim
+"------------------------------------
+if neobundle#tap('gundo.vim')
+    nnoremap <Leader>g :GundoToggle<CR>
+endif
+
+"------------------------------------
+" jedi-vim
+"------------------------------------
+if neobundle#tap('jedi-vim')
+    let s:bundle = neobundle#get('jedi-vim')
+    function! s:bundle.hooks.on_source(bundle)
+        " 自動設定機能をOFF
+        let g:jedi#auto_vim_configuration = 0
+        " 補完の最初の項目は表示しない
+        let g:jedi#popup_select_first = 0
+        " quickrunと被るため変更
+        let g:jedi#rename_command = '<Leader>R'
+        " gundoと被るため変更
+        let g:jedi#goto_command = '<Leader>G'
+        imap <C-p> <C-Space>
+    endfunction
+    unlet s:bundle
+endif
 
 
