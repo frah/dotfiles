@@ -41,7 +41,6 @@ if neobundle#load_cache()
     NeoBundle 'vim-airline/vim-airline'
     NeoBundle 'vim-airline/vim-airline-themes'
     NeoBundle 'rhysd/accelerated-jk'
-    NeoBundle 'tpope/vim-fugitive'
     NeoBundle 'kyouryuukunn/vim-changed'
     NeoBundle 'pgilad/vim-skeletons'
     NeoBundle 'kana/vim-smartword'
@@ -57,6 +56,17 @@ if neobundle#load_cache()
 
     if has('unix') || has('mac')
         NeoBundle 'sudo.vim'
+        NeoBundleLazy 'Shougo/vimshell.vim', {
+                    \   'autoload': {
+                    \       'commands': [
+                    \           'VimShell', 'VimShellCreate', 'VimShellTab',
+                    \           'VimShellPop', 'VimShellCurrentDir',
+                    \           'VimShellBufferDir', 'VimShellExecute',
+                    \           'VimShellInteractive', 'VimShellSendString',
+                    \           'VimShellSendBuffer', 'VimShellClose'
+                    \       ],
+                    \       'function_prefixy': 'vimshell'
+                    \ }}
     endif
 
     " Text-Object
@@ -135,6 +145,15 @@ if neobundle#load_cache()
     NeoBundle 'Shougo/neosnippet.vim'
     NeoBundle 'Shougo/neosnippet-snippets'
 
+    " git
+    NeoBundleLazy 'tpope/vim-fugitive', {
+                \   'autoload': {
+                \       'commands': [
+                \           'Gstatus', 'Gcommit', 'Gwrite',
+                \           'Gdiff', 'Gblame', 'Git', 'Ggrep'
+                \       ]
+                \ }}
+
     " python
     NeoBundleLazy 'jmcantrell/vim-virtualenv', {
                 \   'autoload': {
@@ -152,6 +171,16 @@ if neobundle#load_cache()
                 \       'mac' : 'pip install jedi',
                 \       'unix': 'pip install jedi'
                 \   }}
+
+    " Go-lang
+    NeoBundleLazy 'fatih/vim-go', {
+                \   'autoload': {
+                \       'filetypes': 'go',
+                \       'commands': [
+                \           'GoImport', 'GoDrop', 'GoDef', 'GoVet',
+                \           'GoDoc', 'GoLint', 'GoRename', 'GoImports'
+                \       ]
+                \ }}
 
     NeoBundleCheck
     NeoBundleSaveCache
