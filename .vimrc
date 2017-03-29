@@ -799,21 +799,6 @@ if neobundle#tap('vim-changed')
 endif
 
 "------------------------------------
-" MiniBufExplorer
-"------------------------------------
-"set minibfexp
-let g:miniBufExplMapWindowNavVim=1 "hjklで移動
-let g:miniBufExplSplitBelow=0  " Put new window above
-let g:miniBufExplMapWindowNavArrows=1
-let g:miniBufExplMapCTabSwitchBufs=1
-let g:miniBufExplModSelTarget=1
-let g:miniBufExplSplitToEdge=1
-let g:miniBufExplMaxSize = 10
-
-":TmでMiniBufExplorerの表示トグル
-command! Mt :TMiniBufExplorer
-
-"------------------------------------
 " Align
 "------------------------------------
 " Alignを日本語環境で使用するための設定
@@ -1179,11 +1164,6 @@ if neobundle#tap('vim-quickrun')
                 \   }
                 \}
 endif
-
-"------------------------------------
-" Pydiction
-"------------------------------------
-let g:pydiction_location = '~/.vim/bundle/pydiction/complete-dict'
 
 "------------------------------------
 " vim-ref
