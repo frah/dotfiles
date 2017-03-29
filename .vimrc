@@ -47,7 +47,6 @@ if neobundle#load_cache()
     NeoBundle 'kana/vim-smartword'
     NeoBundle 'thinca/vim-ref'
     NeoBundle 'thinca/vim-quickrun'
-    NeoBundle 'tpope/vim-surround'
     NeoBundle 'vim-scripts/Align'
     NeoBundle 'nathanaelkane/vim-indent-guides'
     NeoBundle 'LeafCage/yankround.vim'
@@ -59,6 +58,37 @@ if neobundle#load_cache()
     if has('unix') || has('mac')
         NeoBundle 'sudo.vim'
     endif
+
+    " Text-Object
+    NeoBundle 'kana/vim-textobj-user'
+    NeoBundleLazy 'kana/vim-textobj-indent', {
+                \   'depends': 'kana/vim-textobj-user',
+                \   'autoload': {
+                \       'mappings': [
+                \           ['xo', 'ai'], ['xo', 'aI'],
+                \           ['xo', 'ii'], ['xo', 'iI']
+                \       ]
+                \ }}
+
+    " Operator
+    NeoBundle 'kana/vim-operator-user.git'
+    NeoBundleLazy 'kana/vim-operator-replace.git', {
+                \   'autoload': {
+                \       'mappings': '<Plug>(operator-replace)'
+                \ }}
+    NeoBundleLazy 'tyru/operator-camelize.vim', {
+                \   'autoload': {
+                \       'mappings': ['<Plug>(operator-camelize)',
+                \                    '<Plug>(operator-decamelize)']
+                \ }}
+    NeoBundleLazy 'rhysd/vim-operator-surround', {
+                \   'autoload': {
+                \       'mappings': '<Plug>(operator-surround-'
+                \ }}
+    NeoBundleLazy 'tyru/caw.vim', {
+                \   'autoload': {
+                \       'mappings': '<Plug>(caw:'
+                \ }}
 
     " Syntax
     NeoBundle 'leafgarland/typescript-vim'
@@ -734,7 +764,7 @@ endif
 " vim-changed
 "------------------------------------
 if neobundle#tap('vim-changed')
-    noremap <Leader>c   :<C-u>Changed<CR>
+    noremap <Leader>C   :<C-u>Changed<CR>
     " 編集後即時ハイライト
     "Autocmd InsertLeave,TextChanged * :Changed
 endif
@@ -795,15 +825,42 @@ nnoremap fs :<C-u>OpenBrowserSearch<Space><C-r><C-w><Enter>
 "------------------------------------
 " operator-camelize.vim
 "------------------------------------
-" camel-caseへの変換
-map <Leader>u <Plug>(operator-camelize)
-map <Leader>U <Plug>(operator-decamelize)
+if neobundle#tap('operator-camelize.vim')
+    " camel-caseへの変換
+    map <Leader>u <Plug>(operator-camelize)
+    map <Leader>U <Plug>(operator-decamelize)
+endif
 
 "------------------------------------
 " operator-replace.vim
 "------------------------------------
-" RwなどでYankしてるもので置き換える
-map R <Plug>(operator-replace)
+if neobundle#tap('vim-operator-replace.git')
+    " RwなどでYankしてるもので置き換える
+    map R <Plug>(operator-replace)
+endif
+
+"------------------------------------
+" vim-operator-surround
+"------------------------------------
+if neobundle#tap('vim-operator-surround')
+    map <silent>sa <Plug>(operator-surround-append)
+    map <silent>sd <Plug>(operator-surround-delete)
+    map <silent>sr <Plug>(operator-surround-replace)
+endif
+
+"------------------------------------
+" caw.vim
+"------------------------------------
+if neobundle#tap('caw.vim')
+    " デフォルトキーマップを無効化
+    let g:caw_no_default_keymappings = 1
+    let g:caw_operator_keymappings = 1
+
+    " Keymaps
+    nmap <Leader>cc <Plug>(caw:hatpos:toggle)
+    nmap <Leader>ca <Plug>(caw:dollarpos:toggle)
+    nmap <Leader>cb <Plug>(caw:wrap:toggle)
+endif
 
 "------------------------------------
 " vim-smartword
