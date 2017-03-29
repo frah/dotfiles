@@ -713,7 +713,7 @@ if neobundle#tap('yankround.vim')
     " 履歴取得数
     let g:yankround_max_history = 30
     " 履歴キャッシュ保存ディレクトリ
-    let g:yankround_dir = '~/.cache/yankround'
+    let g:yankround_dir = expand('~/.cache/yankround')
 endif
 
 "------------------------------------
@@ -813,7 +813,7 @@ if neobundle#tap('vimshell')
     let g:vimshell_user_prompt = 'fnamemodify(getcwd(), ":~")'
     let g:vimshell_right_prompt = 'vimshell#vcs#info("(%s)-[%b]", "(%s)-[%b|%a]")'
     let g:vimshell_enable_smart_case = 1
-    let g:vimshell_temporary_directory = expand('~/.vim/.vimshell')
+    let g:vimshell_temporary_directory = expand('~/.cache/vimshell')
 
     if has('win32') || has('win64')
         " Display user name on Windows.
@@ -880,7 +880,7 @@ if neobundle#tap('neocomplcache')
     " 補完候補の一番先頭を選択状態にする(AutoComplPopと似た動作)
     let g:neocomplcache_enable_auto_select = 1
     " キャッシュディレクトリを指定
-    let g:neocomplcache_temporary_dir = expand('~/.vim/.neocon')
+    let g:neocomplcache_temporary_dir = expand('~/.cache/neocon')
     " ctags
     if has('mac')
         let g:neocomplcache_ctags_program = '/usr/local/bin/ctags'
@@ -1021,7 +1021,7 @@ nnoremap <silent> [unite]o  :<C-u>Unite -buffer-name=unite-outline outline<CR>
 
 let s:bundle = neobundle#get('unite.vim')
 function! s:bundle.hooks.on_source(bundle)
-    let g:unite_data_directory = expand('~/.vim/.unite')
+    let g:unite_data_directory = expand('~/.cache/unite')
     let g:unite_source_file_mru_limit = 200
     let g:unite_enable_start_insert = 1
     let g:unite_enable_ignore_case = 1
@@ -1088,7 +1088,7 @@ let g:pydiction_location = '~/.vim/bundle/pydiction/complete-dict'
 "------------------------------------
 " vim-ref
 "------------------------------------
-let g:ref_cache_dir = expand('~/.vim/.vim_ref_cache')
+let g:ref_cache_dir = expand('~/.cache/vim-ref')
 let g:ref_use_vimproc = 1
 let g:ref_man_cmd = 'man'
 
