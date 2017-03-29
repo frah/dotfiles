@@ -488,12 +488,26 @@ nmap j <Plug>(accelerated_jk_gj)
 nmap k <Plug>(accelerated_jk_gk)
 
 " tabline移動
-nnoremap [Tab]   <Nop>
-nmap     t       [Tab]
-nmap <silent> [Tab]c    :tablast <bar> tabnew<CR>
-nmap <silent> [Tab]x    :tabclose<CR>
-nmap <silent> [Tab]n    :tabnext<CR>
-nmap <silent> [Tab]p    :tabprevious<CR>
+nnoremap [Tab]      <Nop>
+nmap     <Leader>t  [Tab]
+
+nnoremap <silent> [Tab]c    :tablast <bar> tabnew<CR>
+nnoremap <silent> [Tab]x    :tabclose<CR>
+nnoremap <silent> [Tab]n    :tabnext<CR>
+nnoremap <silent> [Tab]p    :tabprevious<CR>
+
+" quickfix画面でのキーマップ設定
+function! s:QuickFix_Keymap()
+    nnoremap <buffer><silent> q :<C-u>cclose<CR>
+    nnoremap <buffer><silent> j :<C-u>cnext<CR>:copen<CR>
+    nnoremap <buffer><silent> k :<C-u>cprevious<CR>:copen<CR>
+    nnoremap <buffer><silent> J :<C-u>cnfile<CR>:copen<CR>
+    nnoremap <buffer><silent> K :<C-u>cpfile<CR>:copen<CR>
+    nnoremap <buffer><silent> l :<C-u>clist<CR>
+    " Clear <CR>
+    nnoremap <buffer><CR> <CR>
+endfunction
+AutocmdFT qf call s:QuickFix_Keymap()
 
 
 "---------------------------------------------------------------------------
