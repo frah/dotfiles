@@ -43,6 +43,8 @@ if neobundle#load_cache()
     NeoBundle 'vim-jp/vimdoc-ja'
     NeoBundle 'vim-airline/vim-airline'
     NeoBundle 'vim-airline/vim-airline-themes'
+    NeoBundle 'kana/vim-submode'
+    NeoBundle 'rhysd/clever-f.vim'
     NeoBundle 'rhysd/accelerated-jk'
     NeoBundle 'kyouryuukunn/vim-changed'
     NeoBundle 'pgilad/vim-skeletons'
@@ -783,6 +785,34 @@ nnoremap Q gq
 "---------------------------------------------------------------------------
 " プラグインごとの設定 Plugins
 "---------------------------------------------------------------------------
+"------------------------------------
+" vim-submode
+"------------------------------------
+if neobundle#tap('vim-submode')
+    " サブモードを抜けた際のキー入力を保持
+    let g:submode_keep_leaving_key = 1
+
+    " ウインドウサイズ変更　
+    call submode#enter_with('winsize', 'n', '', '<C-w>>', '<C-w>>')
+    call submode#enter_with('winsize', 'n', '', '<C-w><', '<C-w><')
+    call submode#enter_with('winsize', 'n', '', '<C-w>+', '<C-w>+')
+    call submode#enter_with('winsize', 'n', '', '<C-w>-', '<C-w>-')
+    call submode#map('winsize', 'n', '', '>', '<C-w>>')
+    call submode#map('winsize', 'n', '', '<', '<C-w><')
+    call submode#map('winsize', 'n', '', '+', '<C-w>+')
+    call submode#map('winsize', 'n', '', '-', '<C-w>-')
+endif
+
+"------------------------------------
+" clever-f.vim
+"------------------------------------
+if neobundle#tap('clever-f.vim')
+    " 大文字入力時のみ大文字小文字を区別
+    let g:clever_f_smart_case = 1
+    " 日本語対応
+    let g:clever_f_use_migemo = 1
+endif
+
 "------------------------------------
 " yankround.vim
 "------------------------------------
