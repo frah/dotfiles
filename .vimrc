@@ -46,6 +46,7 @@ if neobundle#load_cache()
     NeoBundle 'kana/vim-submode'
     NeoBundle 'rhysd/clever-f.vim'
     NeoBundle 'rhysd/accelerated-jk'
+    NeoBundle 'thinca/vim-ref'
     NeoBundle 'kyouryuukunn/vim-changed'
     NeoBundle 'pgilad/vim-skeletons'
     NeoBundle 'kana/vim-smartword'
@@ -53,71 +54,62 @@ if neobundle#load_cache()
     NeoBundle 'nathanaelkane/vim-indent-guides'
     NeoBundle 'LeafCage/yankround.vim'
     NeoBundleLazy "sjl/gundo.vim", {
-                \   'autoload': {
-                \       'commands': ['GundoToggle']
-                \ }}
-    NeoBundleLazy 'thinca/vim-ref', {
-                \   'autoload': {
-                \       'functions': ['ref#jump']
-                \ }}
+                \   'on_cmd': 'GundoToggle'
+                \ }
     NeoBundleLazy 'thinca/vim-quickrun', {
-                \   'autoload': {
-                \       'commands': ['QuickRun']
-                \ }}
+                \   'on_cmd': 'QuickRun'
+                \ }
 
     if has('unix') || has('mac')
         NeoBundle 'sudo.vim'
         NeoBundleLazy 'Shougo/vimshell.vim', {
-                    \   'autoload': {
-                    \       'commands': [
-                    \           'VimShell', 'VimShellCreate', 'VimShellTab',
-                    \           'VimShellPop', 'VimShellCurrentDir',
-                    \           'VimShellBufferDir', 'VimShellExecute',
-                    \           'VimShellInteractive', 'VimShellSendString',
-                    \           'VimShellSendBuffer', 'VimShellClose'
-                    \       ],
-                    \       'function_prefix': 'vimshell'
-                    \ }}
+                    \   'on_cmd': [
+                    \       'VimShell', 'VimShellCreate', 'VimShellTab',
+                    \       'VimShellPop', 'VimShellCurrentDir',
+                    \       'VimShellBufferDir', 'VimShellExecute',
+                    \       'VimShellInteractive', 'VimShellSendString',
+                    \       'VimShellSendBuffer', 'VimShellClose'
+                    \   ],
+                    \   'on_func': 'vimshell'
+                    \ }
     endif
 
     " Text-Object
     NeoBundle 'kana/vim-textobj-user'
     NeoBundleLazy 'kana/vim-textobj-indent', {
                 \   'depends': 'kana/vim-textobj-user',
-                \   'autoload': {
-                \       'mappings': [
-                \           ['xo', 'ai'], ['xo', 'aI'],
-                \           ['xo', 'ii'], ['xo', 'iI']
-                \       ]
-                \ }}
+                \   'on_map': [
+                \       ['xo', 'ai'], ['xo', 'aI'],
+                \       ['xo', 'ii'], ['xo', 'iI']
+                \   ]
+                \ }
 
     " Operator
     NeoBundle 'kana/vim-operator-user'
     NeoBundleLazy 'kana/vim-operator-replace', {
-                \   'autoload': {
-                \       'mappings': '<Plug>(operator-replace)'
-                \ }}
+                \   'on_map': '<Plug>(operator-replace)'
+                \ }
     NeoBundleLazy 'tyru/operator-camelize.vim', {
-                \   'autoload': {
-                \       'mappings': ['<Plug>(operator-camelize)',
-                \                    '<Plug>(operator-decamelize)']
-                \ }}
+                \   'on_map': ['<Plug>(operator-camelize)',
+                \              '<Plug>(operator-decamelize)']
+                \ }
     NeoBundleLazy 'rhysd/vim-operator-surround', {
-                \   'autoload': {
-                \       'mappings': '<Plug>(operator-surround-'
-                \ }}
+                \   'on_map': '<Plug>(operator-surround-'
+                \ }
     NeoBundleLazy 'tyru/caw.vim', {
-                \   'autoload': {
-                \       'mappings': '<Plug>(caw:'
-                \ }}
+                \   'on_map': '<Plug>(caw:'
+                \ }
 
     " Syntax
-    NeoBundle 'leafgarland/typescript-vim'
-    NeoBundleLazy 'yuroyoro/vim-python', {
-                \ 'autoload': {
-                \   'filetypes' : ['python']}
+    NeoBundleLazy 'leafgarland/typescript-vim', {
+                \   'on_path': '\.ts$'
                 \ }
-    NeoBundle 'Arduino-syntax-file'
+    NeoBundleLazy 'yuroyoro/vim-python', {
+                \   'on_ft' : ['python']
+                \ }
+    NeoBundleLazy 'Arduino-syntax-file', {
+                \   'on_path': '\.pde$'
+                \ }
 
     " Color schemes
     NeoBundle 'tomasr/molokai'
@@ -131,20 +123,18 @@ if neobundle#load_cache()
     NeoBundle 'Shougo/neoyank.vim'
     NeoBundle 'Shougo/neomru.vim'
     NeoBundleLazy 'Shougo/unite.vim', {
-                \ 'autoload' : {
-                \     'commands' : [{'name': 'Unite', 'complete' : 'customlist,unite#complete_source'},
-                \                   {'name': 'UniteWithBufferDir', 'complete' : 'customlist,unite#complete_source'},
-                \                   {'name': 'UniteWithCursorWord', 'complete' : 'customlist,unite#complete_source'},
-                \                   {'name': 'UniteWithWithInput', 'complete' : 'customlist,unite#complete_source'}]
-                \    }
+                \   'on_cmd' : [
+                \       {'name': 'Unite', 'complete' : 'customlist,unite#complete_source'},
+                \       {'name': 'UniteWithBufferDir', 'complete' : 'customlist,unite#complete_source'},
+                \       {'name': 'UniteWithCursorWord', 'complete' : 'customlist,unite#complete_source'},
+                \       {'name': 'UniteWithWithInput', 'complete' : 'customlist,unite#complete_source'}
+                \   ]
                 \ }
     NeoBundleLazy 'Shougo/vimfiler.vim', {
                 \   'depends'  : 'Shougo/unite.vim',
-                \   'autoload' : {
-                \       'commands' : ['VimFiler', 'VimFilerCurrentDir',
-                \                     'VimFilerBufferDir', 'VimFilerSplit',
-                \                     'VimFilerExplorer', 'VimFilerDouble']
-                \   }
+                \   'on_cmd' : ['VimFiler', 'VimFilerCurrentDir',
+                \               'VimFilerBufferDir', 'VimFilerSplit',
+                \               'VimFilerExplorer', 'VimFilerDouble']
                 \ }
 
     " completion
@@ -154,9 +144,8 @@ if neobundle#load_cache()
         NeoBundle 'Shougo/neocomplcache'
     endif
     NeoBundleLazy 'Shougo/neosnippet.vim', {
-                \   'autoload': {
-                \       'insert': 1
-                \ }}
+                \   'on_i': 1
+                \ }
     NeoBundle 'Shougo/neosnippet-snippets'
 
     " git
@@ -165,17 +154,13 @@ if neobundle#load_cache()
 
     " python
     NeoBundleLazy 'jmcantrell/vim-virtualenv', {
-                \   'autoload': {
-                \       'filetypes': ['python', 'python3', 'djangohtml']
-                \   }}
+                \   'on_ft': ['python', 'python3', 'djangohtml']
+                \ }
     NeoBundleLazy 'lambdalisue/vim-django-support', {
-                \   'autoload': {
-                \       'filetypes': ['python', 'python3', 'djangohtml']
-                \   }}
+                \   'on_ft': ['python', 'python3', 'djangohtml']
+                \   }
     NeoBundleLazy 'davidhalter/jedi-vim', {
-                \   'autoload': {
-                \       'filetypes': ['python', 'python3', 'djangohtml']
-                \   },
+                \   'on_ft': ['python', 'python3', 'djangohtml'],
                 \   'build': {
                 \       'mac' : 'pip install jedi',
                 \       'unix': 'pip install jedi'
@@ -183,13 +168,12 @@ if neobundle#load_cache()
 
     " Go-lang
     NeoBundleLazy 'fatih/vim-go', {
-                \   'autoload': {
-                \       'filetypes': 'go',
-                \       'commands': [
-                \           'GoImport', 'GoDrop', 'GoDef', 'GoVet',
-                \           'GoDoc', 'GoLint', 'GoRename', 'GoImports'
-                \       ]
-                \ }}
+                \   'on_ft': 'go',
+                \   'on_cmd': [
+                \       'GoImport', 'GoDrop', 'GoDef', 'GoVet',
+                \       'GoDoc', 'GoLint', 'GoRename', 'GoImports'
+                \   ]
+                \ }
 
     NeoBundleCheck
     NeoBundleSaveCache
@@ -281,6 +265,8 @@ if neobundle#tap('vim-airline')
     let g:airline#extensions#tabline#tab_nr_type = 1
     " タブに表示する名前（fnamemodifyの第二引数）
     let g:airline#extensions#tabline#fnamemod = ':t'
+
+    call neobundle#untap()
 endif
 
 "ステータスラインに文字コードと改行文字を表示する
@@ -795,6 +781,8 @@ if neobundle#tap('vim-submode')
     call submode#map('winsize', 'n', '', '<', '<C-w><')
     call submode#map('winsize', 'n', '', '+', '<C-w>+')
     call submode#map('winsize', 'n', '', '-', '<C-w>-')
+
+    call neobundle#untap()
 endif
 
 "------------------------------------
@@ -805,6 +793,8 @@ if neobundle#tap('clever-f.vim')
     let g:clever_f_smart_case = 1
     " 日本語対応
     let g:clever_f_use_migemo = 1
+
+    call neobundle#untap()
 endif
 
 "------------------------------------
@@ -823,6 +813,8 @@ if neobundle#tap('yankround.vim')
     let g:yankround_max_history = 30
     " 履歴キャッシュ保存ディレクトリ
     let g:yankround_dir = expand('~/.cache/yankround')
+
+    call neobundle#untap()
 endif
 
 "------------------------------------
@@ -832,6 +824,8 @@ if neobundle#tap('vim-changed')
     noremap <Leader>C   :<C-u>Changed<CR>
     " 編集後即時ハイライト
     "Autocmd InsertLeave,TextChanged * :Changed
+
+    call neobundle#untap()
 endif
 
 "------------------------------------
@@ -880,6 +874,8 @@ if neobundle#tap('vim-gitgutter')
     let g:gitgutter_diff_args = '-w'
     " 行ハイライトをデフォルトで
     let g:gitgutter_highlight_lines = 0
+
+    call neobundle#untap()
 endif
 
 "------------------------------------
@@ -898,6 +894,8 @@ if neobundle#tap('operator-camelize.vim')
     " camel-caseへの変換
     map <Leader>u <Plug>(operator-camelize)
     map <Leader>U <Plug>(operator-decamelize)
+
+    call neobundle#untap()
 endif
 
 "------------------------------------
@@ -906,6 +904,8 @@ endif
 if neobundle#tap('vim-operator-replace')
     " RwなどでYankしてるもので置き換える
     nmap R <Plug>(operator-replace)
+
+    call neobundle#untap()
 endif
 
 "------------------------------------
@@ -915,6 +915,8 @@ if neobundle#tap('vim-operator-surround')
     map <silent>sa <Plug>(operator-surround-append)
     map <silent>sd <Plug>(operator-surround-delete)
     map <silent>sr <Plug>(operator-surround-replace)
+
+    call neobundle#untap()
 endif
 
 "------------------------------------
@@ -929,6 +931,8 @@ if neobundle#tap('caw.vim')
     nmap <Leader>cc <Plug>(caw:hatpos:toggle)
     nmap <Leader>ca <Plug>(caw:dollarpos:toggle)
     nmap <Leader>cb <Plug>(caw:wrap:toggle)
+
+    call neobundle#untap()
 endif
 
 "------------------------------------
@@ -944,6 +948,8 @@ if neobundle#tap('vim-smartword')
     map b  <Plug>(smartword-b)
     map e  <Plug>(smartword-e)
     map ge <Plug>(smartword-ge)
+
+    call neobundle#untap()
 endif
 
 "------------------------------------
@@ -995,6 +1001,8 @@ if neobundle#tap('vimshell')
     \| call vimshell#hook#set('preexec', ['g:my_preexec'])
 
     command! Vs :VimShell
+
+    call neobundle#untap()
 endif
 
 "------------------------------------
@@ -1099,6 +1107,8 @@ if neobundle#tap('neocomplcache')
     endif
     let g:neocomplcache_omni_patterns.ruby = '[^. *\t]\.\w*\|\h\w*::'
     let g:neocomplcache_omni_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
+
+    call neobundle#untap()
 endif
 
 "------------------------------------
@@ -1126,6 +1136,8 @@ if neobundle#tap('neocomplete.vim')
         autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
         autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
     augroup END
+
+    call neobundle#untap()
 endif
 
 "------------------------------------
@@ -1134,6 +1146,8 @@ endif
 if neobundle#tap('neosnippet.vim')
     " Plugin key-mappings
     imap <C-k>  <Plug>(neosnippet_expand_or_jump)
+
+    call neobundle#untap()
 endif
 
 "------------------------------------
@@ -1189,20 +1203,20 @@ if neobundle#tap('vimfiler.vim')
     let g:vimfiler_as_default_explorer = 1
     let g:vimfiler_ignore_pattern = ['^\.git$', '^\.DS_Store$']
 
-    let s:bundle = neobundle#get('vimfiler.vim')
-    function! s:bundle.hooks.on_source(bundle)
+    function! neobundle#hooks.on_source(bundle)
         call vimfiler#custom#profile('default', 'context', {
             \   'edit_action' : 'tabopen',
             \   'direction'   : 'topleft'
             \ })
     endfunction
-    unlet s:bundle
 
     nnoremap <Leader>f      <Nop>
     nnoremap <Leader>ff     :<C-u>VimFiler<CR>
     nnoremap <Leader>fs     :<C-u>VimFilerSplit -horizontal -force-hide<CR>
     nnoremap <Leader>fc     :<C-u>VimFilerCurrentDir<CR>
     nnoremap <Leader>fb     :<C-u>VimFilerBufferDir<CR>
+
+    call neobundle#untap()
 endif
 
 "------------------------------------
@@ -1218,6 +1232,8 @@ if neobundle#tap('vim-quickrun')
                 \       'outputter/buffer/close_on_empty': 1
                 \   }
                 \}
+
+    call neobundle#untap()
 endif
 
 "------------------------------------
@@ -1266,6 +1282,8 @@ if neobundle#tap('vim-indent-guides')
     let g:indent_guides_start_level = 2
     let g:indent_guides_guide_size = 1
     let g:indent_guides_exclude_filetypes = ['help', 'unite']
+
+    call neobundle#untap()
 endif
 
 "------------------------------------
@@ -1273,14 +1291,15 @@ endif
 "------------------------------------
 if neobundle#tap('gundo.vim')
     nnoremap <Leader>g :GundoToggle<CR>
+
+    call neobundle#untap()
 endif
 
 "------------------------------------
 " jedi-vim
 "------------------------------------
 if neobundle#tap('jedi-vim')
-    let s:bundle = neobundle#get('jedi-vim')
-    function! s:bundle.hooks.on_source(bundle)
+    function! neobundle#hooks.on_source(bundle)
         " 自動設定機能をOFF
         let g:jedi#auto_vim_configuration = 0
         " 補完の最初の項目は表示しない
@@ -1291,7 +1310,8 @@ if neobundle#tap('jedi-vim')
         let g:jedi#goto_command = '<Leader>G'
         imap <C-p> <C-Space>
     endfunction
-    unlet s:bundle
+
+    call neobundle#untap()
 endif
 
 
