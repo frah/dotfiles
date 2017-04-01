@@ -149,6 +149,7 @@ if neobundle#load_cache()
     NeoBundle 'Shougo/neosnippet-snippets'
 
     " git
+    NeoBundle 'airblade/vim-gitgutter'
     NeoBundleLazy 'tpope/vim-fugitive', {
                 \   'autoload': {
                 \       'commands': [
@@ -828,6 +829,25 @@ nnoremap [Fugitive]a :<C-u>Gwrite<Enter>
 nnoremap [Fugitive]c :<C-u>Gcommit<Enter>
 nnoremap [Fugitive]C :<C-u>Git commit --amend<Enter>
 nnoremap [Fugitive]b :<C-u>Gblame<Enter>
+
+"------------------------------------
+" vim-gitgutter
+"------------------------------------
+if neobundle#tap('vim-gitgutter')
+    nnoremap <silent> <Leader>gg :<C-u>GitGutterToggle<CR>
+    nnoremap <silent> <Leader>gh :<C-u>GitGutterLineHighlightsToggle<CR>
+    " Default keymaps
+    "nmap [c <Plug>GitGutterPrevHunk
+    "nmap ]c <Plug>GitGutterNextHunk
+    "nmap <Leader>hs <Plug>GitGutterStageHunk
+    "nmap <Leader>hu <Plug>GitGutterUndoHunk
+    "nmap <Leader>hp <Plug>GitGutterPreviewHunk
+
+    " 空白文字列を無視
+    let g:gitgutter_diff_args = '-w'
+    " 行ハイライトをデフォルトで
+    let g:gitgutter_highlight_lines = 1
+endif
 
 "------------------------------------
 " open-browser.vim
