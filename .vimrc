@@ -47,14 +47,20 @@ if neobundle#load_cache()
     NeoBundle 'kyouryuukunn/vim-changed'
     NeoBundle 'pgilad/vim-skeletons'
     NeoBundle 'kana/vim-smartword'
-    NeoBundle 'thinca/vim-ref'
-    NeoBundle 'thinca/vim-quickrun'
     NeoBundle 'vim-scripts/Align'
     NeoBundle 'nathanaelkane/vim-indent-guides'
     NeoBundle 'LeafCage/yankround.vim'
     NeoBundleLazy "sjl/gundo.vim", {
                 \   'autoload': {
                 \       'commands': ['GundoToggle']
+                \ }}
+    NeoBundleLazy 'thinca/vim-ref', {
+                \   'autoload': {
+                \       'functions': ['ref#jump']
+                \ }}
+    NeoBundleLazy 'thinca/vim-quickrun', {
+                \   'autoload': {
+                \       'commands': ['QuickRun']
                 \ }}
 
     if has('unix') || has('mac')
@@ -145,7 +151,10 @@ if neobundle#load_cache()
     else
         NeoBundle 'Shougo/neocomplcache'
     endif
-    NeoBundle 'Shougo/neosnippet.vim'
+    NeoBundleLazy 'Shougo/neosnippet.vim', {
+                \   'autoload': {
+                \       'insert': 1
+                \ }}
     NeoBundle 'Shougo/neosnippet-snippets'
 
     " git
@@ -846,7 +855,7 @@ if neobundle#tap('vim-gitgutter')
     " 空白文字列を無視
     let g:gitgutter_diff_args = '-w'
     " 行ハイライトをデフォルトで
-    let g:gitgutter_highlight_lines = 1
+    let g:gitgutter_highlight_lines = 0
 endif
 
 "------------------------------------
