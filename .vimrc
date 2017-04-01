@@ -90,8 +90,8 @@ if neobundle#load_cache()
                 \ }}
 
     " Operator
-    NeoBundle 'kana/vim-operator-user.git'
-    NeoBundleLazy 'kana/vim-operator-replace.git', {
+    NeoBundle 'kana/vim-operator-user'
+    NeoBundleLazy 'kana/vim-operator-replace', {
                 \   'autoload': {
                 \       'mappings': '<Plug>(operator-replace)'
                 \ }}
@@ -877,11 +877,11 @@ if neobundle#tap('operator-camelize.vim')
 endif
 
 "------------------------------------
-" operator-replace.vim
+" vim-operator-replace
 "------------------------------------
-if neobundle#tap('vim-operator-replace.git')
+if neobundle#tap('vim-operator-replace')
     " RwなどでYankしてるもので置き換える
-    map R <Plug>(operator-replace)
+    nmap R <Plug>(operator-replace)
 endif
 
 "------------------------------------
