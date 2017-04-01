@@ -161,13 +161,7 @@ if neobundle#load_cache()
 
     " git
     NeoBundle 'airblade/vim-gitgutter'
-    NeoBundleLazy 'tpope/vim-fugitive', {
-                \   'autoload': {
-                \       'commands': [
-                \           'Gstatus', 'Gcommit', 'Gwrite',
-                \           'Gdiff', 'Gblame', 'Git', 'Ggrep'
-                \       ]
-                \ }}
+    NeoBundle 'tpope/vim-fugitive'
 
     " python
     NeoBundleLazy 'jmcantrell/vim-virtualenv', {
