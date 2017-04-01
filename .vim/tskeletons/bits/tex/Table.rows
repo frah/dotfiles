@@ -1,5 +1,0 @@
-<+input("s:rows?!", "Rows: ")+>
-<+input("s:cols?!", "Cols: ")+>
-<+for(s:rown in range(s:rows))+>
-<+include(row)+>
-<+endfor(s:rown)+>

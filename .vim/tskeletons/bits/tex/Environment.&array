@@ -1,6 +1,0 @@
-<tskel:menu>
-Math.Array
-</tskel:menu>
-\begin{array}
-    <+include(rows)+>
-\end{array}<++>

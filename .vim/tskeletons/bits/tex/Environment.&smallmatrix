@@ -1,6 +1,0 @@
-<tskel:menu>
-Math.Matrix (Small)
-</tskel:menu>
-\begin{smallmatrix}
-    <+include(rows)+>
-\end{smallmatrix}<++>

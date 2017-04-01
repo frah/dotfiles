@@ -1,8 +1,0 @@
-<tskel:menu>
-Table.table
-</tskel:menu>
-\begin{table}<+CURSOR+>
-    <+tskel:tabular+>
-    \caption{<+CAPTION+>}
-\end{table}
-<++>
