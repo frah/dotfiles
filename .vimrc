@@ -65,7 +65,7 @@ if neobundle#load_cache()
                     \           'VimShellInteractive', 'VimShellSendString',
                     \           'VimShellSendBuffer', 'VimShellClose'
                     \       ],
-                    \       'function_prefixy': 'vimshell'
+                    \       'function_prefix': 'vimshell'
                     \ }}
     endif
 
