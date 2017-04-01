@@ -1,3 +1,6 @@
+set encoding=utf-8      " Default endcoding
+scriptencoding utf-8    " Use multibyte chars at this script
+
 " tinyとsmallではvimrcを読み込まない
 if !1 | finish | endif
 
@@ -193,7 +196,7 @@ filetype plugin indent on
 "---------------------------------------------------------------------------
 " 基本設定 Basics
 "---------------------------------------------------------------------------
-let mapleader = ","              " キーマップリーダー
+let g:mapleader = ","            " キーマップリーダー
 set scrolloff=5                  " スクロール時の余白確保
 set textwidth=0                  " 一行に長い文章を書いていても自動折り返しをしない
 set nobackup                     " バックアップ取らない
@@ -573,7 +576,6 @@ AutocmdFT qf call s:QuickFix_Keymap()
 " エンコーディング関連 Encoding
 "---------------------------------------------------------------------------
 set ffs=unix,dos,mac  " 改行文字
-set encoding=utf-8    " デフォルトエンコーディング
 
 " 文字コード関連
 " from ずんWiki http://www.kawaz.jp/pukiwiki/?vim#content_1_7
