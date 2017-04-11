@@ -138,7 +138,7 @@ if neobundle#load_cache()
                 \ }
 
     " completion
-    if v:version >= 703 && has('lua') && has('patch885')
+    if (v:version > 703 || (v:version == 703 && has('patch885'))) && has('lua')
         NeoBundle 'Shougo/neocomplete.vim'
     else
         NeoBundle 'Shougo/neocomplcache'
