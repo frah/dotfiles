@@ -7,18 +7,25 @@ if !1 | finish | endif
 if &compatible
     set nocompatible
 endif
-filetype off
+
+" booleanを定義
+let s:FALSE = 0
+let s:TRUE = !s:FALSE
 
 "---------------------------------------------------------------------------
 " NeoBundle
 "---------------------------------------------------------------------------
+filetype off
+
 " neobundle.vim が無ければインストールする
+let s:is_neobundle_installed = s:TRUE
 if ! isdirectory(expand('~/.vim/bundle'))
     echon "Installing neobundle.vim..."
     silent call mkdir(expand('~/.vim/bundle'), 'p')
     silent !git clone https://github.com/Shougo/neobundle.vim $HOME/.vim/bundle/neobundle.vim
     echo "done."
     if v:shell_error
+        let s:is_neobundle_installed = s:FALSE
         echoerr "neobundle.vim installation has failed!"
         finish
     endif
@@ -27,159 +34,167 @@ endif
 if has('vim_starting')
     set rtp+=~/.vim/bundle/neobundle.vim/
 endif
-call neobundle#begin(expand('~/.vim/bundle'))
 
-if neobundle#load_cache()
-    NeoBundleFetch 'Shougo/neobundle.vim'
-    NeoBundle 'Shougo/vimproc.vim', {
-        \ 'build' : {
-        \       'windows' : 'tools\\update-dll-mingw',
-        \       'cygwin'  : 'make -f make_cygwin.mak',
-        \       'mac'     : 'make',
-        \       'linux'   : 'make',
-        \       'unix'    : 'gmake',
-        \   }
-        \ }
-    NeoBundle 'vim-jp/vimdoc-ja'
-    NeoBundle 'vim-airline/vim-airline'
-    NeoBundle 'vim-airline/vim-airline-themes'
-    NeoBundle 'kana/vim-submode'
-    NeoBundle 'rhysd/clever-f.vim'
-    NeoBundle 'rhysd/accelerated-jk'
-    NeoBundle 'thinca/vim-ref'
-    NeoBundle 'kyouryuukunn/vim-changed'
-    NeoBundle 'pgilad/vim-skeletons'
-    NeoBundle 'kana/vim-smartword'
-    NeoBundle 'vim-scripts/Align'
-    NeoBundle 'nathanaelkane/vim-indent-guides'
-    NeoBundle 'LeafCage/yankround.vim'
-    NeoBundleLazy "sjl/gundo.vim", {
-                \   'on_cmd': 'GundoToggle'
-                \ }
-    NeoBundleLazy 'thinca/vim-quickrun', {
-                \   'on_cmd': 'QuickRun'
-                \ }
+if s:is_neobundle_installed
+    call neobundle#begin(expand('~/.vim/bundle'))
 
-    if has('unix') || has('mac')
-        NeoBundle 'sudo.vim'
-        NeoBundleLazy 'Shougo/vimshell.vim', {
-                    \   'on_cmd': [
-                    \       'VimShell', 'VimShellCreate', 'VimShellTab',
-                    \       'VimShellPop', 'VimShellCurrentDir',
-                    \       'VimShellBufferDir', 'VimShellExecute',
-                    \       'VimShellInteractive', 'VimShellSendString',
-                    \       'VimShellSendBuffer', 'VimShellClose'
-                    \   ],
-                    \   'on_func': 'vimshell'
+    if neobundle#load_cache()
+        NeoBundleFetch 'Shougo/neobundle.vim'
+        NeoBundle 'Shougo/vimproc.vim', {
+            \ 'build' : {
+            \       'windows' : 'tools\\update-dll-mingw',
+            \       'cygwin'  : 'make -f make_cygwin.mak',
+            \       'mac'     : 'make',
+            \       'linux'   : 'make',
+            \       'unix'    : 'gmake',
+            \   }
+            \ }
+        NeoBundle 'vim-jp/vimdoc-ja'
+        NeoBundle 'vim-airline/vim-airline'
+        NeoBundle 'vim-airline/vim-airline-themes'
+        NeoBundle 'kana/vim-submode'
+        NeoBundle 'rhysd/clever-f.vim'
+        NeoBundle 'rhysd/accelerated-jk'
+        NeoBundle 'thinca/vim-ref'
+        NeoBundle 'kyouryuukunn/vim-changed'
+        NeoBundle 'pgilad/vim-skeletons'
+        NeoBundle 'kana/vim-smartword'
+        NeoBundle 'vim-scripts/Align'
+        NeoBundle 'nathanaelkane/vim-indent-guides'
+        NeoBundle 'LeafCage/yankround.vim'
+        NeoBundleLazy "sjl/gundo.vim", {
+                    \   'on_cmd': 'GundoToggle'
                     \ }
+        NeoBundleLazy 'thinca/vim-quickrun', {
+                    \   'on_cmd': 'QuickRun'
+                    \ }
+
+        if has('unix') || has('mac')
+            NeoBundle 'sudo.vim'
+            NeoBundleLazy 'Shougo/vimshell.vim', {
+                        \   'on_cmd': [
+                        \       'VimShell', 'VimShellCreate', 'VimShellTab',
+                        \       'VimShellPop', 'VimShellCurrentDir',
+                        \       'VimShellBufferDir', 'VimShellExecute',
+                        \       'VimShellInteractive', 'VimShellSendString',
+                        \       'VimShellSendBuffer', 'VimShellClose'
+                        \   ],
+                        \   'on_func': 'vimshell'
+                        \ }
+        endif
+
+        " Text-Object
+        NeoBundle 'kana/vim-textobj-user'
+        NeoBundleLazy 'kana/vim-textobj-indent', {
+                    \   'depends': 'kana/vim-textobj-user',
+                    \   'on_map': [
+                    \       ['xo', 'ai'], ['xo', 'aI'],
+                    \       ['xo', 'ii'], ['xo', 'iI']
+                    \   ]
+                    \ }
+
+        " Operator
+        NeoBundle 'kana/vim-operator-user'
+        NeoBundleLazy 'kana/vim-operator-replace', {
+                    \   'on_map': '<Plug>(operator-replace)'
+                    \ }
+        NeoBundleLazy 'tyru/operator-camelize.vim', {
+                    \   'on_map': ['<Plug>(operator-camelize)',
+                    \              '<Plug>(operator-decamelize)']
+                    \ }
+        NeoBundleLazy 'rhysd/vim-operator-surround', {
+                    \   'on_map': '<Plug>(operator-surround-'
+                    \ }
+        NeoBundleLazy 'tyru/caw.vim', {
+                    \   'on_map': '<Plug>(caw:'
+                    \ }
+
+        " Syntax
+        NeoBundleLazy 'leafgarland/typescript-vim', {
+                    \   'on_path': '\.ts$'
+                    \ }
+        NeoBundleLazy 'yuroyoro/vim-python', {
+                    \   'on_ft' : ['python']
+                    \ }
+        NeoBundleLazy 'Arduino-syntax-file', {
+                    \   'on_path': '\.pde$'
+                    \ }
+
+        " Color schemes
+        NeoBundle 'tomasr/molokai'
+
+        " unite.vim
+        NeoBundle 'Shougo/unite-outline'
+        NeoBundle 'osyo-manga/unite-quickfix'
+        NeoBundle 'Shougo/unite-help'
+        NeoBundle 'ujihisa/unite-colorscheme'
+        NeoBundle 'ujihisa/unite-locate'
+        NeoBundle 'Shougo/neoyank.vim'
+        NeoBundle 'Shougo/neomru.vim'
+        NeoBundleLazy 'Shougo/unite.vim', {
+                    \   'on_cmd' : [
+                    \       {'name': 'Unite', 'complete' : 'customlist,unite#complete_source'},
+                    \       {'name': 'UniteWithBufferDir', 'complete' : 'customlist,unite#complete_source'},
+                    \       {'name': 'UniteWithCursorWord', 'complete' : 'customlist,unite#complete_source'},
+                    \       {'name': 'UniteWithWithInput', 'complete' : 'customlist,unite#complete_source'}
+                    \   ]
+                    \ }
+        NeoBundleLazy 'Shougo/vimfiler.vim', {
+                    \   'depends'  : 'Shougo/unite.vim',
+                    \   'on_cmd' : ['VimFiler', 'VimFilerCurrentDir',
+                    \               'VimFilerBufferDir', 'VimFilerSplit',
+                    \               'VimFilerExplorer', 'VimFilerDouble']
+                    \ }
+
+        " completion
+        if (v:version > 703 || (v:version == 703 && has('patch885'))) && has('lua')
+            NeoBundle 'Shougo/neocomplete.vim'
+        else
+            NeoBundle 'Shougo/neocomplcache'
+        endif
+        NeoBundleLazy 'Shougo/neosnippet.vim', {
+                    \   'on_i': 1
+                    \ }
+        NeoBundle 'Shougo/neosnippet-snippets'
+
+        " git
+        NeoBundle 'airblade/vim-gitgutter'
+        NeoBundle 'tpope/vim-fugitive'
+
+        " python
+        NeoBundleLazy 'jmcantrell/vim-virtualenv', {
+                    \   'on_ft': ['python', 'python3', 'djangohtml']
+                    \ }
+        NeoBundleLazy 'lambdalisue/vim-django-support', {
+                    \   'on_ft': ['python', 'python3', 'djangohtml']
+                    \   }
+        NeoBundleLazy 'davidhalter/jedi-vim', {
+                    \   'on_ft': ['python', 'python3', 'djangohtml'],
+                    \   'build': {
+                    \       'mac' : 'pip install jedi',
+                    \       'unix': 'pip install jedi'
+                    \   }}
+
+        " Go-lang
+        NeoBundleLazy 'fatih/vim-go', {
+                    \   'on_ft': 'go',
+                    \   'on_cmd': [
+                    \       'GoImport', 'GoDrop', 'GoDef', 'GoVet',
+                    \       'GoDoc', 'GoLint', 'GoRename', 'GoImports'
+                    \   ]
+                    \ }
+
+        NeoBundleCheck
+        NeoBundleSaveCache
     endif
 
-    " Text-Object
-    NeoBundle 'kana/vim-textobj-user'
-    NeoBundleLazy 'kana/vim-textobj-indent', {
-                \   'depends': 'kana/vim-textobj-user',
-                \   'on_map': [
-                \       ['xo', 'ai'], ['xo', 'aI'],
-                \       ['xo', 'ii'], ['xo', 'iI']
-                \   ]
-                \ }
-
-    " Operator
-    NeoBundle 'kana/vim-operator-user'
-    NeoBundleLazy 'kana/vim-operator-replace', {
-                \   'on_map': '<Plug>(operator-replace)'
-                \ }
-    NeoBundleLazy 'tyru/operator-camelize.vim', {
-                \   'on_map': ['<Plug>(operator-camelize)',
-                \              '<Plug>(operator-decamelize)']
-                \ }
-    NeoBundleLazy 'rhysd/vim-operator-surround', {
-                \   'on_map': '<Plug>(operator-surround-'
-                \ }
-    NeoBundleLazy 'tyru/caw.vim', {
-                \   'on_map': '<Plug>(caw:'
-                \ }
-
-    " Syntax
-    NeoBundleLazy 'leafgarland/typescript-vim', {
-                \   'on_path': '\.ts$'
-                \ }
-    NeoBundleLazy 'yuroyoro/vim-python', {
-                \   'on_ft' : ['python']
-                \ }
-    NeoBundleLazy 'Arduino-syntax-file', {
-                \   'on_path': '\.pde$'
-                \ }
-
-    " Color schemes
-    NeoBundle 'tomasr/molokai'
-
-    " unite.vim
-    NeoBundle 'Shougo/unite-outline'
-    NeoBundle 'osyo-manga/unite-quickfix'
-    NeoBundle 'Shougo/unite-help'
-    NeoBundle 'ujihisa/unite-colorscheme'
-    NeoBundle 'ujihisa/unite-locate'
-    NeoBundle 'Shougo/neoyank.vim'
-    NeoBundle 'Shougo/neomru.vim'
-    NeoBundleLazy 'Shougo/unite.vim', {
-                \   'on_cmd' : [
-                \       {'name': 'Unite', 'complete' : 'customlist,unite#complete_source'},
-                \       {'name': 'UniteWithBufferDir', 'complete' : 'customlist,unite#complete_source'},
-                \       {'name': 'UniteWithCursorWord', 'complete' : 'customlist,unite#complete_source'},
-                \       {'name': 'UniteWithWithInput', 'complete' : 'customlist,unite#complete_source'}
-                \   ]
-                \ }
-    NeoBundleLazy 'Shougo/vimfiler.vim', {
-                \   'depends'  : 'Shougo/unite.vim',
-                \   'on_cmd' : ['VimFiler', 'VimFilerCurrentDir',
-                \               'VimFilerBufferDir', 'VimFilerSplit',
-                \               'VimFilerExplorer', 'VimFilerDouble']
-                \ }
-
-    " completion
-    if (v:version > 703 || (v:version == 703 && has('patch885'))) && has('lua')
-        NeoBundle 'Shougo/neocomplete.vim'
-    else
-        NeoBundle 'Shougo/neocomplcache'
-    endif
-    NeoBundleLazy 'Shougo/neosnippet.vim', {
-                \   'on_i': 1
-                \ }
-    NeoBundle 'Shougo/neosnippet-snippets'
-
-    " git
-    NeoBundle 'airblade/vim-gitgutter'
-    NeoBundle 'tpope/vim-fugitive'
-
-    " python
-    NeoBundleLazy 'jmcantrell/vim-virtualenv', {
-                \   'on_ft': ['python', 'python3', 'djangohtml']
-                \ }
-    NeoBundleLazy 'lambdalisue/vim-django-support', {
-                \   'on_ft': ['python', 'python3', 'djangohtml']
-                \   }
-    NeoBundleLazy 'davidhalter/jedi-vim', {
-                \   'on_ft': ['python', 'python3', 'djangohtml'],
-                \   'build': {
-                \       'mac' : 'pip install jedi',
-                \       'unix': 'pip install jedi'
-                \   }}
-
-    " Go-lang
-    NeoBundleLazy 'fatih/vim-go', {
-                \   'on_ft': 'go',
-                \   'on_cmd': [
-                \       'GoImport', 'GoDrop', 'GoDef', 'GoVet',
-                \       'GoDoc', 'GoLint', 'GoRename', 'GoImports'
-                \   ]
-                \ }
-
-    NeoBundleCheck
-    NeoBundleSaveCache
+    call neobundle#end()
 endif
 
-call neobundle#end()
+function! s:neobundled(bundle)
+    return s:is_neobundle_installed && neobundle#is_installed(a:bundle)
+endfunction
+
 filetype plugin indent on
 
 
@@ -237,7 +252,7 @@ set laststatus=2 " 常にステータスラインを表示
 set ruler
 
 " vim-airline
-if neobundle#tap('vim-airline')
+if s:neobundled('vim-airline')
     let g:airline_theme = 'molokai'
     let g:airline#extensions#whitespace#enabled = 0
     "let g:airline#extensions#branch#enabled = 0
@@ -265,8 +280,6 @@ if neobundle#tap('vim-airline')
     let g:airline#extensions#tabline#tab_nr_type = 1
     " タブに表示する名前（fnamemodifyの第二引数）
     let g:airline#extensions#tabline#fnamemod = ':t'
-
-    call neobundle#untap()
 endif
 
 "ステータスラインに文字コードと改行文字を表示する
@@ -768,7 +781,7 @@ nnoremap Q gq
 "------------------------------------
 " vim-submode
 "------------------------------------
-if neobundle#tap('vim-submode')
+if s:neobundled('vim-submode')
     " サブモードを抜けた際のキー入力を保持
     let g:submode_keep_leaving_key = 1
 
@@ -781,26 +794,22 @@ if neobundle#tap('vim-submode')
     call submode#map('winsize', 'n', '', '<', '<C-w><')
     call submode#map('winsize', 'n', '', '+', '<C-w>+')
     call submode#map('winsize', 'n', '', '-', '<C-w>-')
-
-    call neobundle#untap()
 endif
 
 "------------------------------------
 " clever-f.vim
 "------------------------------------
-if neobundle#tap('clever-f.vim')
+if s:neobundled('clever-f.vim')
     " 大文字入力時のみ大文字小文字を区別
     let g:clever_f_smart_case = 1
     " 日本語対応
     let g:clever_f_use_migemo = 1
-
-    call neobundle#untap()
 endif
 
 "------------------------------------
 " yankround.vim
 "------------------------------------
-if neobundle#tap('yankround.vim')
+if s:neobundled('yankround.vim')
     nmap p      <Plug>(yankround-p)
     nmap P      <Plug>(yankround-P)
     nmap gp     <Plug>(yankround-gp)
@@ -813,19 +822,15 @@ if neobundle#tap('yankround.vim')
     let g:yankround_max_history = 30
     " 履歴キャッシュ保存ディレクトリ
     let g:yankround_dir = expand('~/.cache/yankround')
-
-    call neobundle#untap()
 endif
 
 "------------------------------------
 " vim-changed
 "------------------------------------
-if neobundle#tap('vim-changed')
+if s:neobundled('vim-changed')
     noremap <Leader>C   :<C-u>Changed<CR>
     " 編集後即時ハイライト
     "Autocmd InsertLeave,TextChanged * :Changed
-
-    call neobundle#untap()
 endif
 
 "------------------------------------
@@ -845,23 +850,25 @@ let Grep_Skip_Files = '*.bak *~'
 "------------------------------------
 " Fugitive.vim
 "------------------------------------
-" The prefix key.
-nnoremap [git] <Nop>
-nmap     <Space>g   [git]
+if s:neobundled('vim-fugitive')
+    " The prefix key.
+    nnoremap [git] <Nop>
+    nmap     <Space>g   [git]
 
-nnoremap [git]d :<C-u>Gdiff<Enter>
-nnoremap [git]D :<C-u>Gdiff HEAD<Enter>
-nnoremap [git]s :<C-u>Gstatus<Enter>
-nnoremap [git]l :<C-u>Glog<Enter>
-nnoremap [git]a :<C-u>Gwrite<Enter>
-nnoremap [git]c :<C-u>Gcommit<Enter>
-nnoremap [git]C :<C-u>Git commit --amend<Enter>
-nnoremap [git]b :<C-u>Gblame<Enter>
+    nnoremap [git]d :<C-u>Gdiff<Enter>
+    nnoremap [git]D :<C-u>Gdiff HEAD<Enter>
+    nnoremap [git]s :<C-u>Gstatus<Enter>
+    nnoremap [git]l :<C-u>Glog<Enter>
+    nnoremap [git]a :<C-u>Gwrite<Enter>
+    nnoremap [git]c :<C-u>Gcommit<Enter>
+    nnoremap [git]C :<C-u>Git commit --amend<Enter>
+    nnoremap [git]b :<C-u>Gblame<Enter>
+endif
 
 "------------------------------------
 " vim-gitgutter
 "------------------------------------
-if neobundle#tap('vim-gitgutter')
+if s:neobundled('vim-gitgutter')
     " 空白文字列を無視
     let g:gitgutter_diff_args = '-w'
     " 行ハイライトをデフォルトで
@@ -876,8 +883,6 @@ if neobundle#tap('vim-gitgutter')
     nnoremap <silent> [git]S :<C-u>GitGutterStageHunk<CR>
     nnoremap <silent> [git]U :<C-u>GitGutterUndoHunk<CR>
     nnoremap <silent> [git]P :<C-u>GitGutterPreviewHunk<CR>
-
-    call neobundle#untap()
 endif
 
 "------------------------------------
@@ -892,39 +897,33 @@ nnoremap fs :<C-u>OpenBrowserSearch<Space><C-r><C-w><Enter>
 "------------------------------------
 " operator-camelize.vim
 "------------------------------------
-if neobundle#tap('operator-camelize.vim')
+if s:neobundled('operator-camelize.vim')
     " camel-caseへの変換
     map <Leader>u <Plug>(operator-camelize)
     map <Leader>U <Plug>(operator-decamelize)
-
-    call neobundle#untap()
 endif
 
 "------------------------------------
 " vim-operator-replace
 "------------------------------------
-if neobundle#tap('vim-operator-replace')
+if s:neobundled('vim-operator-replace')
     " RwなどでYankしてるもので置き換える
     nmap R <Plug>(operator-replace)
-
-    call neobundle#untap()
 endif
 
 "------------------------------------
 " vim-operator-surround
 "------------------------------------
-if neobundle#tap('vim-operator-surround')
+if s:neobundled('vim-operator-surround')
     map <silent>sa <Plug>(operator-surround-append)
     map <silent>sd <Plug>(operator-surround-delete)
     map <silent>sr <Plug>(operator-surround-replace)
-
-    call neobundle#untap()
 endif
 
 "------------------------------------
 " caw.vim
 "------------------------------------
-if neobundle#tap('caw.vim')
+if s:neobundled('caw.vim')
     " デフォルトキーマップを無効化
     let g:caw_no_default_keymappings = 1
     let g:caw_operator_keymappings = 1
@@ -933,14 +932,12 @@ if neobundle#tap('caw.vim')
     nmap <Leader>cc <Plug>(caw:hatpos:toggle)
     nmap <Leader>ca <Plug>(caw:dollarpos:toggle)
     nmap <Leader>cb <Plug>(caw:wrap:toggle)
-
-    call neobundle#untap()
 endif
 
 "------------------------------------
 " vim-smartword
 "------------------------------------
-if neobundle#tap('vim-smartword')
+if s:neobundled('vim-smartword')
     noremap ,w  w
     noremap ,b  b
     noremap ,e  e
@@ -950,8 +947,6 @@ if neobundle#tap('vim-smartword')
     map b  <Plug>(smartword-b)
     map e  <Plug>(smartword-e)
     map ge <Plug>(smartword-ge)
-
-    call neobundle#untap()
 endif
 
 "------------------------------------
@@ -1010,7 +1005,7 @@ endif
 "------------------------------------
 " neocomplcache.vim
 "------------------------------------
-if neobundle#tap('neocomplcache')
+if s:neobundled('neocomplcache')
     " AutoComplPopを無効にする
     let g:acp_enableAtStartup = 0
     " NeoComplCacheを有効にする
@@ -1109,14 +1104,12 @@ if neobundle#tap('neocomplcache')
     endif
     let g:neocomplcache_omni_patterns.ruby = '[^. *\t]\.\w*\|\h\w*::'
     let g:neocomplcache_omni_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
-
-    call neobundle#untap()
 endif
 
 "------------------------------------
 " neocomplete.vim
 "------------------------------------
-if neobundle#tap('neocomplete.vim')
+if s:neobundled('neocomplete.vim')
     " Disable AutoComplPop.
     let g:acp_enableAtStartup = 0
     " Use neocomplete.
@@ -1138,64 +1131,62 @@ if neobundle#tap('neocomplete.vim')
         autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
         autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
     augroup END
-
-    call neobundle#untap()
 endif
 
 "------------------------------------
 " neosnippet.vim
 "------------------------------------
-if neobundle#tap('neosnippet.vim')
+if s:neobundled('neosnippet.vim')
     " Plugin key-mappings
     imap <C-k>  <Plug>(neosnippet_expand_or_jump)
-
-    call neobundle#untap()
 endif
 
 "------------------------------------
 " unite.vim
 "------------------------------------
-" The prefix key.
-nnoremap [unite]   <Nop>
-nmap     <Space>u  [unite]
+if neobundle#tap('unite.vim')
+    " The prefix key.
+    nnoremap [unite]   <Nop>
+    nmap     <Space>u  [unite]
 
-nnoremap [unite]u  :<C-u>Unite<Space>
-nnoremap <silent> [unite]a  :<C-u>UniteWithCurrentDir -buffer-name=files buffer file_mru bookmark file<CR>
-nnoremap <silent> [unite]f  :<C-u>Unite -buffer-name=files file<CR>
-nnoremap <silent> [unite]b  :<C-u>Unite buffer<CR>
-nnoremap <silent> [unite]m  :<C-u>Unite file_mru<CR>
-" grep (current buffer)
-nnoremap <silent> [unite]gc :<C-u>Unite grep:% -buffer-name=unite-search -no-quit -direction=botright<CR>
-" grep (current directory)
-nnoremap <silent> [unite]gd :<C-u>Unite grep:. -buffer-name=unite-search<CR>
-" ヤンク履歴
-nnoremap <silent> [unite]y  :<C-u>Unite -buffer-name=unite-yank history/yank<CR>
-" outline
-nnoremap <silent> [unite]o  :<C-u>Unite -buffer-name=unite-outline outline<CR>
+    nnoremap [unite]u  :<C-u>Unite<Space>
+    nnoremap <silent> [unite]a  :<C-u>UniteWithCurrentDir -buffer-name=files buffer file_mru bookmark file<CR>
+    nnoremap <silent> [unite]f  :<C-u>Unite -buffer-name=files file<CR>
+    nnoremap <silent> [unite]b  :<C-u>Unite buffer<CR>
+    nnoremap <silent> [unite]m  :<C-u>Unite file_mru<CR>
+    " grep (current buffer)
+    nnoremap <silent> [unite]gc :<C-u>Unite grep:% -buffer-name=unite-search -no-quit -direction=botright<CR>
+    " grep (current directory)
+    nnoremap <silent> [unite]gd :<C-u>Unite grep:. -buffer-name=unite-search<CR>
+    " ヤンク履歴
+    nnoremap <silent> [unite]y  :<C-u>Unite -buffer-name=unite-yank history/yank<CR>
+    " outline
+    nnoremap <silent> [unite]o  :<C-u>Unite -buffer-name=unite-outline outline<CR>
 
-" nnoremap <silent> [unite]b  :<C-u>UniteWithBufferDir -buffer-name=files buffer file_mru bookmark file<CR>
+    " nnoremap <silent> [unite]b  :<C-u>UniteWithBufferDir -buffer-name=files buffer file_mru bookmark file<CR>
 
-let s:bundle = neobundle#get('unite.vim')
-function! s:bundle.hooks.on_source(bundle)
-    let g:unite_data_directory = expand('~/.cache/unite')
-    let g:unite_source_file_mru_limit = 200
-    let g:unite_enable_start_insert = 1
-    let g:unite_enable_ignore_case = 1
-    let g:unite_enable_smart_case = 1
+    function! neobundle#hooks.on_source(bundle)
+        let g:unite_data_directory = expand('~/.cache/unite')
+        let g:unite_source_file_mru_limit = 200
+        let g:unite_enable_start_insert = 1
+        let g:unite_enable_ignore_case = 1
+        let g:unite_enable_smart_case = 1
 
-    AutocmdFT unite call s:unite_my_settings()
+        AutocmdFT unite call s:unite_my_settings()
 
-    function! s:unite_my_settings()
-      " Overwrite settings.
-      imap      <buffer> jj         <Plug>(unite_insert_leave)
-      nnoremap  <silent><buffer> <Esc><Esc> :<C-q>q<CR>
-      nnoremap  <silent><buffer> <C-k> :<C-u>call unite#mappings#do_action('preview')<CR>
-      imap      <buffer> <C-w>      <Plug>(unite_delete_backward_path)
-      nmap      <buffer> <C-n>      <Plug>(unite_select_next_line)
-      nmap      <buffer> <C-p>      <Plug>(unite_select_previous_line)
+        function! s:unite_my_settings()
+          " Overwrite settings.
+          imap      <buffer> jj         <Plug>(unite_insert_leave)
+          nnoremap  <silent><buffer> <Esc><Esc> :<C-q>q<CR>
+          nnoremap  <silent><buffer> <C-k> :<C-u>call unite#mappings#do_action('preview')<CR>
+          imap      <buffer> <C-w>      <Plug>(unite_delete_backward_path)
+          nmap      <buffer> <C-n>      <Plug>(unite_select_next_line)
+          nmap      <buffer> <C-p>      <Plug>(unite_select_previous_line)
+        endfunction
     endfunction
-endfunction
-unlet s:bundle
+
+    call neobundle#untap()
+endif
 
 "------------------------------------
 " vimfiler
@@ -1224,7 +1215,7 @@ endif
 "------------------------------------
 " quickrun.vim
 "------------------------------------
-if neobundle#tap('vim-quickrun')
+if s:neobundled('vim-quickrun')
     nnoremap <Leader>r  :<C-u>QuickRun -outputter quickfix<CR>
     let g:quickrun_config = {
                 \   '_': {
@@ -1234,30 +1225,30 @@ if neobundle#tap('vim-quickrun')
                 \       'outputter/buffer/close_on_empty': 1
                 \   }
                 \}
-
-    call neobundle#untap()
 endif
 
 "------------------------------------
 " vim-ref
 "------------------------------------
-let g:ref_cache_dir = expand('~/.cache/vim-ref')
-let g:ref_use_vimproc = 1
-let g:ref_man_cmd = 'man'
+if s:neobundled('vim-ref')
+    let g:ref_cache_dir = expand('~/.cache/vim-ref')
+    let g:ref_use_vimproc = 1
+    let g:ref_man_cmd = 'man'
 
-augroup vimref
-    autocmd!
-    autocmd FileType sh,c nnoremap <silent> <Space>d :<C-u>call ref#jump('normal', 'man')<CR>
-    autocmd FileType sh,c vnoremap <silent> <Space>d :<C-u>call ref#jump('visual', 'man')<CR>
-    autocmd FileType perl nnoremap <silent> <Space>d :<C-U>call ref#jump('normal', 'perldoc')<CR>
-    autocmd FileType perl vnoremap <silent> <Space>d :<C-U>call ref#jump('visual', 'perldoc')<CR>
-    autocmd FileType ruby nnoremap <silent> <Space>d :<C-U>call ref#jump('normal', 'refe')<CR>
-    autocmd FileType ruby vnoremap <silent> <Space>d :<C-U>call ref#jump('visual', 'refe')<CR>
-    autocmd FileType python nnoremap <silent> <Space>d :<C-U>call ref#jump('normal', 'pydoc')<CR>
-    autocmd FileType python vnoremap <silent> <Space>d :<C-U>call ref#jump('visual', 'pydoc')<CR>
-    autocmd FileType php nnoremap <silent> <Space>d :<C-U>call ref#jump('normal', 'phpmanual')<CR>
-    autocmd FileType php vnoremap <silent> <Space>d :<C-U>call ref#jump('visual', 'phpmanual')<CR>
-augroup END
+    augroup vimref
+        autocmd!
+        autocmd FileType sh,c nnoremap <silent> <Space>d :<C-u>call ref#jump('normal', 'man')<CR>
+        autocmd FileType sh,c vnoremap <silent> <Space>d :<C-u>call ref#jump('visual', 'man')<CR>
+        autocmd FileType perl nnoremap <silent> <Space>d :<C-U>call ref#jump('normal', 'perldoc')<CR>
+        autocmd FileType perl vnoremap <silent> <Space>d :<C-U>call ref#jump('visual', 'perldoc')<CR>
+        autocmd FileType ruby nnoremap <silent> <Space>d :<C-U>call ref#jump('normal', 'refe')<CR>
+        autocmd FileType ruby vnoremap <silent> <Space>d :<C-U>call ref#jump('visual', 'refe')<CR>
+        autocmd FileType python nnoremap <silent> <Space>d :<C-U>call ref#jump('normal', 'pydoc')<CR>
+        autocmd FileType python vnoremap <silent> <Space>d :<C-U>call ref#jump('visual', 'pydoc')<CR>
+        autocmd FileType php nnoremap <silent> <Space>d :<C-U>call ref#jump('normal', 'phpmanual')<CR>
+        autocmd FileType php vnoremap <silent> <Space>d :<C-U>call ref#jump('visual', 'phpmanual')<CR>
+    augroup END
+endif
 
 "------------------------------------
 " Smart blockwise insertion
@@ -1279,22 +1270,18 @@ endfunction
 "------------------------------------
 " vim-indent-guides
 "------------------------------------
-if neobundle#tap('vim-indent-guides')
+if s:neobundled('vim-indent-guides')
     let g:indent_guides_enable_on_vim_startup = 1
     let g:indent_guides_start_level = 2
     let g:indent_guides_guide_size = 1
     let g:indent_guides_exclude_filetypes = ['help', 'unite']
-
-    call neobundle#untap()
 endif
 
 "------------------------------------
 " Gundo.vim
 "------------------------------------
-if neobundle#tap('gundo.vim')
+if s:neobundled('gundo.vim')
     nnoremap <Leader>g :GundoToggle<CR>
-
-    call neobundle#untap()
 endif
 
 "------------------------------------
