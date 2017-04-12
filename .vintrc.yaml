@@ -1,0 +1,9 @@
+policies:
+    ProhibitSetNoCompatible:
+        enabled: false
+
+cmdargs:
+    severity: warning
+    stat: true
+    color: true
+
