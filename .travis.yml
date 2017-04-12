@@ -1,0 +1,27 @@
+language: generic
+
+os:
+    - linux
+    - osx
+
+env:
+    - HEAD=yes
+
+sudo: true
+
+addons:
+    apt:
+        packages:
+            - vim
+            - python3
+
+install:
+    - pip install vim-vint
+
+script:
+    - vim --version
+    - vint --version
+    - vint .vimrc
+    - ./setup.sh
+    - vim +NeoBundleInstall +q -s
+
