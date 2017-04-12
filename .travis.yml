@@ -2,7 +2,6 @@ language: generic
 
 os:
     - linux
-    - osx
 
 env:
     - HEAD=yes
@@ -12,8 +11,11 @@ dist: trusty
 
 addons:
     apt:
+        sources:
+            - debian-sid
         packages:
             - vim
+            - shellcheck
 
 install:
     - pip install vim-vint --upgrade
@@ -22,6 +24,5 @@ script:
     - vim --version
     - vint --version
     - vint .vimrc
-    - ./setup.sh
-    - vim +NeoBundleInstall +q
+    - shellcheck .bashrc
 
