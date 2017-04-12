@@ -5,7 +5,12 @@ cd $(dirname $0)
 # Make dotfile links
 for dotfile in .?*
 do
-    if [ $dotfile != '..' ] && [[ $dotfile != '.git'* ]]; then
+    if [ $dotfile != '..' ]; then
+        case "$dotfile" in
+            ".git" ) continue;;
+            ".travis.yml" ) continue;;
+            ".vintrc.yaml" ) continue;;
+        esac
         if [ -e "$HOME/$dotfile" ]; then
             if [ -L "$HOME/$dotfile" ]; then
                 rm -f $HOME/$dotfile
