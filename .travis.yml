@@ -1,0 +1,28 @@
+language: generic
+
+os:
+    - linux
+
+env:
+    - HEAD=yes
+
+sudo: false
+dist: trusty
+
+addons:
+    apt:
+        sources:
+            - debian-sid
+        packages:
+            - vim
+            - shellcheck
+
+install:
+    - pip install vim-vint --upgrade
+
+script:
+    - vim --version
+    - vint --version
+    - vint .vimrc
+    - shellcheck -e SC2148 .bashrc
+
