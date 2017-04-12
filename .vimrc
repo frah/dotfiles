@@ -679,7 +679,9 @@ hi PmenuSbar ctermbg=0 ctermfg=9
 "set term=builtin_linux
 "set ttytype=builtin_linux
 set t_Co=256
-colorscheme molokai
+if s:neobundled('molokai')
+    colorscheme molokai
+endif
 
 
 "---------------------------------------------------------------------------
