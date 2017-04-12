@@ -7,21 +7,21 @@ os:
 env:
     - HEAD=yes
 
-sudo: true
+sudo: false
+dist: trusty
 
 addons:
     apt:
         packages:
             - vim
-            - python3
 
 install:
-    - pip install vim-vint
+    - pip install vim-vint --upgrade
 
 script:
     - vim --version
     - vint --version
     - vint .vimrc
     - ./setup.sh
-    - vim +NeoBundleInstall +q -s
+    - vim +NeoBundleInstall +q
 
