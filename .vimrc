@@ -846,34 +846,36 @@ let Grep_Skip_Files = '*.bak *~'
 " Fugitive.vim
 "------------------------------------
 " The prefix key.
-nnoremap [Fugitive] <Nop>
-nmap     <Space>g   [Fugitive]
+nnoremap [git] <Nop>
+nmap     <Space>g   [git]
 
-nnoremap [Fugitive]d :<C-u>Gdiff<Enter>
-nnoremap [Fugitive]s :<C-u>Gstatus<Enter>
-nnoremap [Fugitive]l :<C-u>Glog<Enter>
-nnoremap [Fugitive]a :<C-u>Gwrite<Enter>
-nnoremap [Fugitive]c :<C-u>Gcommit<Enter>
-nnoremap [Fugitive]C :<C-u>Git commit --amend<Enter>
-nnoremap [Fugitive]b :<C-u>Gblame<Enter>
+nnoremap [git]d :<C-u>Gdiff<Enter>
+nnoremap [git]D :<C-u>Gdiff HEAD<Enter>
+nnoremap [git]s :<C-u>Gstatus<Enter>
+nnoremap [git]l :<C-u>Glog<Enter>
+nnoremap [git]a :<C-u>Gwrite<Enter>
+nnoremap [git]c :<C-u>Gcommit<Enter>
+nnoremap [git]C :<C-u>Git commit --amend<Enter>
+nnoremap [git]b :<C-u>Gblame<Enter>
 
 "------------------------------------
 " vim-gitgutter
 "------------------------------------
 if neobundle#tap('vim-gitgutter')
-    nnoremap <silent> <Leader>gg :<C-u>GitGutterToggle<CR>
-    nnoremap <silent> <Leader>gh :<C-u>GitGutterLineHighlightsToggle<CR>
-    " Default keymaps
-    "nmap [c <Plug>GitGutterPrevHunk
-    "nmap ]c <Plug>GitGutterNextHunk
-    "nmap <Leader>hs <Plug>GitGutterStageHunk
-    "nmap <Leader>hu <Plug>GitGutterUndoHunk
-    "nmap <Leader>hp <Plug>GitGutterPreviewHunk
-
     " 空白文字列を無視
     let g:gitgutter_diff_args = '-w'
     " 行ハイライトをデフォルトで
     let g:gitgutter_highlight_lines = 0
+    " デフォルトキーマップを無効化
+    let g:gitgutter_map_keys = 0
+
+    nnoremap <silent> [git]g :<C-u>GitGutterToggle<CR>
+    nnoremap <silent> [git]h :<C-u>GitGutterLineHighlightsToggle<CR>
+    nnoremap <silent> [git][ :<C-u>GitGutterPrevHunk<CR>
+    nnoremap <silent> [git]] :<C-u>GitGutterNextHunk<CR>
+    nnoremap <silent> [git]S :<C-u>GitGutterStageHunk<CR>
+    nnoremap <silent> [git]U :<C-u>GitGutterUndoHunk<CR>
+    nnoremap <silent> [git]P :<C-u>GitGutterPreviewHunk<CR>
 
     call neobundle#untap()
 endif
