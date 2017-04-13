@@ -245,6 +245,5 @@ else
     pcolor=$LIGHT_GREEN
     dcolor=$DARK_GREEN
 fi
-DATE='\[\e[$[COLUMNS-$(echo -n " (\d \t)" | wc -c)]C\e[40;2;37m[\d \t]\e[0m\e[$[COLUMNS]D\]'
-export PS1="$DATE$LIGHT_YELLOW[\!]"$pcolor"[\u"$dcolor"@"$RST_COLOR$pcolor"\h] $LIGHT_BLUE\w$LIGHT_YELLOW$(__git_ps1)\n$RST_COLOR$pcolor\\\$$RST_COLOR "
+export PS1="$LIGHT_YELLOW[\!]$pcolor[\u$dcolor@$RST_COLOR$pcolor\h] $LIGHT_BLUE\w$LIGHT_YELLOW"'$(__git_ps1)'"\n$RST_COLOR$pcolor\\\$$RST_COLOR "
 
