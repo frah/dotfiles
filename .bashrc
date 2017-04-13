@@ -76,6 +76,9 @@ export TEXMFHOME=$HOME/texmf
 if [ -f ~/dotfiles/git-completion.bash ]; then
     . ~/dotfiles/git-completion.bash
 fi
+if [ -f ~/dotfiles/git-prompt.sh ]; then
+    . ~/dotfiles/git-prompt.sh
+fi
 export GIT_PS1_SHOWUNTRACKEDFILES="yes"
 export GIT_PS1_SHOWSTASHSTATE="yes"
 export GIT_PS1_SHOWDIRTYSTATE="yes"
