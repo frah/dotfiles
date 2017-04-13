@@ -92,6 +92,13 @@ if s:is_neobundle_installed
                     \       ['xo', 'ii'], ['xo', 'iI']
                     \   ]
                     \ }
+        NeoBundleLazy 'kana/vim-textobj-function', {
+                    \   'depends': 'kana/vim-textobj-user',
+                    \   'on_map': [
+                    \       ['xo', 'af'], ['xo', 'aF'],
+                    \       ['xo', 'if'], ['xo', 'iF']
+                    \   ]
+                    \ }
 
         " Operator
         NeoBundle 'kana/vim-operator-user'
