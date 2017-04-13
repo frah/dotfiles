@@ -1,3 +1,4 @@
 /.vim/.*
 /.vim/bundle
 .DS_Store
+git-completion.bash
