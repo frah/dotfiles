@@ -24,5 +24,7 @@ script:
     - vim --version
     - vint --version
     - vint .vimrc
-    - shellcheck -e SC1090,SC1091,SC2148,SC2034,SC2139,SC2086 .bashrc
+    - shellcheck -e SC1090,SC1091,SC2148,SC2034,SC2139,SC2086 .bashrc .sh_aliases .sh_functions
+    - shellcheck -e SC1090,SC1091 .sh_aliases
+    - shellcheck -e SC1090,SC1091,SC2046.sh_functions
 
