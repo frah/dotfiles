@@ -30,7 +30,7 @@ esac
 #
 # @param [Array] egrep arguments
 function psk() {
-  local pss=$(psg $@)
+  local pss=$(psg "$@")
   if [ $(echo -e "${pss}"|wc -l) -le 1 ]; then
     echo No such process
     return
@@ -61,5 +61,13 @@ function slv() {
   else
     ${PAGER} "$1"
   fi
+}
+
+##
+# Make folder and enter
+#
+function mkcd() {
+  mkdir "$1";
+  cd "$1";
 }
 
