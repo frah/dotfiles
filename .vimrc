@@ -20,13 +20,13 @@ filetype off
 " neobundle.vim が無ければインストールする
 let s:is_neobundle_installed = s:TRUE
 if ! isdirectory(expand('~/.vim/bundle'))
-    echon "Installing neobundle.vim..."
+    echon 'Installing neobundle.vim...'
     silent call mkdir(expand('~/.vim/bundle'), 'p')
     silent !git clone https://github.com/Shougo/neobundle.vim $HOME/.vim/bundle/neobundle.vim
-    echo "done."
+    echo 'done.'
     if v:shell_error
         let s:is_neobundle_installed = s:FALSE
-        echoerr "neobundle.vim installation has failed!"
+        echoerr 'neobundle.vim installation has failed!'
         finish
     endif
 endif
@@ -208,7 +208,7 @@ filetype plugin indent on
 "---------------------------------------------------------------------------
 " 基本設定 Basics
 "---------------------------------------------------------------------------
-let g:mapleader = ","            " キーマップリーダー
+let g:mapleader = ','            " キーマップリーダー
 set scrolloff=5                  " スクロール時の余白確保
 set textwidth=0                  " 一行に長い文章を書いていても自動折り返しをしない
 set nobackup                     " バックアップ取らない
@@ -233,9 +233,6 @@ command! Ev edit $MYVIMRC
 command! Rv source $MYVIMRC
 
 set helpfile=$VIMRUNTIME/doc/help.txt
-
-" ファイルタイプ判定をon
-filetype plugin on
 
 " augroupをまとめる
 augroup VimrcLocal
@@ -309,7 +306,7 @@ endfunction
 " The function Nr2Hex() returns the Hex string of a number.
 func! Nr2Hex(nr)
     let n = a:nr
-    let r = ""
+    let r = ''
     while n
         let r = '0123456789ABCDEF'[n % 16] . r
         let n = n / 16
@@ -368,8 +365,8 @@ Autocmd QuickfixCmdPost lmake,lgrep,lgrepadd,lvimgrep,lvimgrepadd lwin
 Autocmd WinEnter * call s:QuickFix_Exit_OnlyWindow()
 function! s:QuickFix_Exit_OnlyWindow()
     if winnr('$') == 1 &&
-                \ ((getbufvar(winbufnr(0), '&buftype')) == 'quickfix'
-                \ || @% =~ 'unite-.*')
+                \ ((getbufvar(winbufnr(0), '&buftype')) ==? 'quickfix'
+                \ || @% =~? 'unite-.*')
         quit
     endif
 endfunction
@@ -386,17 +383,11 @@ set cindent      " Cプログラムファイルの自動インデントを始め
 " softtabstopはTabキー押し下げ時の挿入される空白の量，0の場合はtabstopと同じ，BSにも影響する
 set tabstop=4 shiftwidth=4 softtabstop=0
 
-if has("autocmd")
-    "ファイルタイプの検索を有効にする
-    filetype plugin on
-    "そのファイルタイプにあわせたインデントを利用する
-    filetype indent on
-    " これらのftではインデントを無効に
-    "autocmd FileType php filetype indent off
+" これらのftではインデントを無効に
+"autocmd FileType php filetype indent off
 
-    AutocmdFT html :set indentexpr=
-    AutocmdFT xhtml :set indentexpr=
-endif
+AutocmdFT html :set indentexpr=
+AutocmdFT xhtml :set indentexpr=
 
 
 "---------------------------------------------------------------------------
@@ -413,7 +404,7 @@ set complete+=k            " 補完に辞書ファイル追加
 " タグ関連 Tags
 "---------------------------------------------------------------------------
 " set tags
-if has("autochdir")
+if has('autochdir')
     " 編集しているファイルのディレクトリに自動で移動
     set autochdir
     set tags=tags;
@@ -592,10 +583,6 @@ set ffs=unix,dos,mac  " 改行文字
 " 文字コード関連
 " from ずんWiki http://www.kawaz.jp/pukiwiki/?vim#content_1_7
 " 文字コードの自動認識
-if &encoding !=# 'utf-8'
-    set encoding=japan
-    set fileencoding=japan
-endif
 if has('iconv')
     let s:enc_euc = 'euc-jp'
     let s:enc_jis = 'iso-2022-jp'
@@ -745,18 +732,18 @@ nmap y0 y^
 
 function! s:StripEndLineWhitespace()
     " Don't strip on these filetypes
-    if &filetype =~ 'ruby\|javascript\|perl\|python'
+    if &filetype =~? 'ruby\|javascript\|perl\|python'
         return
     endif
-    %s/\s\+$//ge
+    normal! %s/\s\+$//ge
 endfunction
 
 function! s:ExpandTab()
     " Don't expand ta on these filetypes
-    if &filetype =~ 'make'
+    if &filetype =~? 'make'
         return
     endif
-    %s/\t/  /ge
+    normal! %s/\t/  /ge
 endfunction
 
 " 保存時に行末の空白を除去する
@@ -969,10 +956,10 @@ if neobundle#tap('vimshell')
 
     if has('win32') || has('win64')
         " Display user name on Windows.
-        let g:vimshell_prompt = $USERNAME."% "
+        let g:vimshell_prompt = $USERNAME.'% '
     else
         " Display user name on Linux.
-        let g:vimshell_prompt = $USER."% "
+        let g:vimshell_prompt = $USER.'% '
 
     "  call vimshell#set_execute_file('bmp,jpg,png,gif', 'gexe eog')
     "  call vimshell#set_execute_file('mp3,m4a,ogg', 'gexe amarok')
