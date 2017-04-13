@@ -24,5 +24,5 @@ script:
     - vim --version
     - vint --version
     - vint .vimrc
-    - shellcheck -e SC2148,SC2034,SC2139,SC2086 .bashrc
+    - shellcheck -e SC1090,SC1091,SC2148,SC2034,SC2139,SC2086 .bashrc
 
