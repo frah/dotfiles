@@ -24,7 +24,7 @@ function set_alias {
     local command=""
 
     IFS=" "
-    set -- ${source}
+    set -- "${source}"
     if test "$1" = "env"; then
         command="$3"
     else
@@ -47,7 +47,7 @@ function set_env {
     local source="$2"
 
     IFS=":"
-    set -- ${source}
+    set -- "${source}"
 
     if test -e "$1"; then
         export ${name}="${source}"
@@ -57,6 +57,14 @@ function set_env {
         return 1
     fi
 }
+
+if [ -f ~/.sh_functions ]; then
+  source ~/.sh_functions
+fi
+if [ -f ~/.sh_aliases ]; then
+  source ~/.sh_aliases
+fi
+
 
 ##
 # set environment
@@ -84,9 +92,30 @@ export GIT_PS1_SHOWSTASHSTATE="yes"
 export GIT_PS1_SHOWDIRTYSTATE="yes"
 export GIT_PS1_SHOWUPSTREAM="auto"
 
-# OS-specific environments
-case "$_os" in
-Darwin)     # Mac OS X
+
+# OS-specific settings
+if   [[ "$_os" == "Linux" ]]; then
+    if set_env PAGER /usr/bin/lv; then
+        export LV='-Ou8 -c'
+    fi
+elif [[ "$_os" == "FreeBSD" ]]; then
+    if [ -f /usr/local/etc/bash_completion ]; then
+      . /usr/local/etc/bash_completion
+    fi
+
+    if set_env PAGER /usr/local/bin/lv; then
+        export LV='-Ou8 -c'
+    fi
+    set_env EDITOR /usr/local/bin/vim
+
+    if ! set_alias ls '/usr/local/bin/gnuls --color=auto -h'; then
+        alias ls='ls -Gh'
+    fi
+
+    set_alias vi '/usr/local/bin/vim'
+    set_alias man 'env LC_ALL=ja_JP.eucJP /usr/local/bin/jman'
+    alias portupgrade="sudo portmaster -CKdway -x apr"
+elif [[ "$_os" == "Darwin" ]]; then
     # set pager
     if set_env PAGER /usr/local/bin/lv; then
         export LV='-Ou8 -c'
@@ -96,31 +125,8 @@ Darwin)     # Mac OS X
     fi
 
     set_env EDITOR /Applications/MacVim.app/Contents/MacOS/Vim
-    set_env PATH /Applications/TeX/pTeX.app/teTeX/bin:$PATH
-    ;;
-FreeBSD)    # FreeBSD
-    if [ -f /usr/local/etc/bash_completion ]; then
-      . /usr/local/etc/bash_completion
-    fi
+    set_env PATH "/Applications/TeX/pTeX.app/teTeX/bin:$PATH"
 
-    if set_env PAGER /usr/local/bin/lv; then
-        export LV='-Ou8 -c'
-    fi
-
-    set_env EDITOR /usr/local/bin/vim
-    ;;
-esac
-
-##
-# set aliases
-#
-if [ -f ~/.sh_aliases ]; then
-  . ~/.sh_aliases
-fi
-
-# OS-specific aliases
-case "$_os" in
-Darwin)     # Mac OS X
     alias ls='/bin/ls -Gh'
 
     # cups
@@ -129,23 +135,14 @@ Darwin)     # Mac OS X
 
     # vim aliases
     if [ -e /Applications/MacVim.app ]; then
-        alias vi='env LANG=ja_JP.UTF-8 /Applications/MacVim.app/Contents/MacOS/Vim "$@"'
-        alias vim='env LANG=ja_JP.UTF-8 /Applications/MacVim.app/Contents/MacOS/Vim "$@"'
-        alias gvim='open -a /Applications/MacVim.app "$@"'
+        function _vi() { env LANG=ja_JP.UTF-8 /Applications/MacVim.app/Contents/MacOS/Vim "$@"; }
+        function gvim() { open -a /Applications/MacVim.app "$@"; }
+        alias vi=_vi
+        alias vim=_vi
     fi
 
-    alias qlf='qlmanage -p "$@" >& /dev/null'
-    ;;
-FreeBSD)    # FreeBSD
-    if ! set_alias ls '/usr/local/bin/gnuls --color=auto -h'; then
-        alias ls='ls -Gh'
-    fi
-
-    set_alias vi '/usr/local/bin/vim'
-    set_alias man 'env LC_ALL=ja_JP.eucJP /usr/local/bin/jman'
-    alias portupgrade="sudo portmaster -CKdway -x apr"
-    ;;
-esac
+    function qlf() { qlmanage -p "$@" >& /dev/null; }
+fi
 
 ##
 # completion settings
@@ -153,23 +150,6 @@ esac
 complete -d cd
 complete -c man
 complete -v unset
-
-# local settings
-if [ -f ~/.bashrc_local ]; then
-    . ~/.bashrc_local
-fi
-
-#-----------
-# Functions
-#-----------
-if [ -f ~/.sh_functions ]; then
-  source ~/.sh_functions
-fi
-
-function md2html {
-    kramdown -i markdown ${1} > ${1%.*}.html
-}
-
 
 #-----------
 # prompt
@@ -184,7 +164,7 @@ DARK_GREEN="\[\033[2;32m\]"
 GRAY="\[\033[40;2;37m\]"
 RST_COLOR="\[\033[0m\]"
 
-if [ $(whoami) = "root" ]; then
+if [ "$(whoami)" = "root" ]; then
     pcolor=$LIGHT_RED
     dcolor=$DARK_RED
 else
@@ -192,4 +172,10 @@ else
     dcolor=$DARK_GREEN
 fi
 export PS1="$LIGHT_YELLOW[\!]$pcolor[\u$dcolor@$RST_COLOR$pcolor\h] $LIGHT_BLUE\w$LIGHT_YELLOW"'$(__git_ps1)'"\n$RST_COLOR$pcolor\\\$$RST_COLOR "
+
+
+# local settings
+if [ -f ~/.bashrc_local ]; then
+    . ~/.bashrc_local
+fi
 
