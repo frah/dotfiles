@@ -166,60 +166,6 @@ if [ -f ~/.sh_functions ]; then
   source ~/.sh_functions
 fi
 
-# 最後のコマンドの実行時間を計測
-function time_spent {
-  COMTIME=$(expr $(date +%s) - ${COMTIME:=0})
-}
-trap 'time_spent' DEBUG
-
-# コマンドが終了したときに知らせる
-function notify {
-  NOTIFY_COMMAND=$1
-  $*
-}
-
-# 3秒以上処理に時間がかかったときは通知
-# コマンドが正常終了しなかったときはエラーコードを出力
-IGNORE_COMMANDS=('vi' 'vim' 'gvim' 'man' 'less' 'lv' 'top' 'exit' 'logout' 'ssh')
-function notify-execomp {
-  local s=$?
-  local command="$(history 1 | awk '{s=$4;for(i=5;i<=NF;i++){s=s" "$i}print s}')"
-  local message=""
-  local ctime=$COMTIME
-
-  dispstatus "${PWD/${HOME}/~}"
-  unset COMTIME
-
-  if [[ $s -ne 0 && $s -ne 1 ]]; then
-    message="\"$command\" is exit on error code $s."
-  else
-    message="\"${command#* }\" execution completed at $ctime sec."
-
-    local com=${command#* }
-    com=${com%% *}
-
-    if [[ $com != $NOTIFY_COMMAND ]]; then
-      return
-    else
-      unset NOTIFY_COMMAND
-    fi
-    for icom in "${IGNORE_COMMANDS[@]}"; do
-      if [[ $icom == $com ]]; then
-        return
-      fi
-    done
-  fi
-
-  if [[ $message != "" ]]; then
-    if [[ -x /usr/local/bin/growlnotify ]]; then
-      growlnotify -n notify-execomp -t bash -m "$message"
-    else
-      echo "$message"
-    fi
-  fi
-}
-PROMPT_COMMAND='notify-execomp'
-
 function md2html {
     kramdown -i markdown ${1} > ${1%.*}.html
 }
