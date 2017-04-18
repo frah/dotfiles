@@ -59,9 +59,11 @@ if s:is_neobundle_installed
         NeoBundle 'kyouryuukunn/vim-changed'
         NeoBundle 'pgilad/vim-skeletons'
         NeoBundle 'kana/vim-smartword'
-        NeoBundle 'vim-scripts/Align'
         NeoBundle 'nathanaelkane/vim-indent-guides'
         NeoBundle 'LeafCage/yankround.vim'
+        NeoBundleLazy 'h1mesuke/vim-alignta', {
+                    \   'on_cmd': 'Alignta'
+                    \ }
         NeoBundleLazy "sjl/gundo.vim", {
                     \   'on_cmd': 'GundoToggle'
                     \ }
@@ -830,10 +832,16 @@ if s:neobundled('vim-changed')
 endif
 
 "------------------------------------
-" Align
+" vim-alignta
 "------------------------------------
-" Alignを日本語環境で使用するための設定
-let g:Align_xstrlen = 3
+if s:neobundled('vim-alignta')
+    let g:alignta_default_options   = '<<<0:0'
+    let g:alignta_default_arguments = '\s'
+
+    vnoremap <Leader>aa :Alignta<CR>
+    vnoremap <Leader>a= :Alignta <<<1 =<CR>
+    vnoremap <Leader>a, :Alignta ,<CR>
+endif
 
 " ------------------------------------
 " grep.vim
