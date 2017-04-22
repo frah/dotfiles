@@ -1122,10 +1122,25 @@ if s:neobundled('neocomplete.vim')
     let g:neocomplete#enable_smart_case = 1
     " Set minimum syntax keyword length.
     let g:neocomplete#sources#syntax#min_keyword_length = 3
+    let g:neocomplete#sources#dictionary#dictionaries = {
+        \ 'default' : '',
+        \ 'vimshell' : $HOME.'/.vimshell_hist',
+        \ 'java' : $HOME.'/.vim/dict/java.dict',
+        \ 'c' : $HOME.'/.vim/dict/c.dict',
+        \ 'cpp' : $HOME.'/.vim/dict/cpp.dict',
+        \ 'javascript' : $HOME.'/.vim/dict/javascript.dict',
+        \ 'perl' : $HOME.'/.vim/dict/perl.dict',
+        \ 'php' : $HOME.'/.vim/dict/php.dict',
+        \ 'scheme' : $HOME.'/.vim/dict/scheme.dict',
+        \ 'vm' : $HOME.'/.vim/dict/vim.dict'
+        \ }
 
     " Plugin key-mappings.
     inoremap <expr><C-g>     neocomplete#undo_completion()
     inoremap <expr><C-l>     neocomplete#complete_common_string()
+
+    " TAB smart completion
+    inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
 
     " Enable omni completion.
     augroup neocomplete
