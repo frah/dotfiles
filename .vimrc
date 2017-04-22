@@ -122,9 +122,6 @@ if s:is_neobundle_installed
         NeoBundleLazy 'leafgarland/typescript-vim', {
                     \   'on_path': '\.ts$'
                     \ }
-        NeoBundleLazy 'yuroyoro/vim-python', {
-                    \   'on_ft' : ['python']
-                    \ }
         NeoBundleLazy 'Arduino-syntax-file', {
                     \   'on_path': '\.pde$'
                     \ }
