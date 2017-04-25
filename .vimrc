@@ -837,6 +837,7 @@ if s:neobundled('vim-alignta')
 
     vnoremap <Leader>aa :Alignta<CR>
     vnoremap <Leader>a= :Alignta <<<1 =<CR>
+    vnoremap <Leader>a: :Alignta <<<1 :<CR>
     vnoremap <Leader>a, :Alignta ,<CR>
 endif
 
