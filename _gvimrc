@@ -1,3 +1,10 @@
 source $VIMRUNTIME/delmenu.vim
 set langmenu=ja_jp.utf-8
 source $VIMRUNTIME/menu.vim
+
+set visualbell t_vb=
+set guifont=Osaka－等幅:h10:cSHIFTJIS:qDRAFT
+colorscheme molokai
+set lines=45
+set columns=90
+
