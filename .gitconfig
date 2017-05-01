@@ -16,3 +16,6 @@
 [core]
     pager = lv
     excludesfile = ~/.gitignore
+[fetch]
+    prune = true
+
