@@ -245,6 +245,7 @@ command! -nargs=* AutocmdFT autocmd VimrcLocal FileType <args>
 Autocmd BufNewFile,BufRead *.md  set filetype=markdown
 Autocmd BufNewFile,BufRead *.pde set filetype=arduino
 Autocmd BufNewFile,BufRead *.ts  set filetype=typescript
+Autocmd BufNewFile,BufRead *.xm  set filetype=objc
 
 
 "---------------------------------------------------------------------------
@@ -685,7 +686,6 @@ endif
 set noimdisable
 set iminsert=0 imsearch=0
 set noimcmdline
-inoremap <silent> <ESC> <ESC>:set iminsert=0<CR>
 
 " jjでインサートモードから抜ける
 inoremap jj <ESC>
